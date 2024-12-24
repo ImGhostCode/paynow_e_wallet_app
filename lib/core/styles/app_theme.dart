@@ -13,6 +13,7 @@ final ThemeData lightTheme = ThemeData(
   // cardColor: AppColors.primaryColor,
   appBarTheme: AppBarTheme(
       // shadowColor: AppColors.lightGray,
+      iconTheme: IconThemeData(color: AppColors.black, size: 24.w),
       color: AppColors.white,
       titleTextStyle:
           AppTextStyle.xLargeBlack.copyWith(fontWeight: FontWeight.w500)
@@ -28,7 +29,7 @@ final ThemeData lightTheme = ThemeData(
   fontFamily: "SFProRounded",
   scaffoldBackgroundColor: AppColors.white,
   brightness: Brightness.light,
-  iconTheme: const IconThemeData(color: AppColors.black, size: 24),
+  iconTheme: IconThemeData(color: AppColors.black, size: 24.w),
   textTheme: TextTheme(
       headlineLarge: AppTextStyle.xxxLargeBlack, // 40
       headlineMedium: AppTextStyle.xxLargeBlack, // 32
