@@ -4,11 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 
-class SendMoneyPage extends StatelessWidget {
-  SendMoneyPage({super.key});
+class RequestMoneyPage extends StatelessWidget {
+  RequestMoneyPage({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController =
-      TextEditingController(text: '12.50');
+      TextEditingController(text: '20.00');
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class SendMoneyPage extends StatelessWidget {
                 Icons.arrow_back,
                 size: 24.w,
               )),
-          title: const Text('Send Money'),
+          title: const Text('Request Money'),
           centerTitle: true,
           bottom: PreferredSize(
               preferredSize: Size.fromHeight(2.h), child: const Divider()),
@@ -40,22 +40,20 @@ class SendMoneyPage extends StatelessWidget {
                   minLeadingWidth: 60.w,
                   contentPadding: EdgeInsets.zero,
                   leading: Container(
-                    height: 60.w,
-                    width: 60.w,
-                    decoration: const BoxDecoration(
-                      color: AppColors.bgGray,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Y',
-                      style: TextStyle(
-                          fontSize: 18.sp, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  title: const Text('Yara Khalil'),
+                      height: 60.w,
+                      width: 60.w,
+                      decoration: const BoxDecoration(
+                        color: AppColors.bgGray,
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Image.asset(
+                        ImageConstants.profilePicture1,
+                        fit: BoxFit.fill,
+                      )),
+                  title: const Text('Reem Khaled'),
                   subtitle: Text(
-                    'yara_khalil@gmail.com',
+                    'reem_1993@gmail.com',
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: AppColors.gray,
                         ),
@@ -77,20 +75,20 @@ class SendMoneyPage extends StatelessWidget {
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
-                              .copyWith(color: AppColors.secondaryColor),
+                              .copyWith(color: AppColors.primaryColor),
                           decoration: InputDecoration(
                             hintText: 'Enter amount',
                             border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.r)),
                               borderSide: const BorderSide(
-                                  color: AppColors.secondaryColor),
+                                  color: AppColors.primaryColor),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.r)),
                               borderSide: const BorderSide(
-                                  color: AppColors.secondaryColor),
+                                  color: AppColors.primaryColor),
                             ),
                           ),
                           validator: (value) {
@@ -139,13 +137,8 @@ class SendMoneyPage extends StatelessWidget {
             child: SizedBox(
               height: 50.h,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  foregroundColor: Colors.black,
-                ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // send payment
                     showDialog(
                       context: context,
                       builder: (context) {
@@ -165,7 +158,7 @@ class SendMoneyPage extends StatelessWidget {
                                   height: 15.h,
                                 ),
                                 Text(
-                                  'The amount has been sent successfully!',
+                                  'The amount has been requested successfully!',
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
@@ -176,8 +169,8 @@ class SendMoneyPage extends StatelessWidget {
                                   height: 30.h,
                                 ),
                                 SizedBox(
-                                  width: double.infinity,
                                   height: 50.h,
+                                  width: double.infinity,
                                   child: ElevatedButton(
                                       onPressed: () {
                                         Navigator.pop(context);
@@ -196,11 +189,12 @@ class SendMoneyPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      ImageConstants.send,
+                      ImageConstants.request,
                       height: 24.w,
                       width: 24.w,
+                      color: AppColors.white,
                     ),
-                    const Text('Send Payment'),
+                    const Text('Request Payment'),
                   ],
                 ),
               ),

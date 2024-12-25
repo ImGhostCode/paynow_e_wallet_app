@@ -121,7 +121,10 @@ class HomePage extends StatelessWidget {
                               ),
                         ),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, AppRouteEnum.requestsPage.name);
+                            },
                             icon: Badge(
                               smallSize: 6.w,
                               largeSize: 10.w,
@@ -194,7 +197,10 @@ class HomePage extends StatelessWidget {
                     width: 165.w,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, AppRouteEnum.requestMoneyPage.name);
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

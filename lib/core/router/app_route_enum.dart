@@ -8,6 +8,8 @@ enum AppRouteEnum {
   weViewPage,
   photoViewPage,
   sendMoneyPage,
+  requestMoneyPage,
+  requestsPage,
 }
 
 extension AppRouteExtension on AppRouteEnum {
@@ -27,6 +29,12 @@ extension AppRouteExtension on AppRouteEnum {
 
       case AppRouteEnum.sendMoneyPage:
         return "/send_money_page";
+
+      case AppRouteEnum.requestMoneyPage:
+        return "/request_money_page";
+
+      case AppRouteEnum.requestsPage:
+        return "/requests_page";
 
       case AppRouteEnum.articlesPage:
         return "/articles_page";

@@ -4,6 +4,8 @@ import 'package:paynow_e_wallet_app/features/auth/presentation/pages/login_page.
 import 'package:paynow_e_wallet_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:paynow_e_wallet_app/features/intro/presentation/pages/intro_page.dart';
 import 'package:paynow_e_wallet_app/features/intro/presentation/pages/welcome_page.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/request_money_page.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/requests_page.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/send_money_page.dart';
 import 'package:paynow_e_wallet_app/shared/presentation/pages/photo_view_page.dart';
 import 'package:paynow_e_wallet_app/shared/presentation/pages/web_view_page.dart';
@@ -45,6 +47,18 @@ class AppRouter {
         return CupertinoPageRoute(
           settings: RouteSettings(name: settings.name),
           builder: (_) => SendMoneyPage(),
+        );
+
+      case '/request_money_page':
+        return CupertinoPageRoute(
+          settings: RouteSettings(name: settings.name),
+          builder: (_) => RequestMoneyPage(),
+        );
+
+      case '/requests_page':
+        return CupertinoPageRoute(
+          settings: RouteSettings(name: settings.name),
+          builder: (_) => RequestsPage(),
         );
 
       // Ny Times Articles page

@@ -79,43 +79,51 @@ class _SkeletonAppState extends State<SkeletonApp> {
           clipBehavior: Clip.antiAlias,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Colors.transparent,
+            color: AppColors.bgGray,
             borderRadius: BorderRadius.circular(15.r),
           ),
-          child: BottomNavigationBar(
-            selectedFontSize: 12.sp,
-            unselectedFontSize: 12.sp,
-            selectedIconTheme: IconThemeData(size: 20.w),
-            items: navBarItem
-                .map(
-                  (e) => BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                      e.icon,
-                      height: 20.w,
-                      width: 20.w,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              for (int i = 0; i < navBarItem.length; i++)
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIndex = i;
+                    });
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          _selectedIndex == i
+                              ? navBarItem[i].activeIcon
+                              : navBarItem[i].icon,
+                          height: 20.w,
+                          width: 20.w,
+                          color: _selectedIndex == i
+                              ? Colors.black
+                              : AppColors.gray,
+                        ),
+                        Text(
+                          navBarItem[i].title,
+                          style: TextStyle(
+                            color: _selectedIndex == i
+                                ? Colors.black
+                                : AppColors.gray,
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ],
                     ),
-                    activeIcon: SvgPicture.asset(
-                      e.activeIcon,
-                      height: 20.w,
-                      width: 20.w,
-                    ),
-                    label: e.title,
                   ),
-                )
-                .toList(),
-            currentIndex: _selectedIndex,
-            onTap: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            selectedItemColor: AppColors.black,
-            unselectedItemColor: AppColors.gray,
-            // showSelectedLabels: false,
-            // showUnselectedLabels: false,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: AppColors.bgGray,
-            iconSize: 20.w,
+                ),
+            ],
           ),
         ),
       ),
