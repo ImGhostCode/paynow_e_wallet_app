@@ -54,8 +54,8 @@ final ThemeData lightTheme = ThemeData(
     style: TextButton.styleFrom(
         // backgroundColor: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        textStyle: TextStyle(fontSize: 14.sp, color: Colors.white),
-        foregroundColor: Colors.white),
+        textStyle: TextStyle(fontSize: 14.sp, color: Colors.black),
+        foregroundColor: Colors.black),
   ),
   colorScheme: ColorScheme.fromSeed(
       primary: AppColors.primaryColor,

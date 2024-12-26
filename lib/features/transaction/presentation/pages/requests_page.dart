@@ -206,16 +206,20 @@ class RequestsPage extends StatelessWidget {
                     },
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Colors.black,
+                  padding: EdgeInsets.zero,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      ImageConstants.request,
+                      ImageConstants.send,
                       height: 24.w,
                       width: 24.w,
-                      color: AppColors.white,
                     ),
-                    const Text('Request Payment'),
+                    const Text('Send All Payments'),
                   ],
                 ),
               ),

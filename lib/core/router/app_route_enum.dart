@@ -10,6 +10,9 @@ enum AppRouteEnum {
   sendMoneyPage,
   requestMoneyPage,
   requestsPage,
+  myInfoPage,
+  resetPasswordPage,
+  settingsPage,
 }
 
 extension AppRouteExtension on AppRouteEnum {
@@ -48,6 +51,14 @@ extension AppRouteExtension on AppRouteEnum {
       case AppRouteEnum.photoViewPage:
         return "/photo_view_page";
 
+      case AppRouteEnum.myInfoPage:
+        return "/my_info_page";
+
+      case AppRouteEnum.resetPasswordPage:
+        return "/reset_password_page";
+
+      case AppRouteEnum.settingsPage:
+        return "/settings_page";
       default:
         return "/articles_page";
     }

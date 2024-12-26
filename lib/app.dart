@@ -74,7 +74,7 @@ class _SkeletonAppState extends State<SkeletonApp> {
         child: Container(
           // height: 70.h,
           constraints: BoxConstraints(
-            maxHeight: 70.h,
+            maxHeight: 75.h,
           ),
           clipBehavior: Clip.antiAlias,
           alignment: Alignment.center,

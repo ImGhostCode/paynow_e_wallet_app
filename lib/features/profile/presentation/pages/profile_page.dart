@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_text_style.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
@@ -12,22 +13,33 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Item> items = [
       Item(
-        title: 'Personal Information',
+        title: 'My Info',
         icon: ImageConstants.profileActive,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, AppRouteEnum.myInfoPage.name);
+        },
       ),
       Item(
-        title: 'Change Password',
+        title: 'Reset Password',
+        icon: ImageConstants.password,
+        onTap: () {
+          Navigator.pushNamed(context, AppRouteEnum.resetPasswordPage.name);
+        },
+      ),
+      Item(
+        title: 'My cards',
         icon: ImageConstants.card,
         onTap: () {},
       ),
       Item(
-        title: 'Notification',
+        title: 'Settings',
         icon: ImageConstants.setting,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, AppRouteEnum.settingsPage.name);
+        },
       ),
       Item(
-        title: 'Language',
+        title: 'Help Center',
         icon: ImageConstants.help,
         onTap: () {},
       ),
