@@ -42,4 +42,7 @@ class ImageConstants {
   static const String location = "$iconPath/location_icon.svg";
   static const String call = "$iconPath/call_icon.svg";
   static const String logout = "$iconPath/logout_icon.svg";
+  static const String visaLogo = "$iconPath/VISA Logo.svg";
+  static const String chipset = "$iconPath/chipset.svg";
+  static const String remove = "$iconPath/remove_icon.svg";
 }

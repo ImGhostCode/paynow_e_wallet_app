@@ -29,7 +29,9 @@ class ProfilePage extends StatelessWidget {
       Item(
         title: 'My cards',
         icon: ImageConstants.card,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, AppRouteEnum.myCardsPage.name);
+        },
       ),
       Item(
         title: 'Settings',
