@@ -37,6 +37,7 @@ class ImageConstants {
   static const String help = "$iconPath/help_icon.svg";
   static const String arrowRight = "$iconPath/arrow_icon.svg";
   static const String sentIllustration = "$iconPath/sent_illustration.svg";
+  static const String removeIllustration = "$iconPath/remove_illustration.svg";
   static const String password = "$iconPath/password.svg";
   static const String language = "$iconPath/language_icon.svg";
   static const String location = "$iconPath/location_icon.svg";

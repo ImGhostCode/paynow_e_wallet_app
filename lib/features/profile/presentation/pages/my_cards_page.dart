@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 
@@ -35,10 +36,14 @@ class _MyCardsPageState extends State<MyCardsPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, AppRouteEnum.addCardPage.name);
+              },
               icon: SvgPicture.asset(
                 ImageConstants.add,
                 color: AppColors.primaryColor,
+                height: 24.w,
+                width: 24.w,
               ))
         ],
         bottom: PreferredSize(
@@ -272,36 +277,109 @@ class _MyCardsPageState extends State<MyCardsPage> {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10.r), topRight: Radius.circular(10.r)),
         ),
-        child: SizedBox(
-          height: 50.h,
-          child: Row(
-            children: [
-              Expanded(
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 50.h,
                 child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {}
                     },
                     child: const Text('Save changes')),
               ),
-              SizedBox(
-                width: 10.w,
-              ),
-              SizedBox(
-                width: 50.w,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 6.w),
-                        backgroundColor: AppColors.red),
-                    onPressed: () {},
-                    child: SvgPicture.asset(
-                      ImageConstants.remove,
-                      height: 24.w,
-                      width: 24.w,
-                      color: Colors.white,
-                    )),
-              )
-            ],
-          ),
+            ),
+            SizedBox(
+              width: 10.w,
+            ),
+            SizedBox(
+              height: 50.h,
+              child: ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: AppColors.red),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          insetPadding: EdgeInsets.all(24.w),
+                          content: Container(
+                            color: AppColors.white,
+                            width: 396.w,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  ImageConstants.removeIllustration,
+                                  height: 180.w,
+                                  width: 240.w,
+                                ),
+                                SizedBox(
+                                  height: 15.h,
+                                ),
+                                Text(
+                                  'Are you sure to remove this card?',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  height: 30.h,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 50.h,
+                                        child: TextButton(
+                                            style: TextButton.styleFrom(
+                                                // padding: EdgeInsets.symmetric(
+                                                //     vertical: 16.w),
+                                                foregroundColor:
+                                                    AppColors.primaryColor),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Cancel')),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10.w,
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 50.h,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                // padding: EdgeInsets.symmetric(
+                                                //     vertical: 8.w),
+                                                backgroundColor: AppColors.red),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Remove')),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: SvgPicture.asset(
+                    ImageConstants.remove,
+                    height: 24.w,
+                    width: 24.w,
+                    color: Colors.white,
+                  )),
+            )
+          ],
         ),
       ),
     );

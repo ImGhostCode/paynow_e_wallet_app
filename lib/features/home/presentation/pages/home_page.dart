@@ -153,7 +153,7 @@ class HomePage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Column(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
                 height: 25.h,
@@ -270,22 +270,31 @@ class HomePage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
-                          // minTileHeight: 150.h,
+                          minTileHeight: 60.h,
                           leading: Stack(
                             children: [
-                              CircleAvatar(
-                                radius: 25.r,
+                              Container(
+                                constraints: BoxConstraints(
+                                  maxHeight: 40.w,
+                                  maxWidth: 40.w,
+                                ),
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
                                 child: Image.asset(
                                   transactions[index].userImage,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                               Positioned(
-                                bottom: -7.h,
-                                right: 0,
+                                bottom: -3.h,
+                                right: -3.w,
                                 child: Container(
                                   alignment: Alignment.center,
-                                  // padding: EdgeInsets.all(3.w),
+                                  constraints: BoxConstraints(
+                                    maxHeight: 24.h,
+                                    maxWidth: 24.h,
+                                  ),
                                   decoration: const BoxDecoration(
                                     color: Colors.white,
                                     shape: BoxShape.circle,
@@ -301,8 +310,8 @@ class HomePage extends StatelessWidget {
                                             .colorScheme
                                             .secondary
                                         : Theme.of(context).colorScheme.primary,
-                                    height: 18.w,
-                                    width: 18.w,
+                                    height: 24.h,
+                                    width: 24.h,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
