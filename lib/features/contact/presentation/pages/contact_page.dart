@@ -15,23 +15,26 @@ class _ContactPageState extends State<ContactPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Contacts'),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: SvgPicture.asset(
-                ImageConstants.add,
-                color: Theme.of(context).colorScheme.primary,
-                height: 24.w,
-                width: 24.w,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(56.h),
+          child: AppBar(
+            title: const Text('Contacts'),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: SvgPicture.asset(
+                  ImageConstants.add,
+                  color: Theme.of(context).colorScheme.primary,
+                  height: 24.w,
+                  width: 24.w,
+                ),
+                onPressed: () {},
               ),
-              onPressed: () {},
-            ),
-            SizedBox(width: 10.w),
-          ],
-          bottom: PreferredSize(
-              preferredSize: Size.fromHeight(2.h), child: const Divider()),
+              SizedBox(width: 10.w),
+            ],
+            bottom: PreferredSize(
+                preferredSize: Size.fromHeight(2.h), child: const Divider()),
+          ),
         ),
         body: Padding(
           padding: EdgeInsets.all(15.r),
@@ -43,8 +46,10 @@ class _ContactPageState extends State<ContactPage> {
                   hintText: 'Enter a name',
                   prefixIcon: SvgPicture.asset(
                     ImageConstants.search,
-                    fit: BoxFit.none,
+                    fit: BoxFit.fill,
                     color: AppColors.gray,
+                    height: 24.w,
+                    width: 24.w,
                   ),
                 ),
               ),

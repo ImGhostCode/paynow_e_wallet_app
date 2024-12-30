@@ -12,6 +12,8 @@ import 'package:paynow_e_wallet_app/core/translations/l10n.dart';
 import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import '/shared/domain/entities/language_enum.dart';
 
@@ -19,7 +21,9 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // Inject all dependencies
   await initInjections();
 

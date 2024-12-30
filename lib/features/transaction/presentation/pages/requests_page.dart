@@ -77,45 +77,47 @@ class RequestsPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 15.h),
-                GroupedListView<TransactionModel, String>(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  elements: _requests,
-                  groupBy: (element) => element.timestamp,
-                  groupSeparatorBuilder: (String groupByValue) => Text(
-                      DateFormat.yMMMM('en_US')
-                          .format(DateTime.parse(groupByValue)),
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  itemBuilder: (context, TransactionModel element) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      'Hiba Saleh',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    horizontalTitleGap: 5.w,
-                    subtitle: Text(
-                      '-\$${element.amount.toString()}',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: AppColors.gray,
-                          ),
-                    ),
-                    leading: Image.asset(
-                      ImageConstants.profilePicture1,
-                      height: 40.w,
-                      width: 40.w,
-                    ),
-                    trailing: SizedBox(
-                      width: 80.w,
-                      height: 50.h,
-                      child: ElevatedButton(
+                SizedBox(
+                  height: 500,
+                  child: GroupedListView<TransactionModel, String>(
+                    // shrinkWrap: true,
+                    // physics: const NeverScrollableScrollPhysics(),
+                    elements: _requests,
+                    groupBy: (element) => element.timestamp,
+                    groupSeparatorBuilder: (String groupByValue) => Text(
+                        DateFormat.yMMMM('en_US')
+                            .format(DateTime.parse(groupByValue)),
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    itemBuilder: (context, TransactionModel element) =>
+                        ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        'Hiba Saleh',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      minTileHeight: 10.h,
+                      horizontalTitleGap: 5.w,
+                      subtitle: Text(
+                        '-\$${element.amount.toString()}',
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: AppColors.gray,
+                            ),
+                      ),
+                      leading: Image.asset(
+                        ImageConstants.profilePicture1,
+                        height: 40.w,
+                        width: 40.w,
+                      ),
+                      trailing: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               Theme.of(context).colorScheme.secondary,
                           foregroundColor: Colors.black,
-                          padding: EdgeInsets.zero,
+                          padding: EdgeInsets.all(4.w),
                         ),
                         onPressed: () {},
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
@@ -127,15 +129,15 @@ class RequestsPage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      minLeadingWidth: 40.w,
                     ),
-                    minLeadingWidth: 40.w,
+                    // itemComparator: (item1, item2) =>
+                    //     item1['name'].compareTo(item2['name']), // optional
+                    // useStickyGroupSeparators: true, // optional
+                    // floatingHeader: true, // optional
+                    order: GroupedListOrder.ASC, // optional
+                    // optional
                   ),
-                  // itemComparator: (item1, item2) =>
-                  //     item1['name'].compareTo(item2['name']), // optional
-                  // useStickyGroupSeparators: true, // optional
-                  // floatingHeader: true, // optional
-                  order: GroupedListOrder.ASC, // optional
-                  // optional
                 ),
               ],
             ),
