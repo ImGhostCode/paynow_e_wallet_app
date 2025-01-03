@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -46,30 +47,30 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA79LdL-xXd0KwP3Mq3WrX1RJBfqFlhWOc',
-    appId: '1:165113372050:web:4646df85212ee23b0ab54b',
-    messagingSenderId: '165113372050',
-    projectId: 'pay-now-e-wallet-app-37dfd',
-    authDomain: 'pay-now-e-wallet-app-37dfd.firebaseapp.com',
-    storageBucket: 'pay-now-e-wallet-app-37dfd.firebasestorage.app',
+  static final FirebaseOptions web = FirebaseOptions(
+    apiKey: dotenv.env['WEB_API_KEY']!,
+    appId: '1:573832821000:web:fa444d01ccc0a807b4d4bd',
+    messagingSenderId: '573832821000',
+    projectId: 'pay-now-e-wallet-app-65b51',
+    authDomain: 'pay-now-e-wallet-app-65b51.firebaseapp.com',
+    storageBucket: 'pay-now-e-wallet-app-65b51.firebasestorage.app',
+    measurementId: 'G-MFD6F8RLR8',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBL29glkQV_x3di3o4s7ev99RWbZDnp2Sg',
-    appId: '1:165113372050:android:5aee00ca52d6ffe80ab54b',
-    messagingSenderId: '165113372050',
-    projectId: 'pay-now-e-wallet-app-37dfd',
-    storageBucket: 'pay-now-e-wallet-app-37dfd.firebasestorage.app',
+  static final FirebaseOptions android = FirebaseOptions(
+    apiKey: dotenv.env['ANDROID_API_KEY']!,
+    appId: '1:573832821000:android:6d2db80730c9118bb4d4bd',
+    messagingSenderId: '573832821000',
+    projectId: 'pay-now-e-wallet-app-65b51',
+    storageBucket: 'pay-now-e-wallet-app-65b51.firebasestorage.app',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAsqK0zTJKzC9JSyMJzoccetHzWIr5lJVM',
-    appId: '1:165113372050:ios:3c72d6c4992f0cb40ab54b',
-    messagingSenderId: '165113372050',
-    projectId: 'pay-now-e-wallet-app-37dfd',
-    storageBucket: 'pay-now-e-wallet-app-37dfd.firebasestorage.app',
+  static final FirebaseOptions ios = FirebaseOptions(
+    apiKey: dotenv.env['IOS_API_KEY']!,
+    appId: '1:573832821000:ios:d7464916bd722e7fb4d4bd',
+    messagingSenderId: '573832821000',
+    projectId: 'pay-now-e-wallet-app-65b51',
+    storageBucket: 'pay-now-e-wallet-app-65b51.firebasestorage.app',
     iosBundleId: 'com.example.paynowEWalletApp',
   );
-
 }

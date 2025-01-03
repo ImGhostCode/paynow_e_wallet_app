@@ -11,20 +11,14 @@ abstract class Failure extends Equatable {
 
 /// General failures
 class ServerFailure extends Failure {
-  final int? statusCode;
+  final String? code;
 
-  const ServerFailure(String errorMessage, this.statusCode)
-      : super(
-          errorMessage,
-        );
+  const ServerFailure(super.errorMessage, this.code);
 }
 
 /// Cancel token failure
 class CancelTokenFailure extends Failure {
   final int? statusCode;
 
-  const CancelTokenFailure(String errorMessage, this.statusCode)
-      : super(
-          errorMessage,
-        );
+  const CancelTokenFailure(super.errorMessage, this.statusCode);
 }

@@ -1,7 +1,7 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:paynow_e_wallet_app/features/auth/bussiness/entities/user_entity.dart';
-import 'package:paynow_e_wallet_app/features/card/bussiness/entities/card_entity.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
+import 'package:paynow_e_wallet_app/features/card/business/entities/card_entity.dart';
 
 part 'user_model.g.dart';
 

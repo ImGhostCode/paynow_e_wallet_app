@@ -1,6 +1,6 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:paynow_e_wallet_app/features/card/bussiness/entities/card_entity.dart';
+import 'package:paynow_e_wallet_app/features/card/business/entities/card_entity.dart';
 
 part 'card_model.g.dart';
 

@@ -2,9 +2,10 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:paynow_e_wallet_app/app.dart';
+import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/shared/data/data_sources/app_shared_prefs.dart';
 import 'package:paynow_e_wallet_app/core/router/router.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_theme.dart';
@@ -21,6 +22,7 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "lib/.env");
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -49,6 +51,9 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 }
 
+final GlobalKey<ScaffoldMessengerState> snackBarKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -66,8 +71,6 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with WidgetsBindingObserver {
   Locale locale = const Locale("en");
-  final GlobalKey<ScaffoldMessengerState> snackBarKey =
-      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -107,6 +110,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               return MaterialApp(
                 title: 'PayNow E-Wallet',
                 scaffoldMessengerKey: snackBarKey,
+                initialRoute: AppRouteEnum.loginPage.name,
                 onGenerateRoute: AppRouter.generateRoute,
                 theme: Helper.isDarkTheme() ? darkTheme : lightTheme,
                 debugShowCheckedModeBanner: false,
@@ -123,7 +127,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                   Locale("ar"),
                   Locale("en"),
                 ],
-                home: const MyApp(),
+                // home: const MyApp(),
               );
             },
           );

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
-import 'package:paynow_e_wallet_app/features/transaction/bussiness/entities/transaction_entity.dart';
+import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
 
 part 'transaction_model.g.dart';
 

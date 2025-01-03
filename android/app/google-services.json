@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "165113372050",
-    "project_id": "pay-now-e-wallet-app-37dfd",
-    "storage_bucket": "pay-now-e-wallet-app-37dfd.firebasestorage.app"
+    "project_number": "573832821000",
+    "project_id": "pay-now-e-wallet-app-65b51",
+    "storage_bucket": "pay-now-e-wallet-app-65b51.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:165113372050:android:5aee00ca52d6ffe80ab54b",
+        "mobilesdk_app_id": "1:573832821000:android:6d2db80730c9118bb4d4bd",
         "android_client_info": {
           "package_name": "com.paynow.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBL29glkQV_x3di3o4s7ev99RWbZDnp2Sg"
+          "current_key": "AIzaSyCr59Lz4U-YD_0VJRs1Xz7TRDX2rfdvu2w"
         }
       ],
       "services": {
