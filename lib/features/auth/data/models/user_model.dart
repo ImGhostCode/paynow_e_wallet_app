@@ -12,7 +12,8 @@ class UserModel extends UserEntity {
       required super.fullName,
       required super.phoneNumber,
       required super.balance,
-      required super.cards});
+      required super.cards,
+      required super.createdAt});
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -35,15 +36,17 @@ class UserModel extends UserEntity {
         fullName: fullName,
         phoneNumber: phoneNumber,
         balance: balance,
-        cards: cards);
+        cards: cards,
+        createdAt: createdAt);
   }
 
-  static UserModel fromEntity(UserEntity card) {
+  static UserModel fromEntity(UserEntity user) {
     return UserModel(
-        email: card.email,
-        fullName: card.fullName,
-        phoneNumber: card.phoneNumber,
-        balance: card.balance,
-        cards: card.cards);
+        email: user.email,
+        fullName: user.fullName,
+        phoneNumber: user.phoneNumber,
+        balance: user.balance,
+        cards: user.cards,
+        createdAt: user.createdAt);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paynow_e_wallet_app/main.dart';
 import 'package:paynow_e_wallet_app/shared/data/data_sources/app_shared_prefs.dart';
 import 'package:paynow_e_wallet_app/shared/domain/entities/language_enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/app_constants.dart';
@@ -45,5 +46,16 @@ class Helper {
 
   static bool isTablet(BuildContext context) {
     return MediaQuery.of(context).size.shortestSide >= 600;
+  }
+
+  static void showSnackBar(
+      {required String? message, bool? isSuccess = false}) {
+    snackBarKey.currentState!.showSnackBar(
+      SnackBar(
+        content: Text(message ?? ''),
+        duration: const Duration(seconds: 2),
+        backgroundColor: isSuccess! ? Colors.green : Colors.red,
+      ),
+    );
   }
 }

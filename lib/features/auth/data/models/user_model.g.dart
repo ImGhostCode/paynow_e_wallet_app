@@ -14,6 +14,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       cards: (json['cards'] as List<dynamic>)
           .map((e) => CardEntity.fromJson(e as Map<String, dynamic>))
           .toList(),
+      createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'phoneNumber': instance.phoneNumber,
       'balance': instance.balance,
       'cards': instance.cards,
+      'createdAt': instance.createdAt.toIso8601String(),
     };

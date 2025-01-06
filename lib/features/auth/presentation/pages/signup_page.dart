@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/app_constants.dart';
@@ -9,7 +10,6 @@ import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
-import 'package:paynow_e_wallet_app/main.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -32,15 +32,10 @@ class _SignupPageState extends State<SignupPage> {
       create: (context) => AuthBloc(signUpUsecase: sl()),
       child: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
         if (state is Authenticated) {
+          Helper.showSnackBar(message: 'Sign up successfully', isSuccess: true);
           Navigator.pushReplacementNamed(context, AppRouteEnum.loginPage.name);
         } else if (state is Unauthenticated) {
-          snackBarKey.currentState!.showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-              duration: const Duration(seconds: 2),
-              backgroundColor: Colors.red,
-            ),
-          );
+          Helper.showSnackBar(message: state.error);
         }
       }, builder: (context, state) {
         return Scaffold(

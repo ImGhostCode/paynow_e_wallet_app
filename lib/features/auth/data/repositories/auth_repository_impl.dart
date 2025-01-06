@@ -24,4 +24,16 @@ class AuthRepositoryImpl extends AuthRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<Either<Failure, User?>> login(LoginParams params) async {
+    try {
+      final result = await authRemoteDataSource.login(params);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.code));
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }

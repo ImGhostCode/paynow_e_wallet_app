@@ -11,8 +11,8 @@ TransactionEntity _$TransactionEntityFromJson(Map<String, dynamic> json) =>
       senderId: json['senderId'] as String,
       receiverId: json['receiverId'] as String,
       amount: (json['amount'] as num).toDouble(),
-      type: json['type'] as TransactionType,
-      status: json['status'] as TransactionStatus,
+      type: $enumDecode(_$TransactionTypeEnumMap, json['type']),
+      status: $enumDecode(_$TransactionStatusEnumMap, json['status']),
       timestamp: json['timestamp'] as String,
       description: json['description'] as String,
     );
@@ -22,8 +22,19 @@ Map<String, dynamic> _$TransactionEntityToJson(TransactionEntity instance) =>
       'senderId': instance.senderId,
       'receiverId': instance.receiverId,
       'amount': instance.amount,
-      'type': instance.type,
-      'status': instance.status,
+      'type': _$TransactionTypeEnumMap[instance.type]!,
+      'status': _$TransactionStatusEnumMap[instance.status]!,
       'timestamp': instance.timestamp,
       'description': instance.description,
     };
+
+const _$TransactionTypeEnumMap = {
+  TransactionType.send: 'send',
+  TransactionType.request: 'request',
+};
+
+const _$TransactionStatusEnumMap = {
+  TransactionStatus.pending: 'pending',
+  TransactionStatus.completed: 'completed',
+  TransactionStatus.failed: 'failed',
+};

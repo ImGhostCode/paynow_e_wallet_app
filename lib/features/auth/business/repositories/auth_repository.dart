@@ -5,4 +5,5 @@ import 'package:paynow_e_wallet_app/core/params/auth_params.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, User?>> signUp(SignUpParams params);
+  Future<Either<Failure, User?>> login(LoginParams params);
 }

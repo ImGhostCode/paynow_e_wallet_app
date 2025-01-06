@@ -15,6 +15,8 @@ class UserEntity {
   final int balance;
   @JsonKey(name: "cards")
   final List<CardEntity> cards;
+  @JsonKey(name: "createdAt")
+  final DateTime createdAt;
 
   UserEntity({
     required this.email,
@@ -22,6 +24,7 @@ class UserEntity {
     required this.phoneNumber,
     required this.balance,
     required this.cards,
+    required this.createdAt,
   });
 
   UserEntity copyWith({
@@ -30,6 +33,7 @@ class UserEntity {
     String? phoneNumber,
     int? balance,
     List<CardEntity>? cards,
+    DateTime? createdAt,
   }) =>
       UserEntity(
         email: email ?? this.email,
@@ -37,6 +41,7 @@ class UserEntity {
         phoneNumber: phoneNumber ?? this.phoneNumber,
         balance: balance ?? this.balance,
         cards: cards ?? this.cards,
+        createdAt: createdAt ?? this.createdAt,
       );
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>

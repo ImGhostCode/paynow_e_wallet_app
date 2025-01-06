@@ -3,6 +3,7 @@ enum AppRouteEnum {
   welcomePage,
   loginPage,
   signupPage,
+  homePage,
   articlesPage,
   articleDetailsPage,
   weViewPage,
@@ -31,6 +32,9 @@ extension AppRouteExtension on AppRouteEnum {
 
       case AppRouteEnum.signupPage:
         return "/signup_page";
+
+      case AppRouteEnum.homePage:
+        return "/";
 
       case AppRouteEnum.sendMoneyPage:
         return "/send_money_page";
