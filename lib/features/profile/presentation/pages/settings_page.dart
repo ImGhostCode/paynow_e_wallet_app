@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 
@@ -58,7 +60,14 @@ class _SettingsPageState extends State<SettingsPage> {
         title: 'Logout',
         subtitle: '',
         icon: ImageConstants.logout,
-        onTap: () {},
+        onTap: () async {
+          await FirebaseAuth.instance.signOut();
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRouteEnum.loginPage.name,
+            (route) => false,
+          );
+        },
       ),
     ];
     super.initState();

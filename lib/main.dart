@@ -14,6 +14,7 @@ import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 import '/shared/domain/entities/language_enum.dart';
@@ -28,7 +29,7 @@ void main() async {
   );
   // Inject all dependencies
   await initInjections();
-
+  // await sl<SharedPreferences>().clear();
   runApp(DevicePreview(
     builder: (context) {
       return kDebugMode
@@ -110,7 +111,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               return MaterialApp(
                 title: 'PayNow E-Wallet',
                 scaffoldMessengerKey: snackBarKey,
-                initialRoute: AppRouteEnum.loginPage.name,
+                initialRoute: AppRouteEnum.splashPage.name,
                 onGenerateRoute: AppRouter.generateRoute,
                 theme: Helper.isDarkTheme() ? darkTheme : lightTheme,
                 debugShowCheckedModeBanner: false,

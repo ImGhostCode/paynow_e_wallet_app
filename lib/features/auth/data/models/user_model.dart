@@ -8,7 +8,8 @@ part 'user_model.g.dart';
 @JsonSerializable()
 class UserModel extends UserEntity {
   UserModel(
-      {required super.email,
+      {required super.avatar,
+      required super.email,
       required super.fullName,
       required super.phoneNumber,
       required super.balance,
@@ -32,6 +33,7 @@ class UserModel extends UserEntity {
 
   UserEntity toEntity() {
     return UserEntity(
+        avatar: avatar,
         email: email,
         fullName: fullName,
         phoneNumber: phoneNumber,
@@ -42,6 +44,7 @@ class UserModel extends UserEntity {
 
   static UserModel fromEntity(UserEntity user) {
     return UserModel(
+        avatar: user.avatar,
         email: user.email,
         fullName: user.fullName,
         phoneNumber: user.phoneNumber,

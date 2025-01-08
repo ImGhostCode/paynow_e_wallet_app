@@ -10,6 +10,7 @@ import 'package:paynow_e_wallet_app/features/card/presentation/pages/my_cards_pa
 import 'package:paynow_e_wallet_app/features/profile/presentation/pages/my_info_page.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:paynow_e_wallet_app/features/profile/presentation/pages/settings_page.dart';
+import 'package:paynow_e_wallet_app/features/splash/presentation/pages/splash_page.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/request_money_page.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/requests_page.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/send_money_page.dart';
@@ -26,6 +27,12 @@ class AppRouter {
     currentRoute = settings.name ?? "/";
     switch (settings.name) {
       // ==== Auth pages ==== //
+      case '/splash_page':
+        return CupertinoPageRoute(
+          settings: RouteSettings(name: settings.name),
+          builder: (_) => const SplashPage(),
+        );
+
       case '/intro_page':
         return CupertinoPageRoute(
           settings: RouteSettings(name: settings.name),

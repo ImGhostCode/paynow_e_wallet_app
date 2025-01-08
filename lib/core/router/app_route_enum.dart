@@ -1,4 +1,5 @@
 enum AppRouteEnum {
+  splashPage,
   introPage,
   welcomePage,
   loginPage,
@@ -21,6 +22,9 @@ enum AppRouteEnum {
 extension AppRouteExtension on AppRouteEnum {
   String get name {
     switch (this) {
+      case AppRouteEnum.splashPage:
+        return "/splash_page";
+
       case AppRouteEnum.introPage:
         return "/intro_page";
 

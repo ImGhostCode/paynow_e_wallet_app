@@ -7,6 +7,8 @@ part 'user_entity.g.dart';
 class UserEntity {
   @JsonKey(name: "email")
   final String email;
+  @JsonKey(name: "avatar")
+  final String avatar;
   @JsonKey(name: "fullName")
   final String fullName;
   @JsonKey(name: "phoneNumber")
@@ -19,6 +21,7 @@ class UserEntity {
   final DateTime createdAt;
 
   UserEntity({
+    required this.avatar,
     required this.email,
     required this.fullName,
     required this.phoneNumber,
@@ -28,6 +31,7 @@ class UserEntity {
   });
 
   UserEntity copyWith({
+    String? avatar,
     String? email,
     String? fullName,
     String? phoneNumber,
@@ -36,6 +40,7 @@ class UserEntity {
     DateTime? createdAt,
   }) =>
       UserEntity(
+        avatar: avatar ?? this.avatar,
         email: email ?? this.email,
         fullName: fullName ?? this.fullName,
         phoneNumber: phoneNumber ?? this.phoneNumber,
