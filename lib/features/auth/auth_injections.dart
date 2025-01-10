@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/repositories/auth_repository.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/usecases/get_user_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/usecases/login_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/usecases/signup_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
@@ -14,4 +15,5 @@ void initAuthInjections() {
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl(sl()));
   sl.registerSingleton<SignUpUsecase>(SignUpUsecase(sl()));
   sl.registerSingleton<LoginUsecase>(LoginUsecase(sl()));
+  sl.registerSingleton<GetUserUsecase>(GetUserUsecase(sl()));
 }

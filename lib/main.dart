@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +31,7 @@ void main() async {
   // Inject all dependencies
   await initInjections();
   // await sl<SharedPreferences>().clear();
+  // await FirebaseAuth.instance.signOut();
   runApp(DevicePreview(
     builder: (context) {
       return kDebugMode

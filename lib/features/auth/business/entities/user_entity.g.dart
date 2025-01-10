@@ -15,7 +15,7 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
       cards: (json['cards'] as List<dynamic>)
           .map((e) => CardEntity.fromJson(e as Map<String, dynamic>))
           .toList(),
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      createdAt: fromJsonCreatedAt(json['createdAt'] as Timestamp),
     );
 
 Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
@@ -26,5 +26,5 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'phoneNumber': instance.phoneNumber,
       'balance': instance.balance,
       'cards': instance.cards,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'createdAt': Timestamp.fromDate(instance.createdAt),
     };

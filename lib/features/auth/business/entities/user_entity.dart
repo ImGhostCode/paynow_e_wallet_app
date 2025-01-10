@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:paynow_e_wallet_app/features/card/business/entities/card_entity.dart';
 
 part 'user_entity.g.dart';
+
+DateTime fromJsonCreatedAt(Timestamp timestamp) {
+  return timestamp.toDate();
+}
 
 @JsonSerializable()
 class UserEntity {
@@ -17,7 +22,10 @@ class UserEntity {
   final int balance;
   @JsonKey(name: "cards")
   final List<CardEntity> cards;
-  @JsonKey(name: "createdAt")
+  @JsonKey(
+      name: "createdAt",
+      fromJson: fromJsonCreatedAt,
+      toJson: Timestamp.fromDate)
   final DateTime createdAt;
 
   UserEntity({

@@ -20,6 +20,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       // Create a new user in Firestore
       await _firestore.collection('users').doc(result.user?.uid).set(
             UserModel(
+                    avatar: '',
                     email: params.email,
                     fullName: result.user?.displayName ?? '',
                     phoneNumber: '',
@@ -44,6 +45,16 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       return result.user;
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
+    } catch (e) {
+      throw ServerException(e.toString(), null);
+    }
+  }
+
+  @override
+  Future<UserModel?> getUser(String id) async {
+    try {
+      final result = await _firestore.collection('users').doc(id).get();
+      return UserModel.fromJson(result.data()!);
     } catch (e) {
       throw ServerException(e.toString(), null);
     }

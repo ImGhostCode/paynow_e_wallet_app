@@ -21,7 +21,7 @@ import 'package:paynow_e_wallet_app/features/articles/presentation/pages/article
 import 'package:paynow_e_wallet_app/features/articles/presentation/pages/articles_page.dart';
 
 class AppRouter {
-  static String currentRoute = "/";
+  static String currentRoute = "/splash_page";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     currentRoute = settings.name ?? "/";

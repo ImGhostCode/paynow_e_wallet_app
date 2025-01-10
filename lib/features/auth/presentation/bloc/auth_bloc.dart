@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paynow_e_wallet_app/core/params/auth_params.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/usecases/get_user_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/usecases/login_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/usecases/signup_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
@@ -8,10 +9,13 @@ import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.d
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUsecase? signUpUsecase;
   final LoginUsecase? loginUsecase;
+  final GetUserUsecase? getUserUsecase;
 
-  AuthBloc({this.signUpUsecase, this.loginUsecase}) : super(AuthInitial()) {
+  AuthBloc({this.getUserUsecase, this.signUpUsecase, this.loginUsecase})
+      : super(AuthInitial()) {
     on<SignUpEvent>(_onSignUpEvent);
     on<LoginEvent>(_onLoginEvent);
+    on<GetUserEvent>(_onGetUserEvent);
   }
 
   _onSignUpEvent(SignUpEvent event, Emitter<AuthState> emit) async {
@@ -41,6 +45,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(Unauthenticated(error: l.errorMessage));
     }, (r) {
       emit(Authenticated(user: r!));
+    });
+  }
+
+  _onGetUserEvent(GetUserEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    final result = await getUserUsecase!.call(event.id);
+    result.fold((l) {
+      emit(ErrorLoadingUser(error: l.errorMessage));
+    }, (r) {
+      emit(LoadedUser(userEntity: r!));
     });
   }
 }

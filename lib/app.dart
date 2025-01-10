@@ -1,6 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
+import 'package:paynow_e_wallet_app/core/utils/injections.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/usecases/get_user_usecase.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/pages/contact_page.dart';
 import 'package:paynow_e_wallet_app/features/home/presentation/pages/home_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -56,77 +63,106 @@ class _SkeletonAppState extends State<SkeletonApp> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            spreadRadius: 0,
-            blurRadius: 10,
-            offset: Offset(0, -10.h),
-          ),
-        ]),
-        child: Container(
-          // height: 70.h,
-          constraints: BoxConstraints(
-            maxHeight: 75.h,
-          ),
-          clipBehavior: Clip.antiAlias,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AppColors.bgGray,
-            borderRadius: BorderRadius.circular(15.r),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              for (int i = 0; i < navBarItem.length; i++)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = i;
-                    });
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          _selectedIndex == i
-                              ? navBarItem[i].activeIcon
-                              : navBarItem[i].icon,
-                          height: 20.w,
-                          width: 20.w,
-                          color: _selectedIndex == i
-                              ? Colors.black
-                              : AppColors.gray,
-                        ),
-                        Text(
-                          navBarItem[i].title,
-                          style: TextStyle(
-                            color: _selectedIndex == i
-                                ? Colors.black
-                                : AppColors.gray,
-                            fontSize: 12.sp,
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    return BlocProvider(
+      create: (_) => AuthBloc(getUserUsecase: sl<GetUserUsecase>())
+        ..add(GetUserEvent(id: user.uid)),
+      child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+        if (state is AuthLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (state is ErrorLoadingUser) {
+          return Scaffold(
+            body: Center(
+              child: Text(state.error),
+            ),
+          );
+        } else if (state is LoadedUser) {
+          return Scaffold(
+            body: IndexedStack(
+              index: _selectedIndex,
+              children: _pages,
+            ),
+            bottomNavigationBar: Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  spreadRadius: 0,
+                  blurRadius: 10,
+                  offset: Offset(0, -10.h),
+                ),
+              ]),
+              child: Container(
+                // height: 70.h,
+                constraints: BoxConstraints(
+                  maxHeight: 75.h,
+                ),
+                clipBehavior: Clip.antiAlias,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.bgGray,
+                  borderRadius: BorderRadius.circular(15.r),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    for (int i = 0; i < navBarItem.length; i++)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedIndex = i;
+                          });
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 5.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                _selectedIndex == i
+                                    ? navBarItem[i].activeIcon
+                                    : navBarItem[i].icon,
+                                height: 20.w,
+                                width: 20.w,
+                                color: _selectedIndex == i
+                                    ? Colors.black
+                                    : AppColors.gray,
+                              ),
+                              Text(
+                                navBarItem[i].title,
+                                style: TextStyle(
+                                  color: _selectedIndex == i
+                                      ? Colors.black
+                                      : AppColors.gray,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                  ],
                 ),
-            ],
-          ),
-        ),
-      ),
+              ),
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      }),
     );
   }
 }

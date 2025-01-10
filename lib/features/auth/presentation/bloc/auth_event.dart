@@ -24,3 +24,9 @@ class LoginEvent extends AuthEvent {
 }
 
 class LogoutEvent extends AuthEvent {}
+
+class GetUserEvent extends AuthEvent {
+  final String id;
+
+  const GetUserEvent({required this.id});
+}
