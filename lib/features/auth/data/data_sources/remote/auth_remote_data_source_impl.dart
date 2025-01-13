@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paynow_e_wallet_app/core/network/error/exceptions.dart';
 import 'package:paynow_e_wallet_app/core/params/auth_params.dart';
+import 'package:paynow_e_wallet_app/core/params/profile_params.dart';
 import 'package:paynow_e_wallet_app/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
 import 'package:paynow_e_wallet_app/features/auth/data/models/user_model.dart';
 
@@ -54,7 +55,20 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   Future<UserModel?> getUser(String id) async {
     try {
       final result = await _firestore.collection('users').doc(id).get();
-      return UserModel.fromJson(result.data()!);
+      return UserModel.fromJson({id: result.id, ...result.data()!});
+    } catch (e) {
+      throw ServerException(e.toString(), null);
+    }
+  }
+
+  @override
+  Future<void> updateUser(UpdateUserParams user) async {
+    try {
+      await _firestore.collection('users').doc(user.id).update({
+        'avatar': user.avatar,
+        'fullName': user.name,
+        'phoneNumber': user.phoneNumber,
+      });
     } catch (e) {
       throw ServerException(e.toString(), null);
     }

@@ -10,6 +10,8 @@ DateTime fromJsonCreatedAt(Timestamp timestamp) {
 
 @JsonSerializable()
 class UserEntity {
+  @JsonKey(name: "id")
+  final String? id;
   @JsonKey(name: "email")
   final String email;
   @JsonKey(name: "avatar")
@@ -29,6 +31,7 @@ class UserEntity {
   final DateTime createdAt;
 
   UserEntity({
+    this.id,
     required this.avatar,
     required this.email,
     required this.fullName,
@@ -39,6 +42,7 @@ class UserEntity {
   });
 
   UserEntity copyWith({
+    String? id,
     String? avatar,
     String? email,
     String? fullName,
@@ -48,6 +52,7 @@ class UserEntity {
     DateTime? createdAt,
   }) =>
       UserEntity(
+        id: id ?? this.id,
         avatar: avatar ?? this.avatar,
         email: email ?? this.email,
         fullName: fullName ?? this.fullName,

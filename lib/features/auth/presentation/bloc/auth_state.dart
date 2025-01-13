@@ -32,3 +32,12 @@ class ErrorLoadingUser extends AuthState {
   final String error;
   const ErrorLoadingUser({required this.error});
 }
+
+class ErrorUpdatingUser extends AuthState {
+  final String error;
+  const ErrorUpdatingUser({required this.error});
+}
+
+class UpdatedUser extends AuthState {
+  const UpdatedUser();
+}

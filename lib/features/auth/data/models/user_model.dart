@@ -9,7 +9,8 @@ part 'user_model.g.dart';
 @JsonSerializable()
 class UserModel extends UserEntity {
   UserModel(
-      {required super.avatar,
+      {super.id,
+      required super.avatar,
       required super.email,
       required super.fullName,
       required super.phoneNumber,
@@ -23,17 +24,18 @@ class UserModel extends UserEntity {
   @override
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
-  // factory UserModel.fromFirestore(DocumentSnapshot doc) {
-  //   Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-  //   return UserModel.fromJson({'id': doc.id, ...data});
-  // }
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return UserModel.fromJson({'id': doc.id, ...data});
+  }
 
-  // Map<String, dynamic> toFirestore() {
-  //   return toJson()..remove('id');
-  // }
+  Map<String, dynamic> toFirestore() {
+    return toJson()..remove('id');
+  }
 
   UserEntity toEntity() {
     return UserEntity(
+        id: id,
         avatar: avatar,
         email: email,
         fullName: fullName,
@@ -45,6 +47,7 @@ class UserModel extends UserEntity {
 
   static UserModel fromEntity(UserEntity user) {
     return UserModel(
+        id: user.id,
         avatar: user.avatar,
         email: user.email,
         fullName: user.fullName,

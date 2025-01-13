@@ -55,12 +55,6 @@ class _SkeletonAppState extends State<SkeletonApp> {
       activeIcon: ImageConstants.profileActive,
     ),
   ];
-  final List<Widget> _pages = <Widget>[
-    HomePage(),
-    const TransactionPage(),
-    const ContactPage(),
-    const ProfilePage(),
-  ];
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -91,7 +85,14 @@ class _SkeletonAppState extends State<SkeletonApp> {
           return Scaffold(
             body: IndexedStack(
               index: _selectedIndex,
-              children: _pages,
+              children: [
+                HomePage(),
+                const TransactionPage(),
+                const ContactPage(),
+                ProfilePage(
+                  user: state.userEntity!,
+                ),
+              ],
             ),
             bottomNavigationBar: Container(
               padding: EdgeInsets.all(16.w),

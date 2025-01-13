@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:paynow_e_wallet_app/core/params/profile_params.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -29,4 +30,10 @@ class GetUserEvent extends AuthEvent {
   final String id;
 
   const GetUserEvent({required this.id});
+}
+
+class UpdateUserEvent extends AuthEvent {
+  final UpdateUserParams params;
+
+  const UpdateUserEvent({required this.params});
 }

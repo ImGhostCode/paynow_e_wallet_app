@@ -5,6 +5,7 @@ import 'package:paynow_e_wallet_app/features/auth/business/repositories/auth_rep
 import 'package:paynow_e_wallet_app/features/auth/business/usecases/get_user_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/usecases/login_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/usecases/signup_usecase.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/usecases/update_user_usecase.dart';
 import 'package:paynow_e_wallet_app/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
 import 'package:paynow_e_wallet_app/features/auth/data/data_sources/remote/auth_remote_data_source_impl.dart';
 import 'package:paynow_e_wallet_app/features/auth/data/repositories/auth_repository_impl.dart';
@@ -16,4 +17,5 @@ void initAuthInjections() {
   sl.registerSingleton<SignUpUsecase>(SignUpUsecase(sl()));
   sl.registerSingleton<LoginUsecase>(LoginUsecase(sl()));
   sl.registerSingleton<GetUserUsecase>(GetUserUsecase(sl()));
+  sl.registerSingleton<UpdateUserUsecase>(UpdateUserUsecase(sl()));
 }
