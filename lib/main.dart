@@ -1,12 +1,13 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/shared/data/data_sources/app_shared_prefs.dart';
 import 'package:paynow_e_wallet_app/core/router/router.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_theme.dart';
@@ -110,27 +111,39 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               ScreenUtil.configure(
                 data: MediaQuery.of(context),
               );
-              return MaterialApp(
-                title: 'PayNow E-Wallet',
-                scaffoldMessengerKey: snackBarKey,
-                initialRoute: AppRouteEnum.splashPage.name,
-                onGenerateRoute: AppRouter.generateRoute,
-                theme: Helper.isDarkTheme() ? darkTheme : lightTheme,
-                debugShowCheckedModeBanner: false,
-                locale: locale,
-                builder: DevicePreview.appBuilder,
-                localizationsDelegates: const [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider<AuthBloc>(
+                    create: (BuildContext context) => AuthBloc(
+                      loginUsecase: sl(),
+                      signUpUsecase: sl(),
+                      getUserUsecase: sl(),
+                      updateUserUsecase: sl(),
+                    ),
+                  ),
                 ],
-                navigatorKey: navigatorKey,
-                supportedLocales: const [
-                  Locale("ar"),
-                  Locale("en"),
-                ],
-                // home: const MyApp(),
+                child: MaterialApp(
+                  title: 'PayNow E-Wallet',
+                  scaffoldMessengerKey: snackBarKey,
+                  initialRoute: AppRouteEnum.splashPage.name,
+                  onGenerateRoute: AppRouter.generateRoute,
+                  theme: Helper.isDarkTheme() ? darkTheme : lightTheme,
+                  debugShowCheckedModeBanner: false,
+                  locale: locale,
+                  builder: DevicePreview.appBuilder,
+                  localizationsDelegates: const [
+                    S.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  navigatorKey: navigatorKey,
+                  supportedLocales: const [
+                    Locale("ar"),
+                    Locale("en"),
+                  ],
+                  // home: const MyApp(),
+                ),
               );
             },
           );

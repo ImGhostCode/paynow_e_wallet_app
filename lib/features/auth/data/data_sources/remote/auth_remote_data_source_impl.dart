@@ -65,9 +65,9 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   Future<void> updateUser(UpdateUserParams user) async {
     try {
       await _firestore.collection('users').doc(user.id).update({
-        'avatar': user.avatar,
-        'fullName': user.name,
-        'phoneNumber': user.phoneNumber,
+        if (user.avatar != null) 'avatar': user.avatar,
+        if (user.name != null) 'fullName': user.name,
+        if (user.phoneNumber != null) 'phoneNumber': user.phoneNumber,
       });
     } catch (e) {
       throw ServerException(e.toString(), null);

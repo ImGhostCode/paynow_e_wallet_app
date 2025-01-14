@@ -69,8 +69,12 @@ class ProfilePage extends StatelessWidget {
           SizedBox(width: 10.w),
         ],
       ),
-      body: BlocBuilder<AuthBloc, AuthState>(
-          builder: (BuildContext context, AuthState state) {
+      body: BlocBuilder<AuthBloc, AuthState>(buildWhen: (previous, current) {
+        return current is IsLoadingUser ||
+            current is LoadedUser ||
+            current is ErrorLoadingUser;
+      }, builder: (BuildContext context, AuthState state) {
+        print('ProfilePage: $state');
         return SingleChildScrollView(
           child: Column(
             children: [

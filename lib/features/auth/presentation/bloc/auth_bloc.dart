@@ -56,7 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   _onGetUserEvent(GetUserEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
+    emit(const IsLoadingUser());
     final result = await getUserUsecase!.call(event.id);
     result.fold((l) {
       emit(ErrorLoadingUser(error: l.errorMessage));
@@ -66,11 +66,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   _onUpdateUserEvent(UpdateUserEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
+    emit(const IsUpdatingUser());
     final result = await updateUserUsecase!.call(event.params);
     result.fold((l) {
       emit(ErrorUpdatingUser(error: l.errorMessage));
     }, (r) {
+      add(GetUserEvent(id: event.params.id));
       emit(const UpdatedUser());
     });
   }

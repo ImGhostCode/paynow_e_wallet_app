@@ -24,6 +24,10 @@ class Unauthenticated extends AuthState {
   const Unauthenticated({required this.error});
 }
 
+class IsLoadingUser extends AuthState {
+  const IsLoadingUser();
+}
+
 class LoadedUser extends AuthState {
   const LoadedUser({required super.userEntity});
 }
@@ -31,6 +35,10 @@ class LoadedUser extends AuthState {
 class ErrorLoadingUser extends AuthState {
   final String error;
   const ErrorLoadingUser({required this.error});
+}
+
+class IsUpdatingUser extends AuthState {
+  const IsUpdatingUser();
 }
 
 class ErrorUpdatingUser extends AuthState {
