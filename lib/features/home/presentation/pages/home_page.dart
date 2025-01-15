@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -46,108 +49,116 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(180.w),
-        child: AppBar(
-          toolbarHeight: 50.w,
-          title: const Text('Dashboard'),
-          titleTextStyle: Theme.of(context)
-              .textTheme
-              .titleLarge!
-              .copyWith(fontWeight: FontWeight.w500, color: Colors.white),
-          centerTitle: false,
-          actions: [
-            GestureDetector(
-              onTap: null,
-              child: CircleAvatar(
-                radius: 30.r,
-                // backgroundImage: AssetImage(ImageConstants.user),
-                child: Image.asset(
-                  ImageConstants.user,
-                  fit: BoxFit.cover,
+        child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+          return AppBar(
+            toolbarHeight: 50.w,
+            title: const Text('Dashboard'),
+            titleTextStyle: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(fontWeight: FontWeight.w500, color: Colors.white),
+            centerTitle: false,
+            actions: [
+              GestureDetector(
+                onTap: null,
+                child: CircleAvatar(
+                  // radius: 30.r,
+                  backgroundColor: Colors.white,
+                  backgroundImage: state.userEntity != null &&
+                          state.userEntity!.avatar.isNotEmpty
+                      ? NetworkImage(
+                          state.userEntity!.avatar,
+                        )
+                      : null,
+                  child: state.userEntity == null ||
+                          state.userEntity!.avatar.isEmpty
+                      ? SvgPicture.asset(ImageConstants.profileActive)
+                      : null,
                 ),
               ),
-            ),
-            SizedBox(width: 20.w),
-          ],
-          flexibleSpace: Container(
-            color: Theme.of(context).colorScheme.primary,
-            child: Stack(
-              children: [
-                Positioned.fill(
+              SizedBox(width: 20.w),
+            ],
+            flexibleSpace: Container(
+              color: Theme.of(context).colorScheme.primary,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                      child: Container(
+                          color: Theme.of(context).colorScheme.primary)),
+                  ClipPath(
+                    clipper: RightTriangleClipper(),
                     child: Container(
-                        color: Theme.of(context).colorScheme.primary)),
-                ClipPath(
-                  clipper: RightTriangleClipper(),
-                  child: Container(
-                    color: const Color(0xFF3491DB),
-                    // height: 100.h,
+                      color: const Color(0xFF3491DB),
+                      // height: 100.h,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          bottom: PreferredSize(
-              preferredSize: Size.fromHeight(0.h),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(20.r),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      'Hi, Amanda!',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: Colors.white.withOpacity(0.5),
-                          ),
-                    ),
-                    Text(
-                      'Total Balance',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Colors.white,
-                          ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '\$124.57',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineLarge!
-                              .copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, AppRouteEnum.requestsPage.name);
-                            },
-                            icon: Badge(
-                              smallSize: 6.w,
-                              largeSize: 10.w,
-                              backgroundColor: const Color(0xFFF8BB18),
-                              label: Container(
-                                decoration: BoxDecoration(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              child: SvgPicture.asset(
-                                  ImageConstants.notifications,
+            bottom: PreferredSize(
+                preferredSize: Size.fromHeight(0.h),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20.r),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        'Hi, Amanda!',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.white.withOpacity(0.5),
+                            ),
+                      ),
+                      Text(
+                        'Total Balance',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              color: Colors.white,
+                            ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '\$124.57',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.w600,
                                   color: Colors.white,
-                                  height: 24.w,
-                                  width: 24.w),
-                            )),
-                      ],
-                    ),
-                  ],
-                ),
-              )),
-        ),
+                                ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRouteEnum.requestsPage.name);
+                              },
+                              icon: Badge(
+                                smallSize: 6.w,
+                                largeSize: 10.w,
+                                backgroundColor: const Color(0xFFF8BB18),
+                                label: Container(
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                child: SvgPicture.asset(
+                                    ImageConstants.notifications,
+                                    color: Colors.white,
+                                    height: 24.w,
+                                    width: 24.w),
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
+          );
+        }),
       ),
       body: SingleChildScrollView(
         child: Padding(

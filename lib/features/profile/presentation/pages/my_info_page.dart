@@ -32,6 +32,9 @@ class _MyInfoPageState extends State<MyInfoPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       if (state is UpdatedUser) {
+        _nameController.clear();
+        _phoneController.clear();
+        _selectedImage = null;
         Helper.showSnackBar(
             message: 'User updated successfully', isSuccess: true);
       }
@@ -41,7 +44,8 @@ class _MyInfoPageState extends State<MyInfoPage> {
     }, buildWhen: (previous, current) {
       return current is IsUpdatingUser ||
           current is UpdatedUser ||
-          current is ErrorUpdatingUser;
+          current is ErrorUpdatingUser ||
+          current is LoadedUser;
     }, builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
@@ -66,7 +70,6 @@ class _MyInfoPageState extends State<MyInfoPage> {
               children: [
                 Center(
                   child: Container(
-                    alignment: Alignment.center,
                     height: 100.w,
                     width: 100.w,
                     clipBehavior: Clip.antiAlias,
@@ -77,13 +80,20 @@ class _MyInfoPageState extends State<MyInfoPage> {
                     child: _selectedImage != null
                         ? Image.file(
                             File(_selectedImage!.path),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           )
-                        : SvgPicture.asset(
-                            ImageConstants.profileActive,
-                            height: 32.w,
-                            width: 32.w,
-                          ),
+                        : state.userEntity != null &&
+                                state.userEntity!.avatar.isNotEmpty
+                            ? Image.network(
+                                state.userEntity!.avatar,
+                                fit: BoxFit.fill,
+                              )
+                            : SvgPicture.asset(
+                                ImageConstants.profileActive,
+                                height: 32.w,
+                                width: 32.w,
+                                fit: BoxFit.none,
+                              ),
                   ),
                 ),
                 SizedBox(height: 5.h),

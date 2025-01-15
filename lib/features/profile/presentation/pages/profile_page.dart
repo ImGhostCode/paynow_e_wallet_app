@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
@@ -7,8 +6,6 @@ import 'package:paynow_e_wallet_app/core/styles/app_text_style.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
-import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key, required this.user});
@@ -52,30 +49,24 @@ class ProfilePage extends StatelessWidget {
       ),
     ];
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.bgGray,
-        title: const Text('Profile'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: SvgPicture.asset(
-              ImageConstants.edit,
-              color: Theme.of(context).colorScheme.primary,
-              height: 24.w,
-              width: 24.w,
+        appBar: AppBar(
+          backgroundColor: AppColors.bgGray,
+          title: const Text('Profile'),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: SvgPicture.asset(
+                ImageConstants.edit,
+                color: Theme.of(context).colorScheme.primary,
+                height: 24.w,
+                width: 24.w,
+              ),
+              onPressed: () {},
             ),
-            onPressed: () {},
-          ),
-          SizedBox(width: 10.w),
-        ],
-      ),
-      body: BlocBuilder<AuthBloc, AuthState>(buildWhen: (previous, current) {
-        return current is IsLoadingUser ||
-            current is LoadedUser ||
-            current is ErrorLoadingUser;
-      }, builder: (BuildContext context, AuthState state) {
-        print('ProfilePage: $state');
-        return SingleChildScrollView(
+            SizedBox(width: 10.w),
+          ],
+        ),
+        body: SingleChildScrollView(
           child: Column(
             children: [
               Container(
@@ -86,28 +77,27 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      alignment: Alignment.center,
                       height: 100.w,
                       width: 100.w,
                       clipBehavior: Clip.antiAlias,
                       decoration: const BoxDecoration(
                         color: AppColors.white,
                         shape: BoxShape.circle,
-                        // image: DecorationImage(
-                        //   image: AssetImage(ImageConstants.profilePicture),
-                        //   fit: BoxFit.cover,
-                        // ),
                       ),
-                      child: user.avatar != ''
-                          ? Image.network(user.avatar)
+                      child: user.avatar.isNotEmpty
+                          ? Image.network(user.avatar, fit: BoxFit.fill)
                           : user.fullName != ''
-                              ? Text(user.fullName[0],
-                                  style: AppTextStyle.xxxLargeBlack
-                                      .copyWith(fontWeight: FontWeight.bold))
+                              ? Center(
+                                  child: Text(user.fullName[0],
+                                      style: AppTextStyle.xxxLargeBlack
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold)),
+                                )
                               : SvgPicture.asset(
                                   ImageConstants.profileActive,
                                   height: 32.w,
                                   width: 32.w,
+                                  fit: BoxFit.none,
                                 ),
                     ),
                     SizedBox(height: 10.h),
@@ -154,9 +144,7 @@ class ProfilePage extends StatelessWidget {
               )
             ],
           ),
-        );
-      }),
-    );
+        ));
   }
 }
 
