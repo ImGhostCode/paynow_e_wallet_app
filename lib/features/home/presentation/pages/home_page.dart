@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  HomePage({super.key, required this.user});
+  final UserEntity user;
 
   final List<Transaction> transactions = [
     Transaction(
@@ -48,9 +47,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(180.w),
-        child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-          return AppBar(
+          preferredSize: Size.fromHeight(180.w),
+          child: AppBar(
             toolbarHeight: 50.w,
             title: const Text('Dashboard'),
             titleTextStyle: Theme.of(context)
@@ -64,14 +62,12 @@ class HomePage extends StatelessWidget {
                 child: CircleAvatar(
                   // radius: 30.r,
                   backgroundColor: Colors.white,
-                  backgroundImage: state.userEntity != null &&
-                          state.userEntity!.avatar.isNotEmpty
+                  backgroundImage: user.avatar.isNotEmpty
                       ? NetworkImage(
-                          state.userEntity!.avatar,
+                          user.avatar,
                         )
                       : null,
-                  child: state.userEntity == null ||
-                          state.userEntity!.avatar.isEmpty
+                  child: user.avatar.isEmpty
                       ? SvgPicture.asset(ImageConstants.profileActive)
                       : null,
                 ),
@@ -96,7 +92,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             bottom: PreferredSize(
-                preferredSize: Size.fromHeight(0.h),
+                preferredSize: const Size.fromHeight(0),
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(20.r),
@@ -106,7 +102,7 @@ class HomePage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        'Hi, Amanda!',
+                        'Hi, ${user.fullName.isNotEmpty ? user.fullName : user.id}!',
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.white.withOpacity(0.5),
                             ),
@@ -121,7 +117,7 @@ class HomePage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '\$124.57',
+                            '\$${user.balance}',
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineLarge!
@@ -157,14 +153,11 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 )),
-          );
-        }),
-      ),
+          )),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
                 height: 25.h,

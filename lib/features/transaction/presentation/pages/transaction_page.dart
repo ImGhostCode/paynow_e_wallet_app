@@ -4,7 +4,6 @@ import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:paynow_e_wallet_app/features/transaction/data/models/transaction_model.dart';
 import 'package:intl/intl.dart';
 
@@ -37,8 +36,18 @@ class _TransactionPageState extends State<TransactionPage> {
         timestamp: '2024-09-01 00:00:00',
         description: '')
   ];
+
+  final Map<String, List<TransactionModel>> _groupedTransactions = {};
+
   @override
   Widget build(BuildContext context) {
+    for (var element in _transactions) {
+      if (_groupedTransactions.containsKey(element.timestamp)) {
+        _groupedTransactions[element.timestamp]!.add(element);
+      } else {
+        _groupedTransactions[element.timestamp] = [element];
+      }
+    }
     return Scaffold(
         appBar: AppBar(
           title: const Text('Transaction'),
@@ -60,6 +69,7 @@ class _TransactionPageState extends State<TransactionPage> {
           child: Padding(
             padding: EdgeInsets.all(15.r),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -122,48 +132,65 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                 ),
                 SizedBox(height: 15.h),
-                GroupedListView<TransactionModel, String>(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  elements: _transactions,
-                  groupBy: (element) => element.timestamp,
-                  groupSeparatorBuilder: (String groupByValue) => Text(
-                      DateFormat.yMMMM('en_US')
-                          .format(DateTime.parse(groupByValue)),
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  itemBuilder: (context, TransactionModel element) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      'Hiba Saleh',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    horizontalTitleGap: 5.w,
-                    subtitle: Text(
-                      'Oct 19, 05:45 AM',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: AppColors.gray,
-                          ),
-                    ),
-                    trailing: Text(
-                      '${element.type == TransactionType.send ? '-' : ''}\$${element.amount.toString()}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    leading: Image.asset(
-                      ImageConstants.profilePicture1,
-                      height: 40.w,
-                      width: 40.w,
-                    ),
-                  ),
-                  // itemComparator: (item1, item2) =>
-                  //     item1['name'].compareTo(item2['name']), // optional
-                  // useStickyGroupSeparators: true, // optional
-                  // floatingHeader: true, // optional
-                  order: GroupedListOrder.ASC, // optional
-                  // optional
-                ),
+                _groupedTransactions.isEmpty
+                    ? const Center(
+                        child: Text('No transactions yet'),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _groupedTransactions.length,
+                        itemBuilder: (context, index) {
+                          final key =
+                              _groupedTransactions.keys.elementAt(index);
+                          final value = _groupedTransactions[key];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                child: Text(
+                                  DateFormat.yMMMM('en_US')
+                                      .format(DateTime.parse(key)),
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                              for (var element in value!)
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(
+                                    'Hiba Saleh',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  horizontalTitleGap: 5.w,
+                                  subtitle: Text(
+                                    DateFormat.jm('en_US').format(
+                                        DateTime.parse(element.timestamp)),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                          color: AppColors.gray,
+                                        ),
+                                  ),
+                                  trailing: Text(
+                                    '${element.type == TransactionType.send ? '-' : ''}\$${element.amount.toString()}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                  leading: Image.asset(
+                                    ImageConstants.profilePicture1,
+                                    height: 40.w,
+                                    width: 40.w,
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
               ],
             ),
           ),

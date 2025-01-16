@@ -58,7 +58,9 @@ class _SkeletonAppState extends State<SkeletonApp> {
   @override
   void initState() {
     user = FirebaseAuth.instance.currentUser;
-    BlocProvider.of<AuthBloc>(context).add(GetUserEvent(id: user?.uid ?? ""));
+    if (user != null) {
+      BlocProvider.of<AuthBloc>(context).add(GetUserEvent(id: user?.uid ?? ""));
+    }
     super.initState();
   }
 
@@ -93,7 +95,9 @@ class _SkeletonAppState extends State<SkeletonApp> {
           body: IndexedStack(
             index: _selectedIndex,
             children: [
-              HomePage(),
+              HomePage(
+                user: state.userEntity!,
+              ),
               const TransactionPage(),
               const ContactPage(),
               ProfilePage(
