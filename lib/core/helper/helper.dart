@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paynow_e_wallet_app/main.dart';
@@ -57,5 +58,9 @@ class Helper {
         backgroundColor: isSuccess! ? Colors.green : Colors.red,
       ),
     );
+  }
+
+  static DateTime fromJsonTimestamp(Timestamp timestamp) {
+    return timestamp.toDate();
   }
 }

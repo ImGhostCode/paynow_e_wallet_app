@@ -1,49 +1,51 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'card_entity.g.dart'; // File được generate
+part 'card_entity.g.dart';
 
 @JsonSerializable()
 class CardEntity {
-  @JsonKey(name: 'id')
-  final String id;
-  @JsonKey(name: 'cardNumber')
-  final String cardNumber;
-  @JsonKey(name: 'cardHolderName')
+  @JsonKey(name: "id")
+  final String? id;
+  @JsonKey(name: "cardHolderName")
   final String cardHolderName;
-  @JsonKey(name: 'expiryDate')
-  final String expiryDate;
-  @JsonKey(name: 'cardType')
-  final String cardType;
+  @JsonKey(name: "cardNumber")
+  final String cardNumber;
+  @JsonKey(name: "cvv")
+  final int cvv;
+  @JsonKey(name: "expiryDate")
+  final Timestamp expiryDate;
+  @JsonKey(name: "ownerId")
+  final String ownerId;
 
   CardEntity({
-    required this.id,
-    required this.cardNumber,
+    this.id,
     required this.cardHolderName,
+    required this.cardNumber,
+    required this.cvv,
     required this.expiryDate,
-    required this.cardType,
+    required this.ownerId,
   });
+
+  CardEntity copyWith({
+    String? id,
+    String? cardHolderName,
+    String? cardNumber,
+    int? cvv,
+    Timestamp? expiryDate,
+    String? ownerId,
+  }) =>
+      CardEntity(
+        id: id ?? this.id,
+        cardHolderName: cardHolderName ?? this.cardHolderName,
+        cardNumber: cardNumber ?? this.cardNumber,
+        cvv: cvv ?? this.cvv,
+        expiryDate: expiryDate ?? this.expiryDate,
+        ownerId: ownerId ?? this.ownerId,
+      );
 
   factory CardEntity.fromJson(Map<String, dynamic> json) =>
       _$CardEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardEntityToJson(this);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CardEntity &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          cardNumber == other.cardNumber &&
-          cardHolderName == other.cardHolderName &&
-          expiryDate == other.expiryDate &&
-          cardType == other.cardType;
-
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      cardNumber.hashCode ^
-      cardHolderName.hashCode ^
-      expiryDate.hashCode ^
-      cardType.hashCode;
 }

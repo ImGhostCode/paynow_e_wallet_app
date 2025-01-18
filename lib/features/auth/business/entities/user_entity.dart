@@ -4,10 +4,6 @@ import 'package:paynow_e_wallet_app/features/card/business/entities/card_entity.
 
 part 'user_entity.g.dart';
 
-DateTime fromJsonCreatedAt(Timestamp timestamp) {
-  return timestamp.toDate();
-}
-
 @JsonSerializable()
 class UserEntity {
   @JsonKey(name: "id")
@@ -16,27 +12,23 @@ class UserEntity {
   final String email;
   @JsonKey(name: "avatar")
   final String avatar;
-  @JsonKey(name: "fullName")
-  final String fullName;
-  @JsonKey(name: "phoneNumber")
-  final String phoneNumber;
-  @JsonKey(name: "balance")
-  final int balance;
+  @JsonKey(name: "name")
+  final String name;
+  @JsonKey(name: "phone")
+  final String phone;
   @JsonKey(name: "cards")
   final List<CardEntity> cards;
   @JsonKey(
-      name: "createdAt",
-      fromJson: fromJsonCreatedAt,
-      toJson: Timestamp.fromDate)
-  final DateTime createdAt;
+    name: "createdAt",
+  )
+  final Timestamp createdAt;
 
   UserEntity({
     this.id,
     required this.avatar,
     required this.email,
-    required this.fullName,
-    required this.phoneNumber,
-    required this.balance,
+    required this.name,
+    required this.phone,
     required this.cards,
     required this.createdAt,
   });
@@ -45,19 +37,17 @@ class UserEntity {
     String? id,
     String? avatar,
     String? email,
-    String? fullName,
-    String? phoneNumber,
-    int? balance,
+    String? name,
+    String? phone,
     List<CardEntity>? cards,
-    DateTime? createdAt,
+    Timestamp? createdAt,
   }) =>
       UserEntity(
         id: id ?? this.id,
         avatar: avatar ?? this.avatar,
         email: email ?? this.email,
-        fullName: fullName ?? this.fullName,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        balance: balance ?? this.balance,
+        name: name ?? this.name,
+        phone: phone ?? this.phone,
         cards: cards ?? this.cards,
         createdAt: createdAt ?? this.createdAt,
       );

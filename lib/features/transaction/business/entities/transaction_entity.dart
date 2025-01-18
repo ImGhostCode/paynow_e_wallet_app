@@ -1,54 +1,51 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 
 part 'transaction_entity.g.dart';
 
 @JsonSerializable()
 class TransactionEntity {
+  @JsonKey(name: "id")
+  final String? id;
   @JsonKey(name: "senderId")
   final String senderId;
   @JsonKey(name: "receiverId")
   final String receiverId;
   @JsonKey(name: "amount")
-  final double amount;
-  @JsonKey(name: "type")
-  final TransactionType type;
+  final int amount;
   @JsonKey(name: "status")
-  final TransactionStatus status;
-  @JsonKey(name: "timestamp")
-  final String timestamp;
-  @JsonKey(name: "description")
-  final String description;
+  final String status;
+  @JsonKey(
+    name: "timestamp",
+  )
+  final Timestamp timestamp;
 
   TransactionEntity({
+    this.id,
     required this.senderId,
     required this.receiverId,
     required this.amount,
-    required this.type,
     required this.status,
     required this.timestamp,
-    required this.description,
   });
 
   TransactionEntity copyWith({
+    String? id,
     String? senderId,
     String? receiverId,
-    double? amount,
-    TransactionType? type,
-    TransactionStatus? status,
-    String? timestamp,
-    String? description,
+    int? amount,
+    String? status,
+    Timestamp? timestamp,
   }) =>
       TransactionEntity(
+        id: id ?? this.id,
         senderId: senderId ?? this.senderId,
         receiverId: receiverId ?? this.receiverId,
         amount: amount ?? this.amount,
-        type: type ?? this.type,
         status: status ?? this.status,
         timestamp: timestamp ?? this.timestamp,
-        description: description ?? this.description,
       );
-
+  Timestamp test = Timestamp.now();
   factory TransactionEntity.fromJson(Map<String, dynamic> json) =>
       _$TransactionEntityFromJson(json);
 
