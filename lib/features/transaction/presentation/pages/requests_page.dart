@@ -12,21 +12,21 @@ class RequestsPage extends StatelessWidget {
   RequestsPage({super.key});
   final List<TransactionModel> _requests = [
     TransactionModel(
+        id: '1',
         senderId: '1',
         receiverId: '2',
         amount: 12.5,
-        type: TransactionType.request,
-        status: TransactionStatus.completed,
-        timestamp: '2024-10-01 00:00:00',
-        description: ''),
+        status: TransactionStatus.completed.name,
+        timestamp: DateTime.now(),
+        note: ''),
     TransactionModel(
-        senderId: '1',
-        receiverId: '2',
-        amount: 12.5,
-        type: TransactionType.request,
-        status: TransactionStatus.completed,
-        timestamp: '2024-09-01 00:00:00',
-        description: '')
+      id: '2',
+      senderId: '1',
+      receiverId: '2',
+      amount: 12.5,
+      status: TransactionStatus.completed.name,
+      timestamp: DateTime.now(),
+    )
   ];
 
   @override
@@ -83,7 +83,7 @@ class RequestsPage extends StatelessWidget {
                     // shrinkWrap: true,
                     // physics: const NeverScrollableScrollPhysics(),
                     elements: _requests,
-                    groupBy: (element) => element.timestamp,
+                    groupBy: (element) => element.timestamp.toString(),
                     groupSeparatorBuilder: (String groupByValue) => Text(
                         DateFormat.yMMMM('en_US')
                             .format(DateTime.parse(groupByValue)),

@@ -36,18 +36,7 @@ void main() async {
   // await FirebaseAuth.instance.signOut();
   runApp(DevicePreview(
     builder: (context) {
-      return kDebugMode
-          ? FutureBuilder(
-              future: Future.delayed(const Duration(seconds: 1)),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                return const App();
-              })
-          : const App();
+      return const App();
     },
     enabled: kDebugMode,
   ));
@@ -131,7 +120,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                   theme: Helper.isDarkTheme() ? darkTheme : lightTheme,
                   debugShowCheckedModeBanner: false,
                   locale: locale,
-                  builder: DevicePreview.appBuilder,
+                  builder: kDebugMode ? DevicePreview.appBuilder : null,
                   localizationsDelegates: const [
                     S.delegate,
                     GlobalMaterialLocalizations.delegate,

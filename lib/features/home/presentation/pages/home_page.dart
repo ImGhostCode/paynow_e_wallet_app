@@ -42,7 +42,6 @@ class HomePage extends StatelessWidget {
         date: 'Oct 04, 05:45 AM',
         userImage: ImageConstants.profilePicture3)
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +101,7 @@ class HomePage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        'Hi, ${user.fullName.isNotEmpty ? user.fullName : user.id}!',
+                        'Hi, ${user.name.isNotEmpty ? user.name : user.id}!',
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.white.withOpacity(0.5),
                             ),
@@ -117,7 +116,7 @@ class HomePage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '\$${user.balance}',
+                            '\$${'0'}',
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineLarge!

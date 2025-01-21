@@ -86,9 +86,9 @@ class ProfilePage extends StatelessWidget {
                       ),
                       child: user.avatar.isNotEmpty
                           ? Image.network(user.avatar, fit: BoxFit.fill)
-                          : user.fullName != ''
+                          : user.name != ''
                               ? Center(
-                                  child: Text(user.fullName[0],
+                                  child: Text(user.name[0],
                                       style: AppTextStyle.xxxLargeBlack
                                           .copyWith(
                                               fontWeight: FontWeight.bold)),
@@ -102,7 +102,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     SizedBox(height: 10.h),
                     Text(
-                      user.fullName != '' ? user.fullName : user.email,
+                      user.name != '' ? user.name : user.email,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     SizedBox(height: 20.h),

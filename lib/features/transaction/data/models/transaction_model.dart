@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
+import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
 
 part 'transaction_model.g.dart';
@@ -7,13 +8,13 @@ part 'transaction_model.g.dart';
 @JsonSerializable()
 class TransactionModel extends TransactionEntity {
   TransactionModel({
+    required super.id,
     required super.senderId,
     required super.receiverId,
     required super.amount,
-    required super.type,
     required super.status,
+    super.note,
     required super.timestamp,
-    required super.description,
   });
 
   // factory TransactionModel.fromFirestore(DocumentSnapshot doc) {
@@ -33,23 +34,25 @@ class TransactionModel extends TransactionEntity {
 
   TransactionEntity toEntity() {
     return TransactionEntity(
-        senderId: senderId,
-        receiverId: receiverId,
-        amount: amount,
-        type: type,
-        status: status,
-        timestamp: timestamp,
-        description: description);
+      id: id,
+      senderId: senderId,
+      receiverId: receiverId,
+      amount: amount,
+      status: status,
+      note: note,
+      timestamp: timestamp,
+    );
   }
 
   static TransactionModel fromEntity(TransactionEntity card) {
     return TransactionModel(
-        senderId: card.senderId,
-        receiverId: card.receiverId,
-        amount: card.amount,
-        type: card.type,
-        status: card.status,
-        timestamp: card.timestamp,
-        description: card.description);
+      id: card.id,
+      senderId: card.senderId,
+      receiverId: card.receiverId,
+      amount: card.amount,
+      status: card.status,
+      note: card.note,
+      timestamp: card.timestamp,
+    );
   }
 }

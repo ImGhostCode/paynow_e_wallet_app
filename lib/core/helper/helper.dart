@@ -63,4 +63,8 @@ class Helper {
   static DateTime fromJsonTimestamp(Timestamp timestamp) {
     return timestamp.toDate();
   }
+
+  static Timestamp toJsonTimestamp(DateTime date) {
+    return Timestamp.fromDate(date);
+  }
 }

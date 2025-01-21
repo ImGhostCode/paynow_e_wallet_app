@@ -1,5 +1,7 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/features/card/business/entities/card_entity.dart';
 
 part 'card_model.g.dart';
@@ -11,7 +13,8 @@ class CardModel extends CardEntity {
     required super.cardNumber,
     required super.cardHolderName,
     required super.expiryDate,
-    required super.cardType,
+    required super.cvv,
+    required super.ownerId,
   });
 
   factory CardModel.fromJson(Map<String, dynamic> json) =>
@@ -35,7 +38,8 @@ class CardModel extends CardEntity {
         cardNumber: cardNumber,
         cardHolderName: cardHolderName,
         expiryDate: expiryDate,
-        cardType: cardType);
+        cvv: cvv,
+        ownerId: ownerId);
   }
 
   static CardModel fromEntity(CardEntity card) {
@@ -44,6 +48,7 @@ class CardModel extends CardEntity {
         cardNumber: card.cardNumber,
         cardHolderName: card.cardHolderName,
         expiryDate: card.expiryDate,
-        cardType: card.cardType);
+        cvv: card.cvv,
+        ownerId: card.ownerId);
   }
 }

@@ -26,12 +26,10 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
             UserModel(
                     avatar: '',
                     email: params.email,
-                    fullName: result.user?.displayName ?? '',
-                    phoneNumber: '',
-                    balance: 0,
-                    cards: [],
+                    name: result.user?.displayName ?? '',
+                    phone: '',
                     createdAt: DateTime.now())
-                .toJson(),
+                .toFirestore(),
           );
       return result.user;
     } on FirebaseAuthException catch (e) {
@@ -58,7 +56,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   Future<UserModel?> getUser(String id) async {
     try {
       final result = await _firestore.collection('users').doc(id).get();
-      return UserModel.fromJson({id: result.id, ...result.data()!});
+      return UserModel.fromFirestore(result);
     } catch (e) {
       throw ServerException(e.toString(), null);
     }
@@ -78,9 +76,9 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       }
       await _firestore.collection('users').doc(user.id).update({
         if (avatarUrl != null) 'avatar': avatarUrl,
-        if (user.name != null && user.name!.isNotEmpty) 'fullName': user.name,
+        if (user.name != null && user.name!.isNotEmpty) 'name': user.name,
         if (user.phoneNumber != null && user.phoneNumber!.isNotEmpty)
-          'phoneNumber': user.phoneNumber,
+          'phone': user.phoneNumber,
       });
     } catch (e) {
       throw ServerException(e.toString(), null);

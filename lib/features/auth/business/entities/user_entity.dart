@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:paynow_e_wallet_app/features/card/business/entities/card_entity.dart';
+import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 
 part 'user_entity.g.dart';
 
@@ -16,12 +17,12 @@ class UserEntity {
   final String name;
   @JsonKey(name: "phone")
   final String phone;
-  @JsonKey(name: "cards")
-  final List<CardEntity> cards;
   @JsonKey(
     name: "createdAt",
+    toJson: Helper.toJsonTimestamp,
+    fromJson: Helper.fromJsonTimestamp,
   )
-  final Timestamp createdAt;
+  final DateTime createdAt;
 
   UserEntity({
     this.id,
@@ -29,7 +30,6 @@ class UserEntity {
     required this.email,
     required this.name,
     required this.phone,
-    required this.cards,
     required this.createdAt,
   });
 
@@ -40,7 +40,7 @@ class UserEntity {
     String? name,
     String? phone,
     List<CardEntity>? cards,
-    Timestamp? createdAt,
+    DateTime? createdAt,
   }) =>
       UserEntity(
         id: id ?? this.id,
@@ -48,7 +48,6 @@ class UserEntity {
         email: email ?? this.email,
         name: name ?? this.name,
         phone: phone ?? this.phone,
-        cards: cards ?? this.cards,
         createdAt: createdAt ?? this.createdAt,
       );
 

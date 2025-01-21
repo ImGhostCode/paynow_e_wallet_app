@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 
 part 'transaction_entity.g.dart';
 
@@ -12,13 +13,17 @@ class TransactionEntity {
   @JsonKey(name: "receiverId")
   final String receiverId;
   @JsonKey(name: "amount")
-  final int amount;
+  final double amount;
   @JsonKey(name: "status")
   final String status;
+  @JsonKey(name: "note")
+  final String? note;
   @JsonKey(
     name: "timestamp",
+    toJson: Helper.toJsonTimestamp,
+    fromJson: Helper.fromJsonTimestamp,
   )
-  final Timestamp timestamp;
+  final DateTime timestamp;
 
   TransactionEntity({
     this.id,
@@ -26,6 +31,7 @@ class TransactionEntity {
     required this.receiverId,
     required this.amount,
     required this.status,
+    this.note,
     required this.timestamp,
   });
 
@@ -33,9 +39,10 @@ class TransactionEntity {
     String? id,
     String? senderId,
     String? receiverId,
-    int? amount,
+    double? amount,
     String? status,
-    Timestamp? timestamp,
+    String? note,
+    DateTime? timestamp,
   }) =>
       TransactionEntity(
         id: id ?? this.id,
@@ -43,9 +50,9 @@ class TransactionEntity {
         receiverId: receiverId ?? this.receiverId,
         amount: amount ?? this.amount,
         status: status ?? this.status,
+        note: note ?? this.note,
         timestamp: timestamp ?? this.timestamp,
       );
-  Timestamp test = Timestamp.now();
   factory TransactionEntity.fromJson(Map<String, dynamic> json) =>
       _$TransactionEntityFromJson(json);
 

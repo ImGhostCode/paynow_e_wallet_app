@@ -20,21 +20,21 @@ class _TransactionPageState extends State<TransactionPage> {
   TransactionView transactionView = TransactionView.expense;
   final List<TransactionModel> _transactions = [
     TransactionModel(
-        senderId: '1',
-        receiverId: '2',
-        amount: 12.5,
-        type: TransactionType.send,
-        status: TransactionStatus.completed,
-        timestamp: '2024-10-01 00:00:00',
-        description: ''),
+      id: '1',
+      senderId: '1',
+      receiverId: '2',
+      amount: 12.5,
+      status: TransactionStatus.completed.name,
+      timestamp: DateTime.now(),
+    ),
     TransactionModel(
-        senderId: '1',
-        receiverId: '2',
-        amount: 12.5,
-        type: TransactionType.send,
-        status: TransactionStatus.completed,
-        timestamp: '2024-09-01 00:00:00',
-        description: '')
+      id: '2',
+      senderId: '2',
+      receiverId: '2',
+      amount: 12.5,
+      status: TransactionStatus.completed.name,
+      timestamp: DateTime.now(),
+    )
   ];
 
   final Map<String, List<TransactionModel>> _groupedTransactions = {};
@@ -42,10 +42,10 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     for (var element in _transactions) {
-      if (_groupedTransactions.containsKey(element.timestamp)) {
-        _groupedTransactions[element.timestamp]!.add(element);
+      if (_groupedTransactions.containsKey(element.timestamp.toString())) {
+        _groupedTransactions[element.timestamp.toString()]!.add(element);
       } else {
-        _groupedTransactions[element.timestamp] = [element];
+        _groupedTransactions[element.timestamp.toString()] = [element];
       }
     }
     return Scaffold(
@@ -166,7 +166,8 @@ class _TransactionPageState extends State<TransactionPage> {
                                   horizontalTitleGap: 5.w,
                                   subtitle: Text(
                                     DateFormat.jm('en_US').format(
-                                        DateTime.parse(element.timestamp)),
+                                        DateTime.parse(
+                                            element.timestamp.toString())),
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall!
@@ -175,7 +176,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                         ),
                                   ),
                                   trailing: Text(
-                                    '${element.type == TransactionType.send ? '-' : ''}\$${element.amount.toString()}',
+                                    '${element.senderId == '1' ? '-' : ''}\$${element.amount.toString()}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge!

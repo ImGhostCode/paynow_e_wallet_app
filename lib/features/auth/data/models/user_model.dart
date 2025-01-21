@@ -1,9 +1,8 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
-import 'package:paynow_e_wallet_app/features/card/business/entities/card_entity.dart';
-
 part 'user_model.g.dart';
 
 @JsonSerializable()
@@ -12,10 +11,8 @@ class UserModel extends UserEntity {
       {super.id,
       required super.avatar,
       required super.email,
-      required super.fullName,
-      required super.phoneNumber,
-      required super.balance,
-      required super.cards,
+      required super.name,
+      required super.phone,
       required super.createdAt});
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -26,7 +23,7 @@ class UserModel extends UserEntity {
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return UserModel.fromJson({'id': doc.id, ...data});
+    return UserModel.fromJson({...data, 'id': doc.id});
   }
 
   Map<String, dynamic> toFirestore() {
@@ -38,10 +35,8 @@ class UserModel extends UserEntity {
         id: id,
         avatar: avatar,
         email: email,
-        fullName: fullName,
-        phoneNumber: phoneNumber,
-        balance: balance,
-        cards: cards,
+        name: name,
+        phone: phone,
         createdAt: createdAt);
   }
 
@@ -50,10 +45,8 @@ class UserModel extends UserEntity {
         id: user.id,
         avatar: user.avatar,
         email: user.email,
-        fullName: user.fullName,
-        phoneNumber: user.phoneNumber,
-        balance: user.balance,
-        cards: user.cards,
+        name: user.name,
+        phone: user.phone,
         createdAt: user.createdAt);
   }
 }

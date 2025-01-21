@@ -7,18 +7,20 @@ part of 'card_entity.dart';
 // **************************************************************************
 
 CardEntity _$CardEntityFromJson(Map<String, dynamic> json) => CardEntity(
-      id: json['id'] as String,
-      cardNumber: json['cardNumber'] as String,
+      id: json['id'] as String?,
       cardHolderName: json['cardHolderName'] as String,
-      expiryDate: json['expiryDate'] as String,
-      cardType: json['cardType'] as String,
+      cardNumber: json['cardNumber'] as String,
+      cvv: (json['cvv'] as num).toInt(),
+      expiryDate: Helper.fromJsonTimestamp(json['expiryDate'] as Timestamp),
+      ownerId: json['ownerId'] as String,
     );
 
 Map<String, dynamic> _$CardEntityToJson(CardEntity instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'cardNumber': instance.cardNumber,
       'cardHolderName': instance.cardHolderName,
-      'expiryDate': instance.expiryDate,
-      'cardType': instance.cardType,
+      'cardNumber': instance.cardNumber,
+      'cvv': instance.cvv,
+      'expiryDate': Helper.toJsonTimestamp(instance.expiryDate),
+      'ownerId': instance.ownerId,
     };
