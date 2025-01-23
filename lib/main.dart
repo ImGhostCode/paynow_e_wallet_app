@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
 import 'package:paynow_e_wallet_app/shared/data/data_sources/app_shared_prefs.dart';
 import 'package:paynow_e_wallet_app/core/router/router.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_theme.dart';
@@ -109,6 +110,14 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                       signUpUsecase: sl(),
                       getUserUsecase: sl(),
                       updateUserUsecase: sl(),
+                    ),
+                  ),
+                  BlocProvider<CardBloc>(
+                    create: (BuildContext context) => CardBloc(
+                      getCardUsecase: sl(),
+                      addCardUsecase: sl(),
+                      updateCardUsecase: sl(),
+                      deleteCardUsecase: sl(),
                     ),
                   ),
                 ],

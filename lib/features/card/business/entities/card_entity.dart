@@ -52,4 +52,13 @@ class CardEntity {
       _$CardEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardEntityToJson(this);
+
+  factory CardEntity.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return CardEntity.fromJson({...data, 'id': doc.id});
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return toJson()..remove('id');
+  }
 }

@@ -23,14 +23,14 @@ class CardModel extends CardEntity {
   @override
   Map<String, dynamic> toJson() => _$CardModelToJson(this);
 
-  // factory CardModel.fromFirestore(DocumentSnapshot doc) {
-  //   Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-  //   return CardModel.fromJson({'id': doc.id, ...data});
-  // }
+  factory CardModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return CardModel.fromJson({...data, 'id': doc.id});
+  }
 
-  // Map<String, dynamic> toFirestore() {
-  //   return toJson()..remove('id');
-  // }
+  Map<String, dynamic> toFirestore() {
+    return toJson()..remove('id');
+  }
 
   CardEntity toEntity() {
     return CardEntity(
