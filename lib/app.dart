@@ -6,6 +6,8 @@ import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
+import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_event.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/pages/contact_page.dart';
 import 'package:paynow_e_wallet_app/features/home/presentation/pages/home_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -60,6 +62,8 @@ class _SkeletonAppState extends State<SkeletonApp> {
     user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       BlocProvider.of<AuthBloc>(context).add(GetUserEvent(id: user?.uid ?? ""));
+      BlocProvider.of<CardBloc>(context)
+          .add(GetCardEvent(userId: user?.uid ?? ""));
     }
     super.initState();
   }

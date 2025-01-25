@@ -13,6 +13,7 @@ CardEntity _$CardEntityFromJson(Map<String, dynamic> json) => CardEntity(
       cvv: (json['cvv'] as num).toInt(),
       expiryDate: Helper.fromJsonTimestamp(json['expiryDate'] as Timestamp),
       ownerId: json['ownerId'] as String,
+      balance: (json['balance'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$CardEntityToJson(CardEntity instance) =>
@@ -23,4 +24,5 @@ Map<String, dynamic> _$CardEntityToJson(CardEntity instance) =>
       'cvv': instance.cvv,
       'expiryDate': Helper.toJsonTimestamp(instance.expiryDate),
       'ownerId': instance.ownerId,
+      'balance': instance.balance,
     };

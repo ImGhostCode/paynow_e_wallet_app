@@ -16,7 +16,7 @@ class CardRemoteDataSourceImpl extends CardRemoteDataSource {
     try {
       final result = await _firestore
           .collection(Collection.cards.name)
-          .where('userId', isEqualTo: userId)
+          .where('ownerId', isEqualTo: userId)
           .get();
       return result.docs.map((e) => CardModel.fromFirestore(e)).toList();
     } on FirebaseAuthException catch (e) {

@@ -6,6 +6,14 @@ abstract class CardState extends Equatable {
 
   const CardState({this.cards = const []});
 
+  double get totalBalance {
+    double total = 0;
+    for (var card in cards) {
+      total += card.balance;
+    }
+    return total;
+  }
+
   @override
   List<Object?> get props => [cards];
 }

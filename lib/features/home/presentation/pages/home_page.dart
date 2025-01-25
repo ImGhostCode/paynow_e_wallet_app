@@ -5,6 +5,8 @@ import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
+import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key, required this.user});
@@ -116,7 +118,7 @@ class HomePage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '\$${'0'}',
+                            '\$${context.watch<CardBloc>().state.totalBalance.toStringAsFixed(1)}',
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineLarge!

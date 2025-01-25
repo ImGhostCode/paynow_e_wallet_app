@@ -15,6 +15,7 @@ class CardModel extends CardEntity {
     required super.expiryDate,
     required super.cvv,
     required super.ownerId,
+    required super.balance,
   });
 
   factory CardModel.fromJson(Map<String, dynamic> json) =>
@@ -28,6 +29,7 @@ class CardModel extends CardEntity {
     return CardModel.fromJson({...data, 'id': doc.id});
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return toJson()..remove('id');
   }
@@ -39,7 +41,8 @@ class CardModel extends CardEntity {
         cardHolderName: cardHolderName,
         expiryDate: expiryDate,
         cvv: cvv,
-        ownerId: ownerId);
+        ownerId: ownerId,
+        balance: balance);
   }
 
   static CardModel fromEntity(CardEntity card) {
@@ -49,6 +52,7 @@ class CardModel extends CardEntity {
         cardHolderName: card.cardHolderName,
         expiryDate: card.expiryDate,
         cvv: card.cvv,
-        ownerId: card.ownerId);
+        ownerId: card.ownerId,
+        balance: card.balance);
   }
 }
