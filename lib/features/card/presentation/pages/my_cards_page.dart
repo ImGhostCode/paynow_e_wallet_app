@@ -66,9 +66,17 @@ class _MyCardsPageState extends State<MyCardsPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, AppRouteEnum.addCardPage.name);
-              },
+              onPressed: context.read<CardBloc>().state is CardLoading
+                  ? null
+                  : () {
+                      if (context.read<CardBloc>().state.cards.length >= 3) {
+                        Helper.showSnackBar(
+                            message: 'You can only add up to 3 cards');
+                        return;
+                      }
+                      Navigator.pushNamed(
+                          context, AppRouteEnum.addCardPage.name);
+                    },
               icon: SvgPicture.asset(
                 ImageConstants.add,
                 color: AppColors.primaryColor,
@@ -110,6 +118,17 @@ class _MyCardsPageState extends State<MyCardsPage> {
         }
 
         if (state is CardDeletingError) {
+          Helper.showSnackBar(message: state.message);
+        }
+
+        if (state is CardSettedDefault) {
+          Helper.showSnackBar(
+              message: 'Card updated successfully', isSuccess: true);
+          context.read<CardBloc>().add(GetCardEvent(
+              userId: context.read<AuthBloc>().state.userEntity!.id!));
+        }
+
+        if (state is CardSettingDefaultError) {
           Helper.showSnackBar(message: state.message);
         }
       }, builder: (context, state) {
@@ -260,6 +279,29 @@ class _MyCardsPageState extends State<MyCardsPage> {
                                     ),
                                   ],
                                 ))
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Default Card'),
+                                Switch(
+                                    value:
+                                        state.cards[_currentCard].defaultCard,
+                                    onChanged: state.cards[_currentCard]
+                                                    .defaultCard ==
+                                                true ||
+                                            state is CardSettingDefault
+                                        ? null
+                                        : (value) {
+                                            // TODO: Implement set default card
+                                            context.read<CardBloc>().add(
+                                                SetDefaultCardEvent(
+                                                    cards: state.cards,
+                                                    card: state
+                                                        .cards[_currentCard]));
+                                          })
                               ],
                             )
                           ],

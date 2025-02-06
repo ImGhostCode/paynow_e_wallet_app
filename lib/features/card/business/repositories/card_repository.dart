@@ -7,5 +7,6 @@ abstract class CardRepository {
   Future<Either<Failure, List<CardEntity>>> getCard(String userId);
   Future<Either<Failure, CardEntity>> addCard(AddCardParams params);
   Future<Either<Failure, void>> updateCard(UpdateCardParams params);
+  Future<Either<Failure, void>> setDefault(SetDefaultCardParams params);
   Future<Either<Failure, void>> deleteCard(String id);
 }

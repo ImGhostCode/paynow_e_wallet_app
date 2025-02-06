@@ -23,6 +23,8 @@ class CardEntity {
   final String ownerId;
   @JsonKey(name: "balance")
   final double balance;
+  @JsonKey(name: "defaultCard")
+  final bool defaultCard;
 
   CardEntity({
     this.id,
@@ -32,6 +34,7 @@ class CardEntity {
     required this.expiryDate,
     required this.ownerId,
     required this.balance,
+    required this.defaultCard,
   });
 
   CardEntity copyWith({
@@ -42,6 +45,7 @@ class CardEntity {
     DateTime? expiryDate,
     String? ownerId,
     double? balance,
+    bool? defaultCard,
   }) =>
       CardEntity(
         id: id ?? this.id,
@@ -51,6 +55,7 @@ class CardEntity {
         expiryDate: expiryDate ?? this.expiryDate,
         ownerId: ownerId ?? this.ownerId,
         balance: balance ?? this.balance,
+        defaultCard: defaultCard ?? this.defaultCard,
       );
 
   factory CardEntity.fromJson(Map<String, dynamic> json) =>

@@ -64,4 +64,24 @@ class CardRemoteDataSourceImpl extends CardRemoteDataSource {
       throw ServerException(e.toString(), null);
     }
   }
+
+  @override
+  Future<void> setDefault(SetDefaultCardParams params) async {
+    try {
+      final batch = _firestore.batch();
+      for (var element in params.cards) {
+        batch.update(
+            _firestore.collection(Collection.cards.name).doc(element.id),
+            element.copyWith(defaultCard: false).toFirestore());
+      }
+      batch.update(
+          _firestore.collection(Collection.cards.name).doc(params.card.id),
+          params.card.copyWith(defaultCard: true).toFirestore());
+      await batch.commit();
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(e.message ?? '', e.code);
+    } catch (e) {
+      throw ServerException(e.toString(), null);
+    }
+  }
 }

@@ -14,6 +14,7 @@ CardModel _$CardModelFromJson(Map<String, dynamic> json) => CardModel(
       cvv: (json['cvv'] as num).toInt(),
       ownerId: json['ownerId'] as String,
       balance: (json['balance'] as num).toDouble(),
+      defaultCard: json['defaultCard'] as bool,
     );
 
 Map<String, dynamic> _$CardModelToJson(CardModel instance) => <String, dynamic>{
@@ -24,4 +25,5 @@ Map<String, dynamic> _$CardModelToJson(CardModel instance) => <String, dynamic>{
       'expiryDate': Helper.toJsonTimestamp(instance.expiryDate),
       'ownerId': instance.ownerId,
       'balance': instance.balance,
+      'defaultCard': instance.defaultCard,
     };

@@ -12,6 +12,13 @@ final class UpdateCardParams {
   UpdateCardParams(this.card);
 }
 
+final class SetDefaultCardParams {
+  final List<CardEntity> cards;
+  final CardEntity card;
+
+  SetDefaultCardParams(this.card, this.cards);
+}
+
 final class DeleteCardParams {
   final String id;
 

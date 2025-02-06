@@ -16,6 +16,7 @@ class CardModel extends CardEntity {
     required super.cvv,
     required super.ownerId,
     required super.balance,
+    required super.defaultCard,
   });
 
   factory CardModel.fromJson(Map<String, dynamic> json) =>
@@ -42,7 +43,8 @@ class CardModel extends CardEntity {
         expiryDate: expiryDate,
         cvv: cvv,
         ownerId: ownerId,
-        balance: balance);
+        balance: balance,
+        defaultCard: defaultCard);
   }
 
   static CardModel fromEntity(CardEntity card) {
@@ -53,6 +55,7 @@ class CardModel extends CardEntity {
         expiryDate: card.expiryDate,
         cvv: card.cvv,
         ownerId: card.ownerId,
-        balance: card.balance);
+        balance: card.balance,
+        defaultCard: card.defaultCard);
   }
 }

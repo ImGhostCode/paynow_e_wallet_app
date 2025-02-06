@@ -65,6 +65,19 @@ class CardUpdatingError extends CardState {
 
 class CardUpdated extends CardState {}
 
+class CardSettingDefault extends CardState {}
+
+class CardSettingDefaultError extends CardState {
+  final String message;
+
+  const CardSettingDefaultError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class CardSettedDefault extends CardState {}
+
 class CardDeleting extends CardState {}
 
 class CardDeletingError extends CardState {

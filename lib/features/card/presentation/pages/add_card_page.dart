@@ -231,7 +231,8 @@ class _AddCardPageState extends State<AddCardPage> {
               cardNumber: _cardNumberController.text,
               cvv: int.parse(_cvvController.text),
               expiryDate: _expiryDate!,
-              balance: 0)));
+              defaultCard: context.read<CardBloc>().state.cards.isEmpty,
+              balance: 10000)));
     }
   }
 }

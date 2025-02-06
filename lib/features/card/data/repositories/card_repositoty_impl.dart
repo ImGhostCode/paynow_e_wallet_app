@@ -61,4 +61,16 @@ class CardRepositoryImpl extends CardRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> setDefault(SetDefaultCardParams params) async {
+    try {
+      final result = await cardRemoteDataSource.setDefault(params);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.code));
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }

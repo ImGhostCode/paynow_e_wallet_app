@@ -26,6 +26,13 @@ class UpdateCardEvent extends CardEvent {
   const UpdateCardEvent({required this.card});
 }
 
+class SetDefaultCardEvent extends CardEvent {
+  final List<CardEntity> cards;
+  final CardEntity card;
+
+  const SetDefaultCardEvent({required this.card, required this.cards});
+}
+
 class DeleteCardEvent extends CardEvent {
   final String id;
 

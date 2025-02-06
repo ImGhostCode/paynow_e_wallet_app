@@ -5,5 +5,6 @@ abstract class CardRemoteDataSource {
   Future<List<CardModel>> getCard(String userId);
   Future<CardModel> addCard(AddCardParams params);
   Future<void> updateCard(UpdateCardParams params);
+  Future<void> setDefault(SetDefaultCardParams params);
   Future<void> deleteCard(String id);
 }

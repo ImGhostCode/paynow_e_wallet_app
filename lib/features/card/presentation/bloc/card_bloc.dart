@@ -3,6 +3,7 @@ import 'package:paynow_e_wallet_app/core/params/card_params.dart';
 import 'package:paynow_e_wallet_app/features/card/business/usecases/add_card_usecase.dart';
 import 'package:paynow_e_wallet_app/features/card/business/usecases/delete_card_usecase.dart';
 import 'package:paynow_e_wallet_app/features/card/business/usecases/get_card_usecase.dart';
+import 'package:paynow_e_wallet_app/features/card/business/usecases/set_default_usecase.dart';
 import 'package:paynow_e_wallet_app/features/card/business/usecases/update_card_usecase.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_event.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_state.dart';
@@ -11,18 +12,21 @@ class CardBloc extends Bloc<CardEvent, CardState> {
   final GetCardUsecase? getCardUsecase;
   final AddCardUsecase? addCardUsecase;
   final UpdateCardUsecase? updateCardUsecase;
+  final SetDefaultUsecase? setDefaultUsecase;
   final DeleteCardUsecase? deleteCardUsecase;
 
   CardBloc(
       {this.getCardUsecase,
       this.addCardUsecase,
       this.updateCardUsecase,
+      this.setDefaultUsecase,
       this.deleteCardUsecase})
       : super(CardInitial()) {
     on<GetCardEvent>(_onGetCardEvent);
     on<AddCardEvent>(_onAddCardEvent);
     on<UpdateCardEvent>(_onUpdateCardEvent);
     on<DeleteCardEvent>(_onDeleteCardEvent);
+    on<SetDefaultCardEvent>(_onSetDefaultCardEvent);
   }
 
   _onGetCardEvent(GetCardEvent event, Emitter<CardState> emit) async {
@@ -68,6 +72,19 @@ class CardBloc extends Bloc<CardEvent, CardState> {
       emit(CardDeletingError(message: l.errorMessage));
     }, (r) {
       emit(CardDeleted());
+    });
+  }
+
+  _onSetDefaultCardEvent(
+      SetDefaultCardEvent event, Emitter<CardState> emit) async {
+    emit(CardSettingDefault());
+    final result = await setDefaultUsecase!.call(
+      SetDefaultCardParams(event.card, event.cards),
+    );
+    result.fold((l) {
+      emit(CardSettingDefaultError(message: l.errorMessage));
+    }, (r) {
+      emit(CardSettedDefault());
     });
   }
 }
