@@ -13,6 +13,10 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       name: json['name'] as String,
       phone: json['phone'] as String,
       createdAt: Helper.fromJsonTimestamp(json['createdAt'] as Timestamp),
+      friends: (json['friends'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -22,4 +26,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'name': instance.name,
       'phone': instance.phone,
       'createdAt': Helper.toJsonTimestamp(instance.createdAt),
+      'friends': instance.friends,
     };

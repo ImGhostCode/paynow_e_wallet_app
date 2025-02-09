@@ -13,6 +13,10 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
       name: json['name'] as String,
       phone: json['phone'] as String,
       createdAt: Helper.fromJsonTimestamp(json['createdAt'] as Timestamp),
+      friends: (json['friends'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
@@ -23,4 +27,5 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'name': instance.name,
       'phone': instance.phone,
       'createdAt': Helper.toJsonTimestamp(instance.createdAt),
+      'friends': instance.friends,
     };

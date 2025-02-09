@@ -1,5 +1,4 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
+import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_bloc.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:paynow_e_wallet_app/shared/data/data_sources/app_shared_prefs.dart';
 import 'package:paynow_e_wallet_app/core/router/router.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_theme.dart';
@@ -117,7 +118,25 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                       getCardUsecase: sl(),
                       addCardUsecase: sl(),
                       updateCardUsecase: sl(),
+                      setDefaultUsecase: sl(),
                       deleteCardUsecase: sl(),
+                    ),
+                  ),
+                  BlocProvider<ContactBloc>(
+                    create: (BuildContext context) => ContactBloc(
+                      sendFriendRequestUsecase: sl(),
+                      responseToFrUsecase: sl(),
+                      cancelFrUsecase: sl(),
+                      unfriendUsecase: sl(),
+                      getFriendRequestsUsecase: sl(),
+                      getFriendsUsecase: sl(),
+                      getUserByEmailUsecase: sl(),
+                    ),
+                  ),
+                  BlocProvider<TransactionBloc>(
+                    create: (BuildContext context) => TransactionBloc(
+                      getTransactionUsecase: sl(),
+                      addTransactionUsecase: sl(),
                     ),
                   ),
                 ],

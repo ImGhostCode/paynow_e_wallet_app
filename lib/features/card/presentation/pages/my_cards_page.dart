@@ -101,7 +101,6 @@ class _MyCardsPageState extends State<MyCardsPage> {
         }
 
         if (state is CardDeleted) {
-          _currentCard = 0;
           Helper.showSnackBar(
               message: 'Card deleted successfully', isSuccess: true);
           context.read<CardBloc>().add(GetCardEvent(
@@ -131,6 +130,8 @@ class _MyCardsPageState extends State<MyCardsPage> {
         if (state is CardSettingDefaultError) {
           Helper.showSnackBar(message: state.message);
         }
+
+        _currentCard = 0;
       }, builder: (context, state) {
         if (state is CardLoading) {
           return const Center(
@@ -146,6 +147,7 @@ class _MyCardsPageState extends State<MyCardsPage> {
         if (state is CardLoaded && state.cards.isEmpty) {
           return const Center(child: Text('No card found'));
         }
+
         if (state is CardLoaded) {
           return SizedBox(
             height: 1.sh,

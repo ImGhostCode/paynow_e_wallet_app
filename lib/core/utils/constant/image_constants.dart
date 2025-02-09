@@ -12,6 +12,7 @@ class ImageConstants {
   static const String profilePicture3 = "$imagePath/Profile-Picture-3.png";
   static const String profilePicture4 = "$imagePath/Profile-Picture-4.png";
   static const String profilePicture5 = "$imagePath/Profile-Picture-5.png";
+  static const String defaultUser = "$imagePath/default-user.png";
 
   // svg
   static const String illustration = "$iconPath/illustration.svg";

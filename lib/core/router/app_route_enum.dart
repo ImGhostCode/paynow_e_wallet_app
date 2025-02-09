@@ -17,6 +17,7 @@ enum AppRouteEnum {
   settingsPage,
   myCardsPage,
   addCardPage,
+  addContactPage,
 }
 
 extension AppRouteExtension on AppRouteEnum {
@@ -49,8 +50,8 @@ extension AppRouteExtension on AppRouteEnum {
       case AppRouteEnum.requestsPage:
         return "/requests_page";
 
-      case AppRouteEnum.articlesPage:
-        return "/articles_page";
+      // case AppRouteEnum.articlesPage:
+      //   return "/articles_page";
 
       case AppRouteEnum.articleDetailsPage:
         return "/article_details_page";
@@ -75,6 +76,9 @@ extension AppRouteExtension on AppRouteEnum {
 
       case AppRouteEnum.addCardPage:
         return "/add_card_page";
+
+      case AppRouteEnum.addContactPage:
+        return "/add_contact_page";
 
       default:
         return "/articles_page";

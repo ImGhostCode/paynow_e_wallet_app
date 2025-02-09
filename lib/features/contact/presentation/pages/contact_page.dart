@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +29,10 @@ class _ContactPageState extends State<ContactPage> {
                   height: 24.w,
                   width: 24.w,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(
+                      context, AppRouteEnum.addContactPage.name);
+                },
               ),
               SizedBox(width: 10.w),
             ],
@@ -113,3 +117,9 @@ class _ContactPageState extends State<ContactPage> {
         ));
   }
 }
+
+// Contact page: Lấy danh sách contact từ các giao dịch trước đó
+// Send money: Chọn từ contacts hoặc nhập email
+
+// Kết bạn
+// Send money từ contacts

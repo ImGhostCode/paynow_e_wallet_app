@@ -23,6 +23,8 @@ class UserEntity {
     fromJson: Helper.fromJsonTimestamp,
   )
   final DateTime createdAt;
+  @JsonKey(name: "friends")
+  final List<String> friends;
 
   UserEntity({
     this.id,
@@ -31,6 +33,7 @@ class UserEntity {
     required this.name,
     required this.phone,
     required this.createdAt,
+    this.friends = const [],
   });
 
   UserEntity copyWith({
@@ -41,6 +44,7 @@ class UserEntity {
     String? phone,
     List<CardEntity>? cards,
     DateTime? createdAt,
+    List<String>? friends,
   }) =>
       UserEntity(
         id: id ?? this.id,
@@ -49,6 +53,7 @@ class UserEntity {
         name: name ?? this.name,
         phone: phone ?? this.phone,
         createdAt: createdAt ?? this.createdAt,
+        friends: friends ?? this.friends,
       );
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>

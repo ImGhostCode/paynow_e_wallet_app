@@ -6,4 +6,7 @@ enum Collection {
   users,
   transactions,
   cards,
+  friendRequests,
 }
+
+enum FriendRequestStatus { pending, accepted, rejected }

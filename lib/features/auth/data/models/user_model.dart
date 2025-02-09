@@ -13,7 +13,8 @@ class UserModel extends UserEntity {
       required super.email,
       required super.name,
       required super.phone,
-      required super.createdAt});
+      required super.createdAt,
+      super.friends = const []});
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -37,7 +38,8 @@ class UserModel extends UserEntity {
         email: email,
         name: name,
         phone: phone,
-        createdAt: createdAt);
+        createdAt: createdAt,
+        friends: friends);
   }
 
   static UserModel fromEntity(UserEntity user) {
@@ -47,6 +49,7 @@ class UserModel extends UserEntity {
         email: user.email,
         name: user.name,
         phone: user.phone,
-        createdAt: user.createdAt);
+        createdAt: user.createdAt,
+        friends: user.friends);
   }
 }
