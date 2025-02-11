@@ -9,4 +9,4 @@ enum Collection {
   friendRequests,
 }
 
-enum FriendRequestStatus { pending, accepted, rejected }
+enum ContactStatus { none, sent, pending, accepted, rejected }

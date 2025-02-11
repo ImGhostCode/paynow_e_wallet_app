@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paynow_e_wallet_app/core/params/contact_params.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/cancel_fr_usecase.dart';
+import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_contact_status_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_friend_requests_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_friends_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_user_by_email_usecase.dart';
@@ -18,6 +20,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   final GetFriendRequestsUsecase? getFriendRequestsUsecase;
   final GetFriendsUsecase? getFriendsUsecase;
   final GetUserByEmailUsecase? getUserByEmailUsecase;
+  final GetContactStatusUsecase? getContactStatusUsecase;
 
   ContactBloc({
     this.sendFriendRequestUsecase,
@@ -27,6 +30,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     this.getFriendRequestsUsecase,
     this.getFriendsUsecase,
     this.getUserByEmailUsecase,
+    this.getContactStatusUsecase,
   }) : super(ContactInitial()) {
     on<SendFriendRequestEvent>(_onSendFriendRequestEvent);
     on<RespondToFriendRequestEvent>(_onRespondToFriendRequestEvent);
@@ -35,6 +39,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     on<GetFriendRequestsEvent>(_onGetFriendRequestsEvent);
     on<GetFriendsEvent>(_onGetFriendsEvent);
     on<GetUserByEmailEvent>(_onGetUserByEmailEvent);
+    on<GetContactStatusEvent>(_onGetContactStatusEvent);
   }
 
   _onSendFriendRequestEvent(
@@ -48,7 +53,11 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     result.fold((l) {
       emit(SendingFriendRequestError(message: l.errorMessage));
     }, (r) {
-      emit(FriendRequestSent());
+      emit(const FriendRequestSent(
+        contactStatus: ContactStatus.sent,
+      ));
+      // add(GetContactStatusEvent(
+      //     userId: event.senderId, friendId: event.receiverId));
     });
   }
 
@@ -65,7 +74,10 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     result.fold((l) {
       emit(RespondingToFriendRequestError(message: l.errorMessage));
     }, (r) {
-      emit(FriendRequestResponded());
+      emit(FriendRequestResponded(
+        contactStatus:
+            event.accept ? ContactStatus.accepted : ContactStatus.none,
+      ));
     });
   }
 
@@ -80,7 +92,11 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     result.fold((l) {
       emit(CancelingFriendRequestError(message: l.errorMessage));
     }, (r) {
-      emit(FriendRequestCanceled());
+      emit(const FriendRequestCanceled(
+        contactStatus: ContactStatus.none,
+      ));
+      // add(GetContactStatusEvent(
+      //     userId: event.senderId, friendId: event.receiverId));
     });
   }
 
@@ -94,7 +110,9 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     result.fold((l) {
       emit(UnfriendingError(message: l.errorMessage));
     }, (r) {
-      emit(Unfriended());
+      emit(const Unfriended(
+        contactStatus: ContactStatus.none,
+      ));
     });
   }
 
@@ -132,6 +150,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     emit(LoadingUserByEmail());
     final result = await getUserByEmailUsecase!.call(
       GetUserByEmailParams(
+        currUserEmail: event.currUserEmail,
         email: event.email,
       ),
     );
@@ -139,6 +158,23 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       emit(LoadingUserByEmailError(message: l.errorMessage));
     }, (r) {
       emit(LoadedUserByEmail(users: r));
+    });
+  }
+
+  _onGetContactStatusEvent(
+      GetContactStatusEvent event, Emitter<ContactState> emit) async {
+    emit(LoadingContactStatus());
+    final result = await getContactStatusUsecase!.call(
+      GetContactStatusParams(
+        userId: event.userId,
+        friendId: event.friendId,
+      ),
+    );
+    result.fold((l) {
+      emit(LoadingContactStatusError(message: l.errorMessage));
+    }, (r) {
+      emit(LoadedContactStatus(
+          contactStatus: r.contactStatus, requestId: r.requestId));
     });
   }
 }

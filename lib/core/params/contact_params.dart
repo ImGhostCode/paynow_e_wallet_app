@@ -1,3 +1,5 @@
+import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
+
 class SendFriendRequestParams {
   final String receiverId;
 
@@ -51,9 +53,31 @@ class GetFriendsParams {
 }
 
 class GetUserByEmailParams {
+  final String currUserEmail;
   final String email;
 
   GetUserByEmailParams({
+    required this.currUserEmail,
     required this.email,
+  });
+}
+
+class GetContactStatusParams {
+  final String userId;
+  final String friendId;
+
+  GetContactStatusParams({
+    required this.userId,
+    required this.friendId,
+  });
+}
+
+class GetContactStatusResponse {
+  final String? requestId;
+  final ContactStatus contactStatus;
+
+  GetContactStatusResponse({
+    this.requestId,
+    required this.contactStatus,
   });
 }

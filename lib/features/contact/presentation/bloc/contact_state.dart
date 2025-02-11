@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/entities/friend_request_entity.dart';
 
@@ -14,7 +15,10 @@ class ContactInitial extends ContactState {}
 // Send friend request
 class SendingFriendRequest extends ContactState {}
 
-class FriendRequestSent extends ContactState {}
+class FriendRequestSent extends ContactState {
+  final ContactStatus contactStatus;
+  const FriendRequestSent({required this.contactStatus});
+}
 
 class SendingFriendRequestError extends ContactState {
   final String message;
@@ -28,7 +32,10 @@ class SendingFriendRequestError extends ContactState {
 // Respond to friend request
 class RespondingToFriendRequest extends ContactState {}
 
-class FriendRequestResponded extends ContactState {}
+class FriendRequestResponded extends ContactState {
+  final ContactStatus contactStatus;
+  const FriendRequestResponded({required this.contactStatus});
+}
 
 class RespondingToFriendRequestError extends ContactState {
   final String message;
@@ -42,7 +49,10 @@ class RespondingToFriendRequestError extends ContactState {
 // Cancel friend request
 class CancelingFriendRequest extends ContactState {}
 
-class FriendRequestCanceled extends ContactState {}
+class FriendRequestCanceled extends ContactState {
+  final ContactStatus contactStatus;
+  const FriendRequestCanceled({required this.contactStatus});
+}
 
 class CancelingFriendRequestError extends ContactState {
   final String message;
@@ -56,7 +66,10 @@ class CancelingFriendRequestError extends ContactState {
 // Unfriend
 class Unfriending extends ContactState {}
 
-class Unfriended extends ContactState {}
+class Unfriended extends ContactState {
+  final ContactStatus contactStatus;
+  const Unfriended({required this.contactStatus});
+}
 
 class UnfriendingError extends ContactState {
   final String message;
@@ -125,6 +138,28 @@ class LoadingUserByEmailError extends ContactState {
   final String message;
 
   const LoadingUserByEmailError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+// Get contact status
+class LoadingContactStatus extends ContactState {}
+
+class LoadedContactStatus extends ContactState {
+  final String? requestId;
+  final ContactStatus contactStatus;
+
+  const LoadedContactStatus({required this.contactStatus, this.requestId});
+
+  @override
+  List<Object> get props => [contactStatus];
+}
+
+class LoadingContactStatusError extends ContactState {
+  final String message;
+
+  const LoadingContactStatusError({required this.message});
 
   @override
   List<Object> get props => [message];

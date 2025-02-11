@@ -21,7 +21,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
           .collection(Collection.friendRequests.name)
           .where('senderId', isEqualTo: senderId)
           .where('receiverId', isEqualTo: params.receiverId)
-          .where('status', isEqualTo: FriendRequestStatus.pending.name);
+          .where('status', isEqualTo: ContactStatus.pending.name);
 
       final request = await requestRef.get();
 
@@ -44,7 +44,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
       final result = await _firestore
           .collection(Collection.friendRequests.name)
           .where('receiverId', isEqualTo: params.userId)
-          .where('status', isEqualTo: FriendRequestStatus.pending.name)
+          .where('status', isEqualTo: ContactStatus.pending.name)
           .get();
 
       return result.docs
@@ -89,7 +89,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
 
       if (params.accept) {
         // Update request status
-        await requestRef.update({'status': FriendRequestStatus.accepted.name});
+        await requestRef.update({'status': ContactStatus.accepted.name});
 
         // Add each other as friends
         final userRef =
@@ -107,7 +107,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
 
         // print("Friend request accepted.");
       } else {
-        await requestRef.update({'status': FriendRequestStatus.rejected.name});
+        await requestRef.update({'status': ContactStatus.rejected.name});
         // print("Friend request rejected.");
       }
     } on FirebaseAuthException catch (e) {
@@ -128,7 +128,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
       final existingRequest = await requestRef
           .where('senderId', isEqualTo: senderId)
           .where('receiverId', isEqualTo: params.receiverId)
-          .where('status', isEqualTo: FriendRequestStatus.pending.name)
+          .where('status', isEqualTo: ContactStatus.pending.name)
           .get();
 
       if (existingRequest.docs.isNotEmpty) {
@@ -138,7 +138,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
       await requestRef.add(FriendRequestModel(
               senderId: senderId,
               receiverId: params.receiverId,
-              status: FriendRequestStatus.pending.name,
+              status: ContactStatus.pending.name,
               timestamp: DateTime.now())
           .toFirestore());
     } on FirebaseAuthException catch (e) {
@@ -201,10 +201,62 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
     try {
       final result = await _firestore
           .collection(Collection.users.name)
-          .where('email', isEqualTo: params.email)
+          .where('email',
+              isEqualTo: params.email, isNotEqualTo: params.currUserEmail)
           .get();
 
       return result.docs.map((e) => UserModel.fromFirestore(e)).toList();
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(e.message ?? '', e.code);
+    } catch (e) {
+      throw ServerException(e.toString(), null);
+    }
+  }
+
+  @override
+  Future<GetContactStatusResponse> getContactStatus(
+      GetContactStatusParams params) async {
+    try {
+      final userRef =
+          _firestore.collection(Collection.users.name).doc(params.userId);
+
+      final user = await userRef.get();
+
+      if (!user.exists) {
+        throw ServerException("User not found.", null);
+      }
+
+      final friends = user.get('friends') as List<dynamic>;
+
+      if (friends.contains(params.friendId)) {
+        return GetContactStatusResponse(contactStatus: ContactStatus.accepted);
+      }
+
+      final requestRef = _firestore.collection(Collection.friendRequests.name);
+
+      final request = await requestRef
+          .where('senderId', isEqualTo: params.userId)
+          .where('receiverId', isEqualTo: params.friendId)
+          .where('status', isEqualTo: ContactStatus.pending.name)
+          .get();
+
+      if (request.docs.isNotEmpty) {
+        return GetContactStatusResponse(contactStatus: ContactStatus.sent);
+      }
+
+      final request2 = await requestRef
+          .where('senderId', isEqualTo: params.friendId)
+          .where('receiverId', isEqualTo: params.userId)
+          .where('status', isEqualTo: ContactStatus.pending.name)
+          .get();
+
+      if (request2.docs.isNotEmpty) {
+        return GetContactStatusResponse(
+            requestId: request2.docs.first.id,
+            contactStatus: ContactStatus.pending);
+      }
+
+      return GetContactStatusResponse(contactStatus: ContactStatus.none);
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
     } catch (e) {

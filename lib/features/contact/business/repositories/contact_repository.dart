@@ -16,4 +16,6 @@ abstract class ContactRepository {
   Future<Either<Failure, List<String>>> getFriends(GetFriendsParams params);
   Future<Either<Failure, List<UserEntity>>> getUserByEmail(
       GetUserByEmailParams params);
+  Future<Either<Failure, GetContactStatusResponse>> getContactStatus(
+      GetContactStatusParams params);
 }

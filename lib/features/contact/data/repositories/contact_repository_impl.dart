@@ -104,4 +104,17 @@ class ContactRepositoryImpl extends ContactRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<Either<Failure, GetContactStatusResponse>> getContactStatus(
+      GetContactStatusParams params) async {
+    try {
+      final result = await contactRemoteDataSource.getContactStatus(params);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.code));
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }

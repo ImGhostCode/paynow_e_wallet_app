@@ -8,9 +8,12 @@ abstract class ContactEvent extends Equatable {
 }
 
 class SendFriendRequestEvent extends ContactEvent {
+  // final String senderId;
   final String receiverId;
 
-  const SendFriendRequestEvent({required this.receiverId});
+  const SendFriendRequestEvent({
+    required this.receiverId,
+  });
 }
 
 class RespondToFriendRequestEvent extends ContactEvent {
@@ -26,9 +29,11 @@ class RespondToFriendRequestEvent extends ContactEvent {
 }
 
 class CancelFriendRequestEvent extends ContactEvent {
+  final String senderId;
   final String receiverId;
 
-  const CancelFriendRequestEvent({required this.receiverId});
+  const CancelFriendRequestEvent(
+      {required this.receiverId, required this.senderId});
 }
 
 class UnfriendEvent extends ContactEvent {
@@ -50,7 +55,18 @@ class GetFriendsEvent extends ContactEvent {
 }
 
 class GetUserByEmailEvent extends ContactEvent {
+  final String currUserEmail;
   final String email;
 
-  const GetUserByEmailEvent({required this.email});
+  const GetUserByEmailEvent({required this.email, required this.currUserEmail});
+}
+
+class GetContactStatusEvent extends ContactEvent {
+  final String userId;
+  final String friendId;
+
+  const GetContactStatusEvent({
+    required this.userId,
+    required this.friendId,
+  });
 }

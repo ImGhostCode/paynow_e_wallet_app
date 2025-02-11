@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/repositories/contact_repository.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/cancel_fr_usecase.dart';
+import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_contact_status_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_friend_requests_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_friends_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_user_by_email_usecase.dart';
@@ -25,4 +26,5 @@ void initContactInjections() {
   sl.registerSingleton<GetFriendsUsecase>(GetFriendsUsecase(sl()));
   sl.registerSingleton<GetUserByEmailUsecase>(GetUserByEmailUsecase(sl()));
   sl.registerSingleton<UnfriendUsecase>(UnfriendUsecase(sl()));
+  sl.registerSingleton<GetContactStatusUsecase>(GetContactStatusUsecase(sl()));
 }

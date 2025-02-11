@@ -131,6 +131,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                       getFriendRequestsUsecase: sl(),
                       getFriendsUsecase: sl(),
                       getUserByEmailUsecase: sl(),
+                      getContactStatusUsecase: sl(),
                     ),
                   ),
                   BlocProvider<TransactionBloc>(
