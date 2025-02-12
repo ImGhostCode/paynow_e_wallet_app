@@ -135,7 +135,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     emit(LoadingFriends());
     final result = await getFriendsUsecase!.call(
       GetFriendsParams(
-        userId: event.userId,
+        userId: event.userId ?? '',
       ),
     );
     result.fold((l) {

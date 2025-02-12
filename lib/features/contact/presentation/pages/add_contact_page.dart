@@ -136,17 +136,6 @@ class _AddContactPageState extends State<AddContactPage> {
                                         .userEntity!
                                         .id!,
                                     friendId: state.users[index].id!)),
-                              // listener: (context, state) {
-                              // // Handle reload data
-                              // if (state is LoadedContactStatus) {
-                              //   if (state is FriendRequestSent ||
-                              //       state is FriendRequestCanceled ||
-                              //       state is Unfriended ||
-                              //       state is FriendRequestResponded) {
-
-                              //   }
-                              // }
-                              // },s
                               builder: (context, statusState) {
                                 if (statusState is LoadingContactStatus) {
                                   return const CircularProgressIndicator();

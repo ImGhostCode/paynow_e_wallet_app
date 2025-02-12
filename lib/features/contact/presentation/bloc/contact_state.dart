@@ -105,7 +105,7 @@ class LoadingFriendRequestsError extends ContactState {
 class LoadingFriends extends ContactState {}
 
 class LoadedFriends extends ContactState {
-  final List<String> friends;
+  final List<UserEntity> friends;
 
   const LoadedFriends({required this.friends});
 

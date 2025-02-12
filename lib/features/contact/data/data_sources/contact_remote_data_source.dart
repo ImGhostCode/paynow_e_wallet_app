@@ -9,7 +9,7 @@ abstract class ContactRemoteDataSource {
   Future<void> unfriend(UnfriendParams params);
   Future<List<FriendRequestModel>> getFriendRequests(
       GetFriendRequestsParams params);
-  Future<List<String>> getFriends(GetFriendsParams params);
+  Future<List<UserModel>> getFriends(GetFriendsParams params);
   Future<List<UserModel>> getUserByEmail(GetUserByEmailParams params);
   Future<GetContactStatusResponse> getContactStatus(
       GetContactStatusParams params);

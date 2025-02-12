@@ -58,7 +58,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
   }
 
   @override
-  Future<List<String>> getFriends(GetFriendsParams params) async {
+  Future<List<UserModel>> getFriends(GetFriendsParams params) async {
     try {
       final userRef =
           _firestore.collection(Collection.users.name).doc(params.userId);
@@ -71,7 +71,13 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
 
       final friends = user.get('friends') as List<dynamic>;
 
-      return friends.map((e) => e.toString()).toList();
+      if (friends.isEmpty) return [];
+
+      // Fetch all friend documents in parallel
+      var friendDocs = await Future.wait(friends.map((friendId) =>
+          FirebaseFirestore.instance.collection('users').doc(friendId).get()));
+
+      return friendDocs.map((e) => UserModel.fromFirestore(e)).toList();
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
     } catch (e) {

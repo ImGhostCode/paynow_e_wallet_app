@@ -49,7 +49,7 @@ class GetFriendRequestsEvent extends ContactEvent {
 }
 
 class GetFriendsEvent extends ContactEvent {
-  final String userId;
+  final String? userId;
 
   const GetFriendsEvent({required this.userId});
 }

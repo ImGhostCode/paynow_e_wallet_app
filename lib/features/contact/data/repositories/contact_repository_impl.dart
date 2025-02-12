@@ -41,7 +41,7 @@ class ContactRepositoryImpl extends ContactRepository {
   }
 
   @override
-  Future<Either<Failure, List<String>>> getFriends(
+  Future<Either<Failure, List<UserModel>>> getFriends(
       GetFriendsParams params) async {
     try {
       final result = await contactRemoteDataSource.getFriends(params);

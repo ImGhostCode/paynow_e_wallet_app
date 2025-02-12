@@ -13,7 +13,7 @@ abstract class ContactRepository {
   Future<Either<Failure, void>> unfriend(UnfriendParams params);
   Future<Either<Failure, List<FriendRequestEntity>>> getFriendRequests(
       GetFriendRequestsParams params);
-  Future<Either<Failure, List<String>>> getFriends(GetFriendsParams params);
+  Future<Either<Failure, List<UserEntity>>> getFriends(GetFriendsParams params);
   Future<Either<Failure, List<UserEntity>>> getUserByEmail(
       GetUserByEmailParams params);
   Future<Either<Failure, GetContactStatusResponse>> getContactStatus(
