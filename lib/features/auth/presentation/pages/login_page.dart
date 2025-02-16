@@ -30,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
           current is Unauthenticated;
     }, listener: (context, state) {
       if (state is Authenticated) {
+        Helper.saveFCMToken(state.userEntity?.id);
         Helper.showSnackBar(message: 'Login up successfully', isSuccess: true);
         Navigator.pushNamedAndRemoveUntil(
           context,

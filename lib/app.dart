@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -61,9 +62,12 @@ class _SkeletonAppState extends State<SkeletonApp> {
   void initState() {
     user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      BlocProvider.of<AuthBloc>(context).add(GetUserEvent(id: user?.uid ?? ""));
-      BlocProvider.of<CardBloc>(context)
-          .add(GetCardEvent(userId: user?.uid ?? ""));
+      Helper.saveFCMToken(user?.uid).then((_) {
+        BlocProvider.of<AuthBloc>(context)
+            .add(GetUserEvent(id: user?.uid ?? ""));
+        BlocProvider.of<CardBloc>(context)
+            .add(GetCardEvent(userId: user?.uid ?? ""));
+      });
     }
     super.initState();
   }
@@ -102,7 +106,9 @@ class _SkeletonAppState extends State<SkeletonApp> {
               HomePage(
                 user: state.userEntity!,
               ),
-              const TransactionPage(),
+              TransactionPage(
+                user: state.userEntity!,
+              ),
               const ContactPage(),
               ProfilePage(
                 user: state.userEntity!,

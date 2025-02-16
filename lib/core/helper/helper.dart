@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
 import 'package:paynow_e_wallet_app/main.dart';
 import 'package:paynow_e_wallet_app/shared/data/data_sources/app_shared_prefs.dart';
 import 'package:paynow_e_wallet_app/shared/domain/entities/language_enum.dart';
-import 'package:paynow_e_wallet_app/core/utils/constant/app_constants.dart';
 import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 
 class Helper {
@@ -66,5 +67,18 @@ class Helper {
 
   static Timestamp toJsonTimestamp(DateTime date) {
     return Timestamp.fromDate(date);
+  }
+
+  static Future<void> saveFCMToken(String? userId) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    if (userId != null && token != null) {
+      await FirebaseFirestore.instance
+          .collection(Collection.users.name)
+          .doc(userId)
+          .update({
+        kFCMToken: token,
+      });
+    }
   }
 }
