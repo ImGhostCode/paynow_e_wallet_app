@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
@@ -35,27 +36,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: $message");
 }
 
-Future<void> setupInteractedMessage() async {
-  // Get any messages which caused the application to open from
-  // a terminated state.
-  RemoteMessage? initialMessage =
-      await FirebaseMessaging.instance.getInitialMessage();
-  if (initialMessage != null) {
-    _handleMessage(initialMessage);
-  }
-
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: $message');
-  });
-}
-
-void _handleMessage(RemoteMessage message) {
-  print('MESSAGE: $message');
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "lib/.env");
@@ -63,19 +43,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // Request permission for notifications
-  await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-
-  await setupInteractedMessage();
-
   // Inject all dependencies
   await initInjections();
+  // Request permission for notifications
+  await sl<NotificationService>().requestNotificationPermission();
+
   // await sl<SharedPreferences>().clear();
   // await FirebaseAuth.instance.signOut();
   runApp(DevicePreview(

@@ -68,17 +68,4 @@ class Helper {
   static Timestamp toJsonTimestamp(DateTime date) {
     return Timestamp.fromDate(date);
   }
-
-  static Future<void> saveFCMToken(String? userId) async {
-    String? token = await FirebaseMessaging.instance.getToken();
-
-    if (userId != null && token != null) {
-      await FirebaseFirestore.instance
-          .collection(Collection.users.name)
-          .doc(userId)
-          .update({
-        kFCMToken: token,
-      });
-    }
-  }
 }
