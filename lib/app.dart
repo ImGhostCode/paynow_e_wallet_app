@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
