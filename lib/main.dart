@@ -12,6 +12,7 @@ import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_bloc.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:paynow_e_wallet_app/shared/data/data_sources/app_shared_prefs.dart';
 import 'package:paynow_e_wallet_app/core/router/router.dart';
@@ -145,6 +146,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                       getFriendsUsecase: sl(),
                       getUserByEmailUsecase: sl(),
                       getContactStatusUsecase: sl(),
+                    ),
+                  ),
+                  BlocProvider<NotificationBloc>(
+                    create: (BuildContext context) => NotificationBloc(
+                      getNotificationUsecase: sl(),
+                      saveNotificationUsecase: sl(),
+                      deleteNotificationUsecase: sl(),
                     ),
                   ),
                   BlocProvider<TransactionBloc>(

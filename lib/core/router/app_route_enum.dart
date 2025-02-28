@@ -18,6 +18,7 @@ enum AppRouteEnum {
   myCardsPage,
   addCardPage,
   addContactPage,
+  notificationPage,
 }
 
 extension AppRouteExtension on AppRouteEnum {
@@ -79,6 +80,9 @@ extension AppRouteExtension on AppRouteEnum {
 
       case AppRouteEnum.addContactPage:
         return "/add_contact_page";
+
+      case AppRouteEnum.notificationPage:
+        return "/notification_page";
 
       default:
         return "/articles_page";

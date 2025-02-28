@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/features/card/card_injections.dart';
 import 'package:paynow_e_wallet_app/features/contact/contact_injections.dart';
+import 'package:paynow_e_wallet_app/features/notification/notification_injections.dart';
 import 'package:paynow_e_wallet_app/features/transaction/transaction_injections.dart';
 import 'package:paynow_e_wallet_app/shared/app_injections.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,7 @@ Future<void> initInjections() async {
   initCardInjections();
   initTransactionInjections();
   initContactInjections();
+  initNotificationInjections();
 }
 
 initSharedPrefsInjections() async {

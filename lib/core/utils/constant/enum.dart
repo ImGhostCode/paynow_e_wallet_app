@@ -7,6 +7,9 @@ enum Collection {
   transactions,
   cards,
   friendRequests,
+  notifications,
 }
 
 enum ContactStatus { none, sent, pending, accepted, rejected }
+
+enum NotificationType { friendRequest, transaction }

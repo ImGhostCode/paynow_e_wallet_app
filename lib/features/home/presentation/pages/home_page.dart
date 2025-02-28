@@ -129,8 +129,8 @@ class HomePage extends StatelessWidget {
                           ),
                           IconButton(
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, AppRouteEnum.requestsPage.name);
+                                Navigator.pushNamed(context,
+                                    AppRouteEnum.notificationPage.name);
                               },
                               icon: Badge(
                                 smallSize: 6.w,
