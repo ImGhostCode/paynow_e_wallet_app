@@ -7,12 +7,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:paynow_e_wallet_app/env.dart';
 
 class NotificationService {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  String? accessToken;
 
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -78,6 +80,7 @@ class NotificationService {
 //
   void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((message) {
+      print(message);
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification!.android;
 
@@ -185,14 +188,7 @@ class NotificationService {
     print(
         "Navigating to appointments screen. Hit here to handle the message. Message data: ${message.data}");
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Scaffold(
-          body: Text('notification screen'),
-        ),
-      ),
-    );
+    Navigator.pushNamed(context, AppRouteEnum.notificationPage.name);
   }
 
   Future<String> getFCMAccessToken() async {
@@ -229,9 +225,12 @@ class NotificationService {
     return credentials.accessToken.data;
   }
 
-  Future<void> sendNotification(String deviceToken, String title, String body,
-      Map<String, dynamic> data) async {
-    String accessToken = await getFCMAccessToken();
+  Future<void> sendNotification(
+      {required String deviceToken,
+      required String title,
+      required String body,
+      required Map<String, dynamic>? data}) async {
+    accessToken ??= await getFCMAccessToken();
 
     Map<String, dynamic> message = {
       'message': {
@@ -256,5 +255,14 @@ class NotificationService {
     } else {
       print('notification failed');
     }
+  }
+
+  Future<String?> getDeviceToken(String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection(Collection.users.name)
+        .doc(userId)
+        .get();
+
+    return snapshot.get(kFCMToken);
   }
 }

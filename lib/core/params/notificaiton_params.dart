@@ -17,9 +17,15 @@ class GetNotificationsParams {
 }
 
 class DelNotificationParams {
-  final String notificationId;
+  final String? notificationId;
+  final String? senderId;
+  final String? receiverId;
+  final String? type;
 
   DelNotificationParams({
-    required this.notificationId,
+    this.notificationId,
+    this.senderId,
+    this.receiverId,
+    this.type,
   });
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
 
 abstract class ContactEvent extends Equatable {
   const ContactEvent();
@@ -8,11 +9,14 @@ abstract class ContactEvent extends Equatable {
 }
 
 class SendFriendRequestEvent extends ContactEvent {
-  // final String senderId;
+  final String senderId;
   final String receiverId;
+  final NotificationBloc notificationBloc;
 
   const SendFriendRequestEvent({
+    required this.senderId,
     required this.receiverId,
+    required this.notificationBloc,
   });
 }
 
@@ -29,11 +33,14 @@ class RespondToFriendRequestEvent extends ContactEvent {
 }
 
 class CancelFriendRequestEvent extends ContactEvent {
+  final NotificationBloc notificationBloc;
   final String senderId;
   final String receiverId;
 
   const CancelFriendRequestEvent(
-      {required this.receiverId, required this.senderId});
+      {required this.notificationBloc,
+      required this.receiverId,
+      required this.senderId});
 }
 
 class UnfriendEvent extends ContactEvent {

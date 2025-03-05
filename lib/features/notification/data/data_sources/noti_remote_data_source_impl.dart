@@ -46,10 +46,25 @@ class NotiRemoteDataSourceImpl extends NotiRemoteDataSource {
   @override
   Future<void> delNotification(DelNotificationParams params) async {
     try {
-      await _firestore
-          .collection(Collection.notifications.name)
-          .doc(params.notificationId)
-          .delete();
+      if (params.notificationId != null) {
+        await _firestore
+            .collection(Collection.notifications.name)
+            .doc(params.notificationId)
+            .delete();
+      } else if (params.senderId != null &&
+          params.receiverId != null &&
+          params.type != null) {
+        final result = await _firestore
+            .collection(Collection.notifications.name)
+            .where('senderId', isEqualTo: params.senderId)
+            .where('receiverId', isEqualTo: params.receiverId)
+            .where('type', isEqualTo: params.type)
+            .get();
+
+        for (var doc in result.docs) {
+          await doc.reference.delete();
+        }
+      }
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
     } catch (e) {

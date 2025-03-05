@@ -21,7 +21,11 @@ class SaveNotificationEvent extends NotificationEvent {
 }
 
 class DelNotificationEvent extends NotificationEvent {
-  final String notificationId;
+  final String? notificationId;
+  final String? senderId;
+  final String? receiverId;
+  final String? type;
 
-  const DelNotificationEvent({required this.notificationId});
+  const DelNotificationEvent(
+      {this.notificationId, this.senderId, this.receiverId, this.type});
 }

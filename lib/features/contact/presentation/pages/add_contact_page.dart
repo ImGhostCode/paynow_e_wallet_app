@@ -7,6 +7,7 @@ import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.da
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_bloc.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_event.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_state.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
 
 class AddContactPage extends StatefulWidget {
   const AddContactPage({super.key});
@@ -273,13 +274,10 @@ class _AddContactPageState extends State<AddContactPage> {
   }
 
   void _sendFriendRequest(
-      {required BuildContext context, required String receiverId}) {
+      {required BuildContext context, required String receiverId}) async {
     BlocProvider.of<ContactBloc>(context).add(SendFriendRequestEvent(
-        // senderId: context
-        //     .read<AuthBloc>()
-        //     .state
-        //     .userEntity!
-        //     .id!,
+        senderId: context.read<AuthBloc>().state.userEntity!.id!,
+        notificationBloc: context.read<NotificationBloc>(),
         receiverId: receiverId));
   }
 
@@ -291,6 +289,7 @@ class _AddContactPageState extends State<AddContactPage> {
   void _cancelFriendRequest(
       {required BuildContext context, required String receiverId}) {
     BlocProvider.of<ContactBloc>(context).add(CancelFriendRequestEvent(
+        notificationBloc: context.read<NotificationBloc>(),
         senderId: context.read<AuthBloc>().state.userEntity!.id!,
         receiverId: receiverId));
   }

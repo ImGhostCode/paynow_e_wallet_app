@@ -52,6 +52,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     emit(NotificationDeleting());
     final result = await deleteNotificationUsecase!.call(DelNotificationParams(
       notificationId: event.notificationId,
+      senderId: event.senderId,
+      receiverId: event.receiverId,
+      type: event.type,
     ));
     result.fold((l) {
       emit(NotificationDeletingError(message: l.errorMessage));

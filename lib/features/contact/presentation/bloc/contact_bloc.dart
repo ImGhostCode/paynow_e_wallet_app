@@ -1,6 +1,11 @@
+// import 'dart:math';
+
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/core/params/contact_params.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
+import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/cancel_fr_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_contact_status_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/get_friend_requests_usecase.dart';
@@ -11,6 +16,10 @@ import 'package:paynow_e_wallet_app/features/contact/business/usecases/send_fr_u
 import 'package:paynow_e_wallet_app/features/contact/business/usecases/unfriend_usecase.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_event.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_state.dart';
+import 'package:paynow_e_wallet_app/features/notification/business/entities/notification_entity.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_event.dart';
+// import 'package:paynow_e_wallet_app/features/notification/business/entities/notification_entity.dart';
+// import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_event.dart';
 
 class ContactBloc extends Bloc<ContactEvent, ContactState> {
   final SendFriendRequestUsecase? sendFriendRequestUsecase;
@@ -52,12 +61,31 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     );
     result.fold((l) {
       emit(SendingFriendRequestError(message: l.errorMessage));
-    }, (r) {
+    }, (r) async {
       emit(const FriendRequestSent(
         contactStatus: ContactStatus.sent,
       ));
-      // add(GetContactStatusEvent(
-      //     userId: event.senderId, friendId: event.receiverId));
+      final token =
+          await sl<NotificationService>().getDeviceToken(event.receiverId);
+      if (token != null) {
+        sl<NotificationService>().sendNotification(
+            deviceToken: token,
+            title: 'Friend Request',
+            body: 'You have a new friend request!',
+            data: {
+              'type': NotificationType.friendRequest.name,
+              'senderId': event.senderId,
+              'receiverId': event.receiverId,
+            });
+      }
+      event.notificationBloc.add(SaveNotificationEvent(
+          notification: NotificationEntity(
+              senderId: event.senderId,
+              receiverId: event.receiverId,
+              type: NotificationType.friendRequest.name,
+              data: null,
+              isRead: false,
+              timestamp: DateTime.now())));
     });
   }
 
@@ -95,8 +123,11 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       emit(const FriendRequestCanceled(
         contactStatus: ContactStatus.none,
       ));
-      // add(GetContactStatusEvent(
-      //     userId: event.senderId, friendId: event.receiverId));
+      event.notificationBloc.add(DelNotificationEvent(
+        senderId: event.senderId,
+        receiverId: event.receiverId,
+        type: NotificationType.friendRequest.name,
+      ));
     });
   }
 
