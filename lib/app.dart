@@ -57,21 +57,23 @@ class _SkeletonAppState extends State<SkeletonApp> {
       activeIcon: ImageConstants.profileActive,
     ),
   ];
-  late User? user;
+  User? user;
 
   @override
   void initState() {
-    user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      sl<NotificationService>().saveFCMToken(user?.uid).then((_) {
-        BlocProvider.of<AuthBloc>(context)
-            .add(GetUserEvent(id: user?.uid ?? ""));
-        BlocProvider.of<CardBloc>(context)
-            .add(GetCardEvent(userId: user?.uid ?? ""));
-      });
-      sl<NotificationService>().firebaseInit(context);
-      sl<NotificationService>().setupInteractMessage(context);
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        sl<NotificationService>().saveFCMToken(user?.uid).then((_) {
+          BlocProvider.of<AuthBloc>(context)
+              .add(GetUserEvent(id: user?.uid ?? ""));
+          BlocProvider.of<CardBloc>(context)
+              .add(GetCardEvent(userId: user?.uid ?? ""));
+        });
+        sl<NotificationService>().firebaseInit(context);
+      }
+      setState(() {});
+    });
     super.initState();
   }
 

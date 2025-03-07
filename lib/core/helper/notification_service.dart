@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:paynow_e_wallet_app/env.dart';
+import 'package:paynow_e_wallet_app/main.dart';
 
 class NotificationService {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -32,17 +34,17 @@ class NotificationService {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       if (kDebugMode) {
-        print('user granted permission');
+        debugPrint('user granted permission');
       }
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
       if (kDebugMode) {
-        print('user granted provisional permission');
+        debugPrint('user granted provisional permission');
       }
     } else {
-      //appsetting.AppSettings.openNotificationSettings();
+      // appsetting.AppSettings.openNotificationSettings();
       if (kDebugMode) {
-        print('user denied permission');
+        debugPrint('user denied permission');
       }
     }
   }
@@ -60,116 +62,90 @@ class NotificationService {
     }
   }
 
-  //function to initialise flutter local notification plugin to show notifications for android when app is active
-  void initLocalNotifications(
-      BuildContext context, RemoteMessage message) async {
-    var androidInitializationSettings =
-        const AndroidInitializationSettings('@mipmap/ic_launcher');
-    var iosInitializationSettings = const DarwinInitializationSettings();
-
-    var initializationSetting = InitializationSettings(
-        android: androidInitializationSettings, iOS: iosInitializationSettings);
-
-    await _flutterLocalNotificationsPlugin.initialize(initializationSetting,
-        onDidReceiveNotificationResponse: (payload) {
-      // handle interaction when app is active for android
-      handleMessage(context, message);
-    });
-  }
-
-//
   void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((message) {
-      print(message);
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification!.android;
+      if (message.notification != null) {
+        debugPrint(
+            'Foreground message received: ${message.notification!.title}');
+        if (Platform.isAndroid) {
+          initLocalNotifications(message);
+          showNotification(message);
+        }
 
-      if (kDebugMode) {
-        print("notifications title:${notification!.title}");
-        print("notifications body:${notification.body}");
-        print('count:${android!.count}');
-        print('data:${message.data.toString()}');
-      }
-
-      if (Platform.isIOS) {
-        foregroundMessage();
-      }
-
-      if (Platform.isAndroid) {
-        initLocalNotifications(context, message);
-        showNotification(message);
+        if (Platform.isIOS) {
+          foregroundMessage();
+        }
       }
     });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      debugPrint('User tapped on notification (Background/Terminated)');
+      handleMessage(message);
+    });
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        debugPrint('Notification received when app was terminated');
+        handleMessage(message);
+      }
+    });
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  //handle tap on notification when app is in background or terminated
-  Future<void> setupInteractMessage(BuildContext context) async {
-    // // when app is terminated
-    // RemoteMessage? initialMessage =
-    //     await FirebaseMessaging.instance.getInitialMessage();
-
-    // if (initialMessage != null) {
-    //   handleMessage(context, initialMessage);
-    // }
-
-    //when app ins background
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      handleMessage(context, event);
-    });
-
-    // Handle terminated state
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) {
-      if (message != null && message.data.isNotEmpty) {
-        handleMessage(context, message);
-      }
-    });
+  @pragma('vm:entry-point')
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    await Firebase.initializeApp();
+    debugPrint('Handling background message: ${message.notification?.title}');
   }
 
-  // function to show visible notification when app is active
+  void initLocalNotifications(RemoteMessage message) async {
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosSettings =
+        DarwinInitializationSettings();
+
+    const InitializationSettings settings =
+        InitializationSettings(android: androidSettings, iOS: iosSettings);
+
+    await _flutterLocalNotificationsPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) {
+        debugPrint('User tapped on notification');
+        handleMessage(message);
+      },
+    );
+  }
+
   Future<void> showNotification(RemoteMessage message) async {
-    AndroidNotificationChannel channel = AndroidNotificationChannel(
-      message.notification!.android!.channelId.toString(),
-      message.notification!.android!.channelId.toString(),
-      importance: Importance.max,
-      showBadge: true,
+    if (message.notification == null) return;
+
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'paynow_channel', // ID của channel, cần được đặt cố định
+      'paynow_e_wallet', // Tên của channel
+      channelDescription: 'Wallet app notification channel',
+      importance: Importance.high,
+      priority: Priority.high,
       playSound: true,
-      // sound: const RawResourceAndroidNotificationSound('jetsons_doorbell'),
     );
 
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-            channel.id.toString(), channel.name.toString(),
-            channelDescription: 'paynow e-wallet app',
-            importance: Importance.high,
-            priority: Priority.high,
-            playSound: true,
-            ticker: 'ticker',
-            sound: channel.sound
-            //     sound: RawResourceAndroidNotificationSound('jetsons_doorbell')
-            //  icon: largeIconPath
-            );
-
-    const DarwinNotificationDetails darwinNotificationDetails =
-        DarwinNotificationDetails(
+    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
     );
 
-    NotificationDetails notificationDetails = NotificationDetails(
-        android: androidNotificationDetails, iOS: darwinNotificationDetails);
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidDetails, iOS: iosDetails);
 
-    Future.delayed(Duration.zero, () {
-      _flutterLocalNotificationsPlugin.show(
-        0,
-        message.notification!.title.toString(),
-        message.notification!.body.toString(),
-        notificationDetails,
-        payload: 'my_data',
-      );
-    });
+    await _flutterLocalNotificationsPlugin.show(
+      message.messageId.hashCode,
+      message.notification!.title,
+      message.notification!.body,
+      notificationDetails,
+    );
   }
 
   Future foregroundMessage() async {
@@ -182,13 +158,9 @@ class NotificationService {
   }
 
   Future<void> handleMessage(
-    BuildContext context,
     RemoteMessage message,
   ) async {
-    print(
-        "Navigating to appointments screen. Hit here to handle the message. Message data: ${message.data}");
-
-    Navigator.pushNamed(context, AppRouteEnum.notificationPage.name);
+    navigatorKey.currentState!.pushNamed(AppRouteEnum.notificationPage.name);
   }
 
   Future<String> getFCMAccessToken() async {

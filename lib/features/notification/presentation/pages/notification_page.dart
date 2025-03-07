@@ -5,7 +5,6 @@ import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_bloc.dart';
-import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_event.dart';
 import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_state.dart';
 import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_event.dart';
