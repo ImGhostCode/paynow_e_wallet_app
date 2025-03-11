@@ -5,7 +5,7 @@ import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.
 import 'package:paynow_e_wallet_app/features/contact/business/entities/friend_request_entity.dart';
 
 abstract class ContactRepository {
-  Future<Either<Failure, void>> sendFriendRequest(
+  Future<Either<Failure, String>> sendFriendRequest(
       SendFriendRequestParams params);
   Future<Either<Failure, void>> respondToFriendRequest(
       ResponseToFrParams params);

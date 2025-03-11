@@ -3,7 +3,7 @@ import 'package:paynow_e_wallet_app/features/auth/data/models/user_model.dart';
 import 'package:paynow_e_wallet_app/features/contact/data/models/friend_request_model.dart';
 
 abstract class ContactRemoteDataSource {
-  Future<void> sendFriendRequest(SendFriendRequestParams params);
+  Future<String> sendFriendRequest(SendFriendRequestParams params);
   Future<void> respondToFriendRequest(ResponseToFrParams params);
   Future<void> cancelFriendRequest(CancelFrParams params);
   Future<void> unfriend(UnfriendParams params);

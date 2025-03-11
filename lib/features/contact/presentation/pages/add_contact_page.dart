@@ -270,7 +270,11 @@ class _AddContactPageState extends State<AddContactPage> {
       required String senderId,
       required bool accept}) {
     BlocProvider.of<ContactBloc>(context).add(RespondToFriendRequestEvent(
-        requestId: requestId, senderId: senderId, accept: accept));
+        requestId: requestId,
+        senderId: senderId,
+        receiverId: context.read<AuthBloc>().state.userEntity!.id!,
+        notificationBloc: context.read<NotificationBloc>(),
+        accept: accept));
   }
 
   void _sendFriendRequest(

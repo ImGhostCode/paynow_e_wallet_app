@@ -23,6 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>(_onLoginEvent);
     on<GetUserEvent>(_onGetUserEvent);
     on<UpdateUserEvent>(_onUpdateUserEvent);
+    on<LogoutEvent>(_onLogoutEvent);
   }
 
   _onSignUpEvent(SignUpEvent event, Emitter<AuthState> emit) async {
@@ -74,5 +75,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       add(GetUserEvent(id: event.params.id));
       emit(const UpdatedUser());
     });
+  }
+
+  _onLogoutEvent(LogoutEvent event, Emitter<AuthState> emit) async {
+    emit(AuthInitial());
   }
 }

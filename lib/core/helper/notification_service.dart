@@ -160,7 +160,10 @@ class NotificationService {
   Future<void> handleMessage(
     RemoteMessage message,
   ) async {
-    navigatorKey.currentState!.pushNamed(AppRouteEnum.notificationPage.name);
+    if (navigatorObserver.currentRouteName !=
+        AppRouteEnum.notificationPage.name) {
+      navigatorKey.currentState!.pushNamed(AppRouteEnum.notificationPage.name);
+    }
   }
 
   Future<String> getFCMAccessToken() async {
@@ -234,7 +237,22 @@ class NotificationService {
         .collection(Collection.users.name)
         .doc(userId)
         .get();
+    try {
+      return snapshot.get(kFCMToken);
+    } catch (e) {
+      return null;
+    }
+  }
 
-    return snapshot.get(kFCMToken);
+  Future<void> removeFCMToken(String userId) async {
+    await FirebaseFirestore.instance
+        .collection(Collection.users.name)
+        .doc(userId)
+        .update({
+      kFCMToken: FieldValue.delete(), // Remove FCM token
+    });
+
+    await FirebaseMessaging.instance
+        .deleteToken(); // Delete token from local storage
   }
 }

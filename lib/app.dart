@@ -65,10 +65,12 @@ class _SkeletonAppState extends State<SkeletonApp> {
       user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         sl<NotificationService>().saveFCMToken(user?.uid).then((_) {
-          BlocProvider.of<AuthBloc>(context)
-              .add(GetUserEvent(id: user?.uid ?? ""));
-          BlocProvider.of<CardBloc>(context)
-              .add(GetCardEvent(userId: user?.uid ?? ""));
+          if (context.mounted) {
+            BlocProvider.of<AuthBloc>(context)
+                .add(GetUserEvent(id: user?.uid ?? ""));
+            BlocProvider.of<CardBloc>(context)
+                .add(GetCardEvent(userId: user?.uid ?? ""));
+          }
         });
         sl<NotificationService>().firebaseInit(context);
       }

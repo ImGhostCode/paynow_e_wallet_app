@@ -124,7 +124,7 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
   }
 
   @override
-  Future<void> sendFriendRequest(SendFriendRequestParams params) async {
+  Future<String> sendFriendRequest(SendFriendRequestParams params) async {
     try {
       final senderId = FirebaseAuth.instance.currentUser!.uid;
 
@@ -141,12 +141,13 @@ class ContactRemoteDataSourceImpl extends ContactRemoteDataSource {
         throw ServerException("Friend request already sent.", null);
       }
 
-      await requestRef.add(FriendRequestModel(
+      final resutl = await requestRef.add(FriendRequestModel(
               senderId: senderId,
               receiverId: params.receiverId,
               status: ContactStatus.pending.name,
               timestamp: DateTime.now())
           .toFirestore());
+      return resutl.id;
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
     } catch (e) {

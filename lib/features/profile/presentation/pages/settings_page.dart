@@ -1,10 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
+import 'package:paynow_e_wallet_app/core/utils/injections.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
+import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_bloc.dart';
+import 'package:paynow_e_wallet_app/features/contact/presentation/bloc/contact_event.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -61,7 +68,11 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: '',
         icon: ImageConstants.logout,
         onTap: () async {
+          await sl<NotificationService>()
+              .removeFCMToken(context.read<AuthBloc>().state.userEntity!.id!);
           await FirebaseAuth.instance.signOut();
+          context.read<AuthBloc>().add(LogoutEvent());
+          context.read<ContactBloc>().add(ClearContactStateEvent());
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRouteEnum.loginPage.name,

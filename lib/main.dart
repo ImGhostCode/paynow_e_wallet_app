@@ -25,6 +25,27 @@ import 'firebase_options.dart';
 
 import '/shared/domain/entities/language_enum.dart';
 
+class MyNavigatorObserver extends NavigatorObserver {
+  String? currentRouteName;
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    currentRouteName = route.settings.name;
+    debugPrint('Pushed route: $currentRouteName');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    currentRouteName = previousRoute?.settings.name;
+    debugPrint('Popped route: $currentRouteName');
+  }
+  //... didRemove, didReplace.
+}
+
+final navigatorObserver = MyNavigatorObserver();
+
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
@@ -168,6 +189,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   navigatorKey: navigatorKey,
+                  navigatorObservers: [navigatorObserver],
                   supportedLocales: const [
                     Locale("ar"),
                     Locale("en"),

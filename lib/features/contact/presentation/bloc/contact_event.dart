@@ -24,8 +24,12 @@ class RespondToFriendRequestEvent extends ContactEvent {
   final String requestId;
   final String senderId;
   final bool accept;
+  final NotificationBloc notificationBloc;
+  final String receiverId;
 
   const RespondToFriendRequestEvent({
+    required this.notificationBloc,
+    required this.receiverId,
     required this.requestId,
     required this.senderId,
     required this.accept,
@@ -77,3 +81,5 @@ class GetContactStatusEvent extends ContactEvent {
     required this.friendId,
   });
 }
+
+class ClearContactStateEvent extends ContactEvent {}

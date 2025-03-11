@@ -68,7 +68,7 @@ class ContactRepositoryImpl extends ContactRepository {
   }
 
   @override
-  Future<Either<Failure, void>> sendFriendRequest(
+  Future<Either<Failure, String>> sendFriendRequest(
       SendFriendRequestParams params) async {
     try {
       final result = await contactRemoteDataSource.sendFriendRequest(params);

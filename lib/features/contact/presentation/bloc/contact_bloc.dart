@@ -49,6 +49,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     on<GetFriendsEvent>(_onGetFriendsEvent);
     on<GetUserByEmailEvent>(_onGetUserByEmailEvent);
     on<GetContactStatusEvent>(_onGetContactStatusEvent);
+    on<ClearContactStateEvent>(_onClear);
   }
 
   _onSendFriendRequestEvent(
@@ -67,7 +68,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       ));
       final token =
           await sl<NotificationService>().getDeviceToken(event.receiverId);
-      if (token != null) {
+      if (token != null && token.isNotEmpty) {
         sl<NotificationService>().sendNotification(
             deviceToken: token,
             title: 'Friend Request',
@@ -83,7 +84,9 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
               senderId: event.senderId,
               receiverId: event.receiverId,
               type: NotificationType.friendRequest.name,
-              data: null,
+              data: {
+                kRequestId: r,
+              },
               isRead: false,
               timestamp: DateTime.now())));
     });
@@ -105,6 +108,11 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       emit(FriendRequestResponded(
         contactStatus:
             event.accept ? ContactStatus.accepted : ContactStatus.none,
+      ));
+      event.notificationBloc.add(DelNotificationEvent(
+        senderId: event.senderId,
+        receiverId: event.receiverId,
+        type: NotificationType.friendRequest.name,
       ));
     });
   }
@@ -207,5 +215,9 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       emit(LoadedContactStatus(
           contactStatus: r.contactStatus, requestId: r.requestId));
     });
+  }
+
+  _onClear(ClearContactStateEvent event, Emitter<ContactState> emit) async {
+    emit(ContactInitial());
   }
 }
