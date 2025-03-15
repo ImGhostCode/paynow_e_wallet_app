@@ -13,14 +13,16 @@ class RequestsPage extends StatelessWidget {
   final List<TransactionModel> _requests = [
     TransactionModel(
         id: '1',
+        transactionType: TransactionType.request.name,
         senderId: '1',
         receiverId: '2',
         amount: 12.5,
         status: TransactionStatus.completed.name,
         timestamp: DateTime.now(),
-        note: ''),
+        message: ''),
     TransactionModel(
       id: '2',
+      transactionType: TransactionType.request.name,
       senderId: '1',
       receiverId: '2',
       amount: 12.5,

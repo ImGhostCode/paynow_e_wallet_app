@@ -105,14 +105,14 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     result.fold((l) {
       emit(RespondingToFriendRequestError(message: l.errorMessage));
     }, (r) {
-      emit(FriendRequestResponded(
-        contactStatus:
-            event.accept ? ContactStatus.accepted : ContactStatus.none,
-      ));
       event.notificationBloc.add(DelNotificationEvent(
         senderId: event.senderId,
         receiverId: event.receiverId,
         type: NotificationType.friendRequest.name,
+      ));
+      emit(FriendRequestResponded(
+        contactStatus:
+            event.accept ? ContactStatus.accepted : ContactStatus.none,
       ));
     });
   }
@@ -128,13 +128,13 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     result.fold((l) {
       emit(CancelingFriendRequestError(message: l.errorMessage));
     }, (r) {
-      emit(const FriendRequestCanceled(
-        contactStatus: ContactStatus.none,
-      ));
       event.notificationBloc.add(DelNotificationEvent(
         senderId: event.senderId,
         receiverId: event.receiverId,
         type: NotificationType.friendRequest.name,
+      ));
+      emit(const FriendRequestCanceled(
+        contactStatus: ContactStatus.none,
       ));
     });
   }

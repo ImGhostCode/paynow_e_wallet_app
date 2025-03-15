@@ -1,6 +1,8 @@
 enum TransactionType { send, request }
 
-enum TransactionStatus { pending, completed, canceled }
+enum TransactionStatus { pending, completed, canceled, failed }
+
+enum TransactionAction { send, request }
 
 enum Collection {
   users,

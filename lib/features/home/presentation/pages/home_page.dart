@@ -128,27 +128,29 @@ class HomePage extends StatelessWidget {
                                 ),
                           ),
                           IconButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context,
-                                    AppRouteEnum.notificationPage.name);
-                              },
-                              icon: Badge(
-                                smallSize: 6.w,
-                                largeSize: 10.w,
-                                backgroundColor: const Color(0xFFF8BB18),
-                                label: Container(
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                child: SvgPicture.asset(
-                                    ImageConstants.notifications,
-                                    color: Colors.white,
-                                    height: 24.w,
-                                    width: 24.w),
-                              )),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, AppRouteEnum.notificationPage.name);
+                            },
+                            // icon: Badge(
+                            //   smallSize: 6.w,
+                            //   largeSize: 10.w,
+                            //   backgroundColor: const Color(0xFFF8BB18),
+                            //   label: Container(
+                            //     decoration: BoxDecoration(
+                            //       color:
+                            //           Theme.of(context).colorScheme.secondary,
+                            //       shape: BoxShape.circle,
+                            //     ),
+                            //   ),
+                            // child: SvgPicture.asset(
+                            //     ImageConstants.notifications,
+                            //     color: Colors.white,
+                            //     height: 24.w,
+                            //     width: 24.w),
+                            icon: SvgPicture.asset(ImageConstants.notifications,
+                                color: Colors.white, height: 24.w, width: 24.w),
+                          ),
                         ],
                       ),
                     ],

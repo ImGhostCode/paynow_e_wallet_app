@@ -31,7 +31,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     final contactBloc = context.watch<ContactBloc>();
-    if (contactBloc.state is FriendRequestResponded) {
+    if (context.watch<NotificationBloc>().state is NotificationDeleted) {
       context.read<NotificationBloc>().add(GetNotificationEvent(
             userId: context.read<AuthBloc>().state.userEntity!.id!,
           ));
@@ -42,7 +42,14 @@ class _NotificationPageState extends State<NotificationPage> {
           centerTitle: true,
         ),
         body: BlocBuilder<NotificationBloc, NotificationState>(
-            builder: (context, state) {
+            buildWhen: (previous, current) {
+          if (current is NotificationLoaded ||
+              current is NotificationLoading ||
+              current is NotificationLoadingError) {
+            return true;
+          }
+          return false;
+        }, builder: (context, state) {
           if (state is NotificationLoading) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -133,7 +140,8 @@ class FriendRequestItem extends StatelessWidget {
             .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            // return const Center(child: CircularProgressIndicator());
+            return const SizedBox();
           }
 
           return ListTile(

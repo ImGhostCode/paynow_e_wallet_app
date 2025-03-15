@@ -9,22 +9,14 @@ part 'transaction_model.g.dart';
 class TransactionModel extends TransactionEntity {
   TransactionModel({
     required super.id,
+    required super.transactionType,
     required super.senderId,
     required super.receiverId,
     required super.amount,
     required super.status,
-    super.note,
+    super.message,
     required super.timestamp,
   });
-
-  // factory TransactionModel.fromFirestore(DocumentSnapshot doc) {
-  //   Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-  //   return TransactionModel.fromJson({'id': doc.id, ...data});
-  // }
-
-  // Map<String, dynamic> toFirestore() {
-  //   return toJson()..remove('id');
-  // }
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) =>
       _$TransactionModelFromJson(json);
@@ -35,11 +27,12 @@ class TransactionModel extends TransactionEntity {
   TransactionEntity toEntity() {
     return TransactionEntity(
       id: id,
+      transactionType: transactionType,
       senderId: senderId,
       receiverId: receiverId,
       amount: amount,
       status: status,
-      note: note,
+      message: message,
       timestamp: timestamp,
     );
   }
@@ -47,12 +40,23 @@ class TransactionModel extends TransactionEntity {
   static TransactionModel fromEntity(TransactionEntity card) {
     return TransactionModel(
       id: card.id,
+      transactionType: card.transactionType,
       senderId: card.senderId,
       receiverId: card.receiverId,
       amount: card.amount,
       status: card.status,
-      note: card.note,
+      message: card.message,
       timestamp: card.timestamp,
     );
+  }
+
+  factory TransactionModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return TransactionModel.fromJson({...data, 'id': doc.id});
+  }
+
+  @override
+  Map<String, dynamic> toFirestore() {
+    return toJson()..remove('id');
   }
 }

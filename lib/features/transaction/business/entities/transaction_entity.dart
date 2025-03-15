@@ -8,6 +8,8 @@ part 'transaction_entity.g.dart';
 class TransactionEntity {
   @JsonKey(name: "id")
   final String? id;
+  @JsonKey(name: "transaction_type")
+  final String transactionType;
   @JsonKey(name: "senderId")
   final String senderId;
   @JsonKey(name: "receiverId")
@@ -16,8 +18,8 @@ class TransactionEntity {
   final double amount;
   @JsonKey(name: "status")
   final String status;
-  @JsonKey(name: "note")
-  final String? note;
+  @JsonKey(name: "message")
+  final String? message;
   @JsonKey(
     name: "timestamp",
     toJson: Helper.toJsonTimestamp,
@@ -27,34 +29,51 @@ class TransactionEntity {
 
   TransactionEntity({
     this.id,
+    required this.transactionType,
     required this.senderId,
     required this.receiverId,
     required this.amount,
     required this.status,
-    this.note,
+    this.message,
     required this.timestamp,
   });
 
   TransactionEntity copyWith({
     String? id,
+    String? transactionType,
     String? senderId,
     String? receiverId,
     double? amount,
     String? status,
-    String? note,
+    String? message,
     DateTime? timestamp,
   }) =>
       TransactionEntity(
         id: id ?? this.id,
+        transactionType: transactionType ?? this.transactionType,
         senderId: senderId ?? this.senderId,
         receiverId: receiverId ?? this.receiverId,
         amount: amount ?? this.amount,
         status: status ?? this.status,
-        note: note ?? this.note,
+        message: message ?? this.message,
         timestamp: timestamp ?? this.timestamp,
       );
   factory TransactionEntity.fromJson(Map<String, dynamic> json) =>
       _$TransactionEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$TransactionEntityToJson(this);
+
+  factory TransactionEntity.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return TransactionEntity.fromJson({...data, 'id': doc.id});
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return toJson()..remove('id');
+  }
 }
+
+
+// send money : senderId == currentUserId
+// request money : receiverId == currentUserId
+// status : pending, completed, failed
