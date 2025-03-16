@@ -29,18 +29,18 @@ class TransactionRemoteDataSourceImpl extends TransactionRemoteDataSource {
         final receiver = await receiverCard.get();
 
         if (sender.docs.isEmpty) {
-          throw ServerException('You have not added a card', null);
+          throw 'Sender has not added card';
         }
 
         if (receiver.docs.isEmpty) {
-          throw ServerException('User has not added card', null);
+          throw 'User has not added card';
         }
 
         final senderBalance = sender.docs.first.data()[kBalance] as double;
         final receiverBalance = receiver.docs.first.data()[kBalance] as double;
 
         if (senderBalance < params.transaction.amount) {
-          throw ServerException('Insufficient balance', null);
+          throw 'Insufficient balance';
         }
 
         await _firestore.runTransaction((transaction) async {

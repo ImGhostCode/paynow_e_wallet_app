@@ -23,3 +23,5 @@ const String kTransactionType = 'transactionType';
 const String kDefaultCard = 'defaultCard';
 const String kOwnerId = 'ownerId';
 const String kBalance = 'balance';
+
+const double minAmount = 1.0;

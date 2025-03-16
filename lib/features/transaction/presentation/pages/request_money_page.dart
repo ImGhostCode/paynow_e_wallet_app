@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paynow_e_wallet_app/core/helper/helper.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/app_constants.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
@@ -149,8 +150,8 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                               return 'Please enter a valid amount';
                             }
 
-                            if (double.parse(value) <= 0) {
-                              return 'Amount must be greater than 0';
+                            if (double.parse(value) <= minAmount) {
+                              return 'Amount must be greater than \$${minAmount.toInt()}';
                             }
                             return null;
                           },
