@@ -81,8 +81,12 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      _selectedContact?.name[0] ??
-                                          _selectedContact!.email[0],
+                                      _selectedContact?.name != null &&
+                                              _selectedContact!.name.isNotEmpty
+                                          ? _selectedContact!.name[0]
+                                          : _selectedContact!.email.isNotEmpty
+                                              ? _selectedContact!.email[0]
+                                              : '',
                                       style: TextStyle(
                                           fontSize: 18.sp,
                                           fontWeight: FontWeight.bold),

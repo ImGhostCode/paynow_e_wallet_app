@@ -84,16 +84,28 @@ class TransactionRemoteDataSourceImpl extends TransactionRemoteDataSource {
   @override
   Future<List<TransactionModel>> getTransactions(String userId) async {
     try {
-      final result = await _firestore
+      List<TransactionModel> transactions = [];
+      final sendingTransactions = await _firestore
           .collection(Collection.transactions.name)
           .where(
             'senderId',
             isEqualTo: userId,
           )
+          .where('status', isNotEqualTo: TransactionStatus.failed.name)
+          .get();
+
+      final recievedTransactions = await _firestore
+          .collection(Collection.transactions.name)
           .where('receiverId', isEqualTo: userId)
           .where('status', isNotEqualTo: TransactionStatus.failed.name)
           .get();
-      return result.docs.map((e) => TransactionModel.fromFirestore(e)).toList();
+      transactions.addAll(sendingTransactions.docs
+          .map((e) => TransactionModel.fromFirestore(e))
+          .toList());
+      transactions.addAll(recievedTransactions.docs
+          .map((e) => TransactionModel.fromFirestore(e))
+          .toList());
+      return transactions;
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
     } catch (e) {
