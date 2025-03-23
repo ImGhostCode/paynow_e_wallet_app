@@ -56,339 +56,337 @@ class _TransactionPageState extends State<TransactionPage> {
             ),
             SizedBox(width: 10.w),
           ],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () {
-            context
-                .read<TransactionBloc>()
-                .add(GetTransactionEvent(userId: widget.user.id!));
-            return Future.delayed(const Duration(seconds: 1));
-          },
-          child: BlocConsumer<TransactionBloc, TransactionState>(
-              listener: (context, state) {
-            if (state is TransactionLoaded) {
-              _groupTransactions(state.transactions);
-            }
-          }, builder: (context, state) {
-            if (state is TransactionLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is TransactionLoadingError) {
-              return Center(
-                child: Text(state.message),
-              );
-            }
-            if (state is TransactionLoaded && state.transactions.isEmpty) {
-              return const Center(
-                child: Text('No transactions yet'),
-              );
-            }
-            return Padding(
-              padding: EdgeInsets.all(15.r),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.bgGray,
-                      borderRadius: BorderRadius.circular(15.r),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(
+              50.h,
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.r),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.bgGray,
+                  borderRadius: BorderRadius.circular(15.r),
+                ),
+                padding: EdgeInsets.all(6.r),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      height: 50.h,
+                      width: 165.w,
+                      child: ElevatedButton(
+                        style: transactionView == TransactionView.income
+                            ? ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.zero)
+                            : ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.bgGray,
+                                elevation: 0,
+                                foregroundColor: Colors.black,
+                                padding: EdgeInsets.zero),
+                        onPressed: () {
+                          if (transactionView == TransactionView.income) {
+                            return;
+                          }
+                          context.read<TransactionBloc>().add(
+                              GetTransactionEvent(userId: widget.user.id!));
+                          setState(() {
+                            transactionView = TransactionView.income;
+                          });
+                        },
+                        child: const Text('Incomes'),
+                      ),
                     ),
-                    padding: EdgeInsets.all(6.r),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          height: 50.h,
-                          width: 165.w,
-                          child: ElevatedButton(
-                            style: transactionView == TransactionView.income
-                                ? ElevatedButton.styleFrom(
-                                    elevation: 0,
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.primary,
-                                    foregroundColor: Colors.white,
-                                    padding: EdgeInsets.zero)
-                                : ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.bgGray,
-                                    elevation: 0,
-                                    foregroundColor: Colors.black,
-                                    padding: EdgeInsets.zero),
-                            onPressed: () {
-                              if (transactionView == TransactionView.income) {
-                                return;
-                              }
-                              setState(() {
-                                transactionView = TransactionView.income;
-                              });
-                            },
-                            child: const Text('Incomes'),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50.h,
-                          width: 165.w,
-                          child: ElevatedButton(
-                            style: transactionView == TransactionView.expense
-                                ? ElevatedButton.styleFrom(
-                                    elevation: 0,
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.secondary,
-                                    foregroundColor: Colors.black,
-                                    padding: EdgeInsets.zero)
-                                : ElevatedButton.styleFrom(
-                                    elevation: 0,
-                                    backgroundColor: AppColors.bgGray,
-                                    foregroundColor: Colors.black,
-                                    padding: EdgeInsets.zero),
-                            onPressed: () {
-                              if (transactionView == TransactionView.expense) {
-                                return;
-                              }
-                              setState(() {
-                                transactionView = TransactionView.expense;
-                              });
-                            },
-                            child: const Text('Expenses'),
-                          ),
-                        ),
-                      ],
+                    SizedBox(
+                      height: 50.h,
+                      width: 165.w,
+                      child: ElevatedButton(
+                        style: transactionView == TransactionView.expense
+                            ? ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                foregroundColor: Colors.black,
+                                padding: EdgeInsets.zero)
+                            : ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: AppColors.bgGray,
+                                foregroundColor: Colors.black,
+                                padding: EdgeInsets.zero),
+                        onPressed: () {
+                          if (transactionView == TransactionView.expense) {
+                            return;
+                          }
+                          context.read<TransactionBloc>().add(
+                              GetTransactionEvent(userId: widget.user.id!));
+                          setState(() {
+                            transactionView = TransactionView.expense;
+                          });
+                        },
+                        child: const Text('Expenses'),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 15.h),
-                  IndexedStack(
-                      index: transactionView == TransactionView.income ? 0 : 1,
-                      // physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        _groupedIncomes.isEmpty
-                            ? const Center(
-                                child: Text('No transactions yet'),
-                              )
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: _groupedIncomes.length,
-                                itemBuilder: (context, index) {
-                                  final key =
-                                      _groupedIncomes.keys.elementAt(index);
-                                  final value = _groupedIncomes[key];
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 8.h),
-                                        child: Text(
-                                          DateFormat.yMMMd('en_US')
-                                              .format(DateTime.parse(key)),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium,
-                                        ),
-                                      ),
-                                      for (var element in value!)
-                                        BlocProvider(
-                                          create: (context) => AuthBloc(
-                                            getUserUsecase:
-                                                sl<GetUserUsecase>(),
-                                          )..add(GetUserEvent(
-                                              id: element.senderId)),
-                                          child:
-                                              BlocBuilder<AuthBloc, AuthState>(
-                                                  builder: (context, state) {
-                                            if (state is IsLoadingUser) {
-                                              return const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                            }
-                                            if (state is ErrorLoadingUser) {
-                                              return Center(
-                                                child: Text(state.error),
-                                              );
-                                            }
-                                            if (state is LoadedUser) {
-                                              return ListTile(
-                                                contentPadding: EdgeInsets.zero,
-                                                title: Text(
-                                                  state.userEntity?.name !=
-                                                              null &&
-                                                          state.userEntity!.name
-                                                              .isNotEmpty
-                                                      ? state.userEntity!.name
-                                                      : element.senderId,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                ),
-                                                horizontalTitleGap: 5.w,
-                                                subtitle: Text(
-                                                  '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                        color: AppColors.gray,
-                                                      ),
-                                                ),
-                                                trailing: Text(
-                                                  '+\$${element.amount.toString()}',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge!
-                                                      .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                ),
-                                                leading: Container(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: state.userEntity!
-                                                          .avatar.isNotEmpty
-                                                      ? Image.network(
-                                                          state.userEntity!
-                                                              .avatar,
-                                                          fit: BoxFit.cover,
-                                                          height: 40.w,
-                                                          width: 40.w,
-                                                        )
-                                                      : Image.asset(
-                                                          ImageConstants
-                                                              .defaultUser,
-                                                          height: 40.w,
-                                                          width: 40.w,
-                                                        ),
-                                                ),
-                                              );
-                                            }
-                                            return const SizedBox();
-                                          }),
-                                        ),
-                                    ],
-                                  );
-                                },
-                              ),
-                        _groupedExpenses.isEmpty
-                            ? const Center(
-                                child: Text('No transactions yet'),
-                              )
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: _groupedExpenses.length,
-                                itemBuilder: (context, index) {
-                                  final key =
-                                      _groupedExpenses.keys.elementAt(index);
-                                  final value = _groupedExpenses[key];
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 8.h),
-                                        child: Text(
-                                          DateFormat.yMMMd('en_US')
-                                              .format(DateTime.parse(key)),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium,
-                                        ),
-                                      ),
-                                      for (var element in value!)
-                                        BlocProvider(
-                                          create: (context) => AuthBloc(
-                                            getUserUsecase:
-                                                sl<GetUserUsecase>(),
-                                          )..add(GetUserEvent(
-                                              id: element.receiverId)),
-                                          child:
-                                              BlocBuilder<AuthBloc, AuthState>(
-                                                  builder: (context, state) {
-                                            if (state is IsLoadingUser) {
-                                              return const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                            }
-                                            if (state is ErrorLoadingUser) {
-                                              return Center(
-                                                child: Text(state.error),
-                                              );
-                                            }
-                                            if (state is LoadedUser) {
-                                              return ListTile(
-                                                contentPadding: EdgeInsets.zero,
-                                                title: Text(
-                                                  state.userEntity?.name !=
-                                                              null &&
-                                                          state.userEntity!.name
-                                                              .isNotEmpty
-                                                      ? state.userEntity!.name
-                                                      : element.receiverId,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                ),
-                                                horizontalTitleGap: 5.w,
-                                                subtitle: Text(
-                                                  '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                        color: AppColors.gray,
-                                                      ),
-                                                ),
-                                                trailing: Text(
-                                                  '-\$${element.amount.toString()}',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge!
-                                                      .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                ),
-                                                leading: Container(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: state.userEntity!
-                                                          .avatar.isNotEmpty
-                                                      ? Image.network(
-                                                          state.userEntity!
-                                                              .avatar,
-                                                          fit: BoxFit.cover,
-                                                          height: 40.w,
-                                                          width: 40.w,
-                                                        )
-                                                      : Image.asset(
-                                                          ImageConstants
-                                                              .defaultUser,
-                                                          height: 40.w,
-                                                          width: 40.w,
-                                                        ),
-                                                ),
-                                              );
-                                            }
-                                            return const SizedBox();
-                                          }),
-                                        ),
-                                    ],
-                                  );
-                                },
-                              ),
-                      ]),
-                ],
+                  ],
+                ),
               ),
+            ),
+          ),
+        ),
+        body: BlocConsumer<TransactionBloc, TransactionState>(
+            listener: (context, state) {
+          if (state is TransactionLoaded) {
+            _groupTransactions(state.transactions);
+          }
+        }, builder: (context, state) {
+          if (state is TransactionLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          }),
-        ));
+          }
+          if (state is TransactionLoadingError) {
+            return Center(
+              child: Text(state.message),
+            );
+          }
+          if (state is TransactionLoaded && state.transactions.isEmpty) {
+            return const Center(
+              child: Text('No transactions yet'),
+            );
+          }
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.r),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(height: 15.h),
+                IndexedStack(
+                    index: transactionView == TransactionView.income ? 0 : 1,
+                    // physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      _groupedIncomes.isEmpty
+                          ? const Center(
+                              child: Text('No transactions yet'),
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: _groupedIncomes.length,
+                              itemBuilder: (context, index) {
+                                final key =
+                                    _groupedIncomes.keys.elementAt(index);
+                                final value = _groupedIncomes[key];
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 8.h),
+                                      child: Text(
+                                        DateFormat.yMMMd('en_US')
+                                            .format(DateTime.parse(key)),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ),
+                                    for (var element in value!)
+                                      BlocProvider(
+                                        create: (context) => AuthBloc(
+                                          getUserUsecase: sl<GetUserUsecase>(),
+                                        )..add(
+                                            GetUserEvent(id: element.senderId)),
+                                        child: BlocBuilder<AuthBloc, AuthState>(
+                                            builder: (context, state) {
+                                          if (state is IsLoadingUser) {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          if (state is ErrorLoadingUser) {
+                                            return Center(
+                                              child: Text(state.error),
+                                            );
+                                          }
+                                          if (state is LoadedUser) {
+                                            return ListTile(
+                                              minTileHeight: 60.h,
+                                              contentPadding: EdgeInsets.zero,
+                                              title: Text(
+                                                state.userEntity?.name !=
+                                                            null &&
+                                                        state.userEntity!.name
+                                                            .isNotEmpty
+                                                    ? state.userEntity!.name
+                                                    : element.senderId,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
+                                              horizontalTitleGap: 5.w,
+                                              subtitle: Text(
+                                                '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall!
+                                                    .copyWith(
+                                                      color: AppColors.gray,
+                                                    ),
+                                              ),
+                                              trailing: Text(
+                                                '+\$${element.amount.toString()}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge!
+                                                    .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                              ),
+                                              leading: Container(
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: state.userEntity!.avatar
+                                                        .isNotEmpty
+                                                    ? Image.network(
+                                                        state
+                                                            .userEntity!.avatar,
+                                                        fit: BoxFit.cover,
+                                                        height: 40.w,
+                                                        width: 40.w,
+                                                      )
+                                                    : Image.asset(
+                                                        ImageConstants
+                                                            .defaultUser,
+                                                        height: 40.w,
+                                                        width: 40.w,
+                                                      ),
+                                              ),
+                                            );
+                                          }
+                                          return const SizedBox();
+                                        }),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                      _groupedExpenses.isEmpty
+                          ? const Center(
+                              child: Text('No transactions yet'),
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: _groupedExpenses.length,
+                              itemBuilder: (context, index) {
+                                final key =
+                                    _groupedExpenses.keys.elementAt(index);
+                                final value = _groupedExpenses[key];
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 8.h),
+                                      child: Text(
+                                        DateFormat.yMMMd('en_US')
+                                            .format(DateTime.parse(key)),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ),
+                                    for (var element in value!)
+                                      BlocProvider(
+                                        create: (context) => AuthBloc(
+                                          getUserUsecase: sl<GetUserUsecase>(),
+                                        )..add(GetUserEvent(
+                                            id: element.receiverId)),
+                                        child: BlocBuilder<AuthBloc, AuthState>(
+                                            builder: (context, state) {
+                                          if (state is IsLoadingUser) {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          if (state is ErrorLoadingUser) {
+                                            return Center(
+                                              child: Text(state.error),
+                                            );
+                                          }
+                                          if (state is LoadedUser) {
+                                            return ListTile(
+                                              minTileHeight: 60.h,
+                                              contentPadding: EdgeInsets.zero,
+                                              title: Text(
+                                                state.userEntity?.name !=
+                                                            null &&
+                                                        state.userEntity!.name
+                                                            .isNotEmpty
+                                                    ? state.userEntity!.name
+                                                    : element.receiverId,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
+                                              horizontalTitleGap: 5.w,
+                                              subtitle: Text(
+                                                '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall!
+                                                    .copyWith(
+                                                      color: AppColors.gray,
+                                                    ),
+                                              ),
+                                              trailing: Text(
+                                                '-\$${element.amount.toString()}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge!
+                                                    .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                              ),
+                                              leading: Container(
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: state.userEntity!.avatar
+                                                        .isNotEmpty
+                                                    ? Image.network(
+                                                        state
+                                                            .userEntity!.avatar,
+                                                        fit: BoxFit.cover,
+                                                        height: 40.w,
+                                                        width: 40.w,
+                                                      )
+                                                    : Image.asset(
+                                                        ImageConstants
+                                                            .defaultUser,
+                                                        height: 40.w,
+                                                        width: 40.w,
+                                                      ),
+                                              ),
+                                            );
+                                          }
+                                          return const SizedBox();
+                                        }),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                    ]),
+              ],
+            ),
+          );
+        }));
   }
 
   void _groupTransactions(List<TransactionEntity> transactions) {

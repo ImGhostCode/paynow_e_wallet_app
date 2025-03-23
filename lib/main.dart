@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paynow_e_wallet_app/app.dart' show NavIndexCubit;
 import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -130,6 +131,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               );
               return MultiBlocProvider(
                 providers: [
+                  BlocProvider<NavIndexCubit>(
+                    create: (BuildContext context) => NavIndexCubit(),
+                  ),
                   BlocProvider<AuthBloc>(
                     create: (BuildContext context) => AuthBloc(
                       loginUsecase: sl(),

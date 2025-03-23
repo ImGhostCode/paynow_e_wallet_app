@@ -1,49 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:paynow_e_wallet_app/app.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/usecases/get_user_usecase.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_state.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key, required this.user});
+  const HomePage({super.key, required this.user});
   final UserEntity user;
 
-  final List<Transaction> transactions = [
-    Transaction(
-        type: TransactionType.send,
-        userName: 'Yara Khalil',
-        amount: 15,
-        date: 'Oct 14, 10:24 AM',
-        userImage: ImageConstants.profilePicture4),
-    Transaction(
-        type: TransactionType.request,
-        userName: 'Sara Ibrahim',
-        amount: 20,
-        date: 'Oct 12, 02:13 PM',
-        userImage: ImageConstants.profilePicture),
-    Transaction(
-        type: TransactionType.request,
-        userName: 'Ahmad Ibrahim',
-        amount: 12.4,
-        date: 'Oct 11, 01:19 AM',
-        userImage: ImageConstants.profilePicture5),
-    Transaction(
-        type: TransactionType.send,
-        userName: 'Reem Khaled',
-        amount: 21.3,
-        date: 'Oct 07, 09:10 PM',
-        userImage: ImageConstants.profilePicture1),
-    Transaction(
-        type: TransactionType.send,
-        userName: 'Hiba Saleh',
-        amount: 0.9,
-        date: 'Oct 04, 05:45 AM',
-        userImage: ImageConstants.profilePicture3)
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,105 +225,157 @@ class HomePage extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<NavIndexCubit>().changeIndex(1);
+                    },
                     child: const Text('View All'),
                   ),
                 ],
               ),
-              transactions.isEmpty
-                  ? Column(
-                      children: [
-                        SizedBox(height: 100.h),
-                        SvgPicture.asset(
-                          ImageConstants.emptyIllustration,
-                          height: 100.w,
-                          width: 100.w,
-                          fit: BoxFit.cover,
-                        ),
-                        Text(
-                          'There’s no transactions till now!',
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: AppColors.textGrey,
-                                  ),
-                        ),
-                      ],
-                    )
-                  : ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          minTileHeight: 60.h,
-                          leading: Stack(
-                            children: [
-                              Container(
-                                constraints: BoxConstraints(
-                                  maxHeight: 40.w,
-                                  maxWidth: 40.w,
-                                ),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Image.asset(
-                                  transactions[index].userImage,
-                                  fit: BoxFit.contain,
-                                ),
+              BlocBuilder<TransactionBloc, TransactionState>(
+                  builder: (context, state) {
+                if (state is TransactionLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is TransactionLoadingError) {
+                  return Center(
+                    child: Text(state.message),
+                  );
+                }
+                if (state is TransactionLoaded && state.transactions.isEmpty) {
+                  return Column(
+                    children: [
+                      SizedBox(height: 100.h),
+                      SvgPicture.asset(
+                        ImageConstants.emptyIllustration,
+                        height: 100.w,
+                        width: 100.w,
+                        fit: BoxFit.cover,
+                      ),
+                      Text(
+                        'There’s no transactions till now!',
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: AppColors.textGrey,
+                            ),
+                      ),
+                    ],
+                  );
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    final element = state.transactions[index];
+                    return BlocProvider(
+                        create: (context) => AuthBloc(
+                              getUserUsecase: sl<GetUserUsecase>(),
+                            )..add(GetUserEvent(id: element.senderId)),
+                        child: BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                          if (state is IsLoadingUser) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (state is ErrorLoadingUser) {
+                            return Center(
+                              child: Text(state.error),
+                            );
+                          }
+                          if (state is LoadedUser) {
+                            return ListTile(
+                              minTileHeight: 60.h,
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                state.userEntity?.name != null &&
+                                        state.userEntity!.name.isNotEmpty
+                                    ? state.userEntity!.name
+                                    : element.senderId,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
-                              Positioned(
-                                bottom: -3.h,
-                                right: -3.w,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  constraints: BoxConstraints(
-                                    maxHeight: 24.h,
-                                    maxWidth: 24.h,
+                              horizontalTitleGap: 5.w,
+                              subtitle: Text(
+                                '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      color: AppColors.gray,
+                                    ),
+                              ),
+                              trailing: Text(
+                                '+\$${element.amount.toString()}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              leading: Stack(
+                                children: [
+                                  Container(
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: state.userEntity!.avatar.isNotEmpty
+                                        ? Image.network(
+                                            state.userEntity!.avatar,
+                                            fit: BoxFit.cover,
+                                            height: 40.w,
+                                            width: 40.w,
+                                          )
+                                        : Image.asset(
+                                            ImageConstants.defaultUser,
+                                            height: 40.w,
+                                            width: 40.w,
+                                          ),
                                   ),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: SvgPicture.asset(
-                                    transactions[index].type ==
-                                            TransactionType.send
-                                        ? ImageConstants.send
-                                        : ImageConstants.request,
-                                    color: transactions[index].type ==
-                                            TransactionType.send
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .secondary
-                                        : Theme.of(context).colorScheme.primary,
-                                    height: 24.h,
-                                    width: 24.h,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          title: Text(transactions[index].userName),
-                          subtitle: Text(
-                            transactions[index].date,
-                          ),
-                          subtitleTextStyle: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: Colors.grey),
-                          trailing: Text(
-                            '${transactions[index].type == TransactionType.send ? '-' : '+'}\$${transactions[index].amount.toStringAsFixed(2)}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(fontWeight: FontWeight.w600),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 5.h);
-                      },
-                      itemCount: transactions.length)
+                                  Positioned(
+                                    bottom: -3.h,
+                                    right: -3.w,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      constraints: BoxConstraints(
+                                        maxHeight: 24.h,
+                                        maxWidth: 24.h,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: SvgPicture.asset(
+                                        element.transactionType ==
+                                                TransactionType.send.name
+                                            ? ImageConstants.send
+                                            : ImageConstants.request,
+                                        color: element.transactionType ==
+                                                TransactionType.send.name
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .secondary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                        height: 24.h,
+                                        width: 24.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                          return const SizedBox();
+                        }));
+                  },
+                  itemCount: state.transactions.length,
+                );
+              })
             ],
           ),
         ),
@@ -370,22 +400,4 @@ class RightTriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
     return false;
   }
-}
-
-enum TransactionType { send, request }
-
-class Transaction {
-  final TransactionType type;
-  final String userName;
-  final String userImage;
-  final double amount;
-  final String date;
-
-  Transaction({
-    required this.type,
-    required this.userName,
-    required this.amount,
-    required this.date,
-    required this.userImage,
-  });
 }

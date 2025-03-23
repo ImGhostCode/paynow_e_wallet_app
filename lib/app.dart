@@ -34,7 +34,6 @@ class SkeletonApp extends StatefulWidget {
 }
 
 class _SkeletonAppState extends State<SkeletonApp> {
-  int _selectedIndex = 0;
   final List<NavBarItem> navBarItem = [
     NavBarItem(
       title: 'Home',
@@ -107,21 +106,23 @@ class _SkeletonAppState extends State<SkeletonApp> {
         );
       } else if (state is LoadedUser) {
         return Scaffold(
-          body: IndexedStack(
-            index: _selectedIndex,
-            children: [
-              HomePage(
-                user: state.userEntity!,
-              ),
-              TransactionPage(
-                user: state.userEntity!,
-              ),
-              const ContactPage(),
-              ProfilePage(
-                user: state.userEntity!,
-              ),
-            ],
-          ),
+          body: BlocBuilder<NavIndexCubit, int>(builder: (context, navState) {
+            return IndexedStack(
+              index: navState,
+              children: [
+                HomePage(
+                  user: state.userEntity!,
+                ),
+                TransactionPage(
+                  user: state.userEntity!,
+                ),
+                const ContactPage(),
+                ProfilePage(
+                  user: state.userEntity!,
+                ),
+              ],
+            );
+          }),
           bottomNavigationBar: Container(
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -150,9 +151,7 @@ class _SkeletonAppState extends State<SkeletonApp> {
                   for (int i = 0; i < navBarItem.length; i++)
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _selectedIndex = i;
-                        });
+                        context.read<NavIndexCubit>().changeIndex(i);
                       },
                       child: Container(
                         decoration: const BoxDecoration(),
@@ -162,19 +161,19 @@ class _SkeletonAppState extends State<SkeletonApp> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              _selectedIndex == i
+                              context.watch<NavIndexCubit>().state == i
                                   ? navBarItem[i].activeIcon
                                   : navBarItem[i].icon,
                               height: 20.w,
                               width: 20.w,
-                              color: _selectedIndex == i
+                              color: context.watch<NavIndexCubit>().state == i
                                   ? Colors.black
                                   : AppColors.gray,
                             ),
                             Text(
                               navBarItem[i].title,
                               style: TextStyle(
-                                color: _selectedIndex == i
+                                color: context.watch<NavIndexCubit>().state == i
                                     ? Colors.black
                                     : AppColors.gray,
                                 fontSize: 12.sp,
@@ -205,4 +204,12 @@ class NavBarItem {
     required this.icon,
     required this.activeIcon,
   });
+}
+
+class NavIndexCubit extends Cubit<int> {
+  NavIndexCubit() : super(0);
+
+  void changeIndex(int index) {
+    emit(index);
+  }
 }
