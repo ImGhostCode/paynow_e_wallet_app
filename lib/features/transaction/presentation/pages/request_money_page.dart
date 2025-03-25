@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paynow_e_wallet_app/core/helper/helper.dart';
+import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/app_constants.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
@@ -45,6 +46,16 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
               )),
           title: const Text('Request Money'),
           centerTitle: true,
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRouteEnum.requestsPage.name);
+                },
+                child: const Text(
+                  'My requests',
+                  style: TextStyle(color: AppColors.primaryColor),
+                ))
+          ],
           bottom: PreferredSize(
               preferredSize: Size.fromHeight(2.h), child: const Divider()),
         ),
@@ -59,36 +70,24 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  leading: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: ClipOval(
-                        clipBehavior: Clip.antiAlias,
-                        child: (_selectedContact != null &&
-                                _selectedContact!.avatar.isNotEmpty)
-                            ? Image.network(
-                                _selectedContact!.avatar,
-                                fit: BoxFit.fill,
-                              )
-                            : _selectedContact != null
-                                ? Container(
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.bgGray,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      _selectedContact?.name[0] ??
-                                          _selectedContact!.email[0],
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  )
-                                : Image.asset(
-                                    ImageConstants.defaultUser,
-                                    fit: BoxFit.fill,
-                                  )),
+                  minLeadingWidth: 60.w,
+                  leading: Container(
+                    width: 60.w,
+                    height: 60.w,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: (_selectedContact != null &&
+                            _selectedContact!.avatar.isNotEmpty)
+                        ? Image.network(
+                            _selectedContact!.avatar,
+                            fit: BoxFit.fill,
+                          )
+                        : Image.asset(
+                            ImageConstants.defaultUser,
+                            fit: BoxFit.contain,
+                          ),
                   ),
                   title: _selectedContact != null &&
                           _selectedContact!.name.isNotEmpty

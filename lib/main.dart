@@ -174,6 +174,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                     create: (BuildContext context) => TransactionBloc(
                       getTransactionUsecase: sl(),
                       addTransactionUsecase: sl(),
+                      getRequestsUsecase: sl(),
                     ),
                   ),
                 ],

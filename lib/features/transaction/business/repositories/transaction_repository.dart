@@ -6,6 +6,7 @@ import 'package:paynow_e_wallet_app/features/transaction/business/entities/trans
 abstract class TransactionRepository {
   Future<Either<Failure, List<TransactionEntity>>> getTransactions(
       String userId);
+  Future<Either<Failure, List<TransactionEntity>>> getRequests(String userId);
   Future<Either<Failure, TransactionEntity>> addTransaction(
       AddTransactionParams params);
 }

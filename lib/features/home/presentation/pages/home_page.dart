@@ -233,7 +233,14 @@ class HomePage extends StatelessWidget {
                 ],
               ),
               BlocBuilder<TransactionBloc, TransactionState>(
-                  builder: (context, state) {
+                  buildWhen: (previous, current) {
+                if (current is TransactionLoading ||
+                    current is TransactionLoaded ||
+                    current is TransactionLoadingError) {
+                  return true;
+                }
+                return false;
+              }, builder: (context, state) {
                 if (state is TransactionLoading) {
                   return const Center(
                     child: CircularProgressIndicator(),

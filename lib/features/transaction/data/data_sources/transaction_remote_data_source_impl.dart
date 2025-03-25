@@ -62,7 +62,7 @@ class TransactionRemoteDataSourceImpl extends TransactionRemoteDataSource {
                 status: params.transaction.transactionType ==
                         TransactionType.send.name
                     ? TransactionStatus.completed.name
-                    : params.transaction.transactionType,
+                    : params.transaction.status,
               )
               .toFirestore());
 
@@ -106,6 +106,25 @@ class TransactionRemoteDataSourceImpl extends TransactionRemoteDataSource {
           .map((e) => TransactionModel.fromFirestore(e))
           .toList());
       return transactions;
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(e.message ?? '', e.code);
+    } catch (e) {
+      throw ServerException(e.toString(), null);
+    }
+  }
+
+  @override
+  Future<List<TransactionModel>> getRequests(String userId) async {
+    try {
+      final transactions = await _firestore
+          .collection(Collection.transactions.name)
+          .where(kReceiverId, isEqualTo: userId)
+          .where(kTransactionType, isEqualTo: TransactionType.request.name)
+          .where(kStatus, isEqualTo: TransactionStatus.pending.name)
+          .get();
+      return transactions.docs
+          .map((e) => TransactionModel.fromFirestore(e))
+          .toList();
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
     } catch (e) {

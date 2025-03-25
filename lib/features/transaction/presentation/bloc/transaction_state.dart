@@ -45,3 +45,23 @@ class TransactionAddingError extends TransactionState {
   @override
   List<Object?> get props => [message];
 }
+
+class LoadingRequests extends TransactionState {}
+
+class RequestsLoaded extends TransactionState {
+  final List<TransactionEntity> requests;
+
+  const RequestsLoaded({required this.requests});
+
+  @override
+  List<Object?> get props => [requests];
+}
+
+class RequestsLoadingError extends TransactionState {
+  final String message;
+
+  const RequestsLoadingError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

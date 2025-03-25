@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
-import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
-import 'package:paynow_e_wallet_app/features/transaction/data/models/transaction_model.dart';
+import 'package:paynow_e_wallet_app/core/utils/injections.dart';
+import 'package:paynow_e_wallet_app/features/auth/business/usecases/get_user_usecase.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
+import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_event.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_state.dart';
 
-class RequestsPage extends StatelessWidget {
-  RequestsPage({super.key});
-  final List<TransactionModel> _requests = [
-    TransactionModel(
-        id: '1',
-        transactionType: TransactionType.request.name,
-        senderId: '1',
-        receiverId: '2',
-        amount: 12.5,
-        status: TransactionStatus.completed.name,
-        timestamp: DateTime.now(),
-        message: ''),
-    TransactionModel(
-      id: '2',
-      transactionType: TransactionType.request.name,
-      senderId: '1',
-      receiverId: '2',
-      amount: 12.5,
-      status: TransactionStatus.completed.name,
-      timestamp: DateTime.now(),
-    )
-  ];
+class RequestsPage extends StatefulWidget {
+  const RequestsPage({super.key});
+
+  @override
+  State<RequestsPage> createState() => _RequestsPageState();
+}
+
+class _RequestsPageState extends State<RequestsPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<TransactionBloc>().add(GetRequestsEvent(
+        userId: context.read<AuthBloc>().state.userEntity!.id!));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,102 +49,203 @@ class RequestsPage extends StatelessWidget {
           bottom: PreferredSize(
               preferredSize: Size.fromHeight(2.h), child: const Divider()),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(15.r),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 8.h,
-                ),
-                Container(
-                  height: 50.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.bgGray,
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Total Amounts:',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('158\$',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(color: AppColors.secondaryColor)),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15.h),
-                SizedBox(
-                  height: 500,
-                  child: GroupedListView<TransactionModel, String>(
-                    // shrinkWrap: true,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    elements: _requests,
-                    groupBy: (element) => element.timestamp.toString(),
-                    groupSeparatorBuilder: (String groupByValue) => Text(
-                        DateFormat.yMMMM('en_US')
-                            .format(DateTime.parse(groupByValue)),
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    itemBuilder: (context, TransactionModel element) =>
-                        ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        'Hiba Saleh',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      minTileHeight: 10.h,
-                      horizontalTitleGap: 5.w,
-                      subtitle: Text(
-                        '-\$${element.amount.toString()}',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: AppColors.gray,
-                            ),
-                      ),
-                      leading: Image.asset(
-                        ImageConstants.profilePicture1,
-                        height: 40.w,
-                        width: 40.w,
-                      ),
-                      trailing: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          foregroundColor: Colors.black,
-                          padding: EdgeInsets.all(4.w),
+        body: BlocConsumer<TransactionBloc, TransactionState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              if (state is LoadingRequests) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is RequestsLoadingError) {
+                return Center(
+                  child: Text(state.message),
+                );
+              }
+              if (state is RequestsLoaded && state.requests.isEmpty) {
+                return const Center(
+                  child: Text('No requests found'),
+                );
+              }
+              if (state is RequestsLoaded) {
+                double total = 0;
+                for (var element in state.requests) {
+                  total += element.amount;
+                }
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(15.r),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 8.h,
                         ),
-                        onPressed: () {},
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              ImageConstants.send,
-                              height: 24.w,
-                              width: 24.w,
-                            ),
-                            const Text('Send'),
-                          ],
+                        Container(
+                          height: 50.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AppColors.bgGray,
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Total Amounts: ',
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
+                              Text('${total.toStringAsFixed(1)}\$',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.secondaryColor)),
+                            ],
+                          ),
                         ),
-                      ),
-                      minLeadingWidth: 40.w,
+                        SizedBox(height: 15.h),
+                        SizedBox(
+                          height: 500,
+                          child: GroupedListView<TransactionEntity, String>(
+                            // shrinkWrap: true,
+                            // physics: const NeverScrollableScrollPhysics(),
+                            elements: state.requests,
+                            groupBy: (element) => element.timestamp.toString(),
+                            groupSeparatorBuilder: (String groupByValue) =>
+                                Text(
+                                    DateFormat.yMMMd('en_US')
+                                        .format(DateTime.parse(groupByValue)),
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium),
+                            itemBuilder: (context, TransactionEntity element) =>
+                                BlocProvider(
+                                    create: (context) => AuthBloc(
+                                          getUserUsecase: sl<GetUserUsecase>(),
+                                        )..add(
+                                            GetUserEvent(id: element.senderId)),
+                                    child: BlocBuilder<AuthBloc, AuthState>(
+                                        builder: (context, state) {
+                                      if (state is IsLoadingUser) {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      if (state is ErrorLoadingUser) {
+                                        return Center(
+                                          child: Text(state.error),
+                                        );
+                                      }
+                                      if (state is LoadedUser) {
+                                        return ListTile(
+                                          minTileHeight: 60.h,
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Text.rich(
+                                            TextSpan(
+                                              text: state.userEntity?.name !=
+                                                          null &&
+                                                      state.userEntity!.name
+                                                          .isNotEmpty
+                                                  ? state.userEntity!.name
+                                                  : element.senderId,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                              children: [
+                                                TextSpan(
+                                                    text: ' requested ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium),
+                                                TextSpan(
+                                                  text:
+                                                      '\$${element.amount.toString()}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .secondaryColor),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          horizontalTitleGap: 5.w,
+                                          subtitle: Text(
+                                            '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  color: AppColors.gray,
+                                                ),
+                                          ),
+                                          leading: Container(
+                                            clipBehavior: Clip.antiAlias,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: state.userEntity!.avatar
+                                                    .isNotEmpty
+                                                ? Image.network(
+                                                    state.userEntity!.avatar,
+                                                    fit: BoxFit.cover,
+                                                    height: 40.w,
+                                                    width: 40.w,
+                                                  )
+                                                : Image.asset(
+                                                    ImageConstants.defaultUser,
+                                                    height: 40.w,
+                                                    width: 40.w,
+                                                  ),
+                                          ),
+                                          trailing: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              foregroundColor: Colors.black,
+                                              padding: EdgeInsets.all(4.w),
+                                            ),
+                                            onPressed: () {},
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  ImageConstants.send,
+                                                  height: 24.w,
+                                                  width: 24.w,
+                                                ),
+                                                const Text('Send'),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                      return const SizedBox();
+                                    })),
+                            // itemComparator: (item1, item2) =>
+                            //     item1['name'].compareTo(item2['name']), // optional
+                            // useStickyGroupSeparators: true, // optional
+                            // floatingHeader: true, // optional
+                            order: GroupedListOrder.DESC, // optional
+                            // optional
+                          ),
+                        ),
+                      ],
                     ),
-                    // itemComparator: (item1, item2) =>
-                    //     item1['name'].compareTo(item2['name']), // optional
-                    // useStickyGroupSeparators: true, // optional
-                    // floatingHeader: true, // optional
-                    order: GroupedListOrder.ASC, // optional
-                    // optional
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
+                );
+              }
+              return const SizedBox();
+            }),
         bottomNavigationBar: Container(
             width: 375.w,
             padding: EdgeInsets.all(12.h),
@@ -164,52 +265,60 @@ class RequestsPage extends StatelessWidget {
             child: SizedBox(
               height: 50.h,
               child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Container(
-                          color: AppColors.white,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                ImageConstants.sentIllustration,
-                                height: 180.w,
-                                width: 240.w,
+                onPressed: context.watch<TransactionBloc>().state
+                            is RequestsLoaded &&
+                        (context.watch<TransactionBloc>().state
+                                as RequestsLoaded)
+                            .requests
+                            .isNotEmpty
+                    ? () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: Container(
+                                color: AppColors.white,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      ImageConstants.sentIllustration,
+                                      height: 180.w,
+                                      width: 240.w,
+                                    ),
+                                    SizedBox(
+                                      height: 15.h,
+                                    ),
+                                    Text(
+                                      'The amount has been requested successfully!',
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w500),
+                                    ),
+                                    SizedBox(
+                                      height: 30.h,
+                                    ),
+                                    SizedBox(
+                                      height: 50.h,
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Ok, Thanks!')),
+                                    )
+                                  ],
+                                ),
                               ),
-                              SizedBox(
-                                height: 15.h,
-                              ),
-                              Text(
-                                'The amount has been requested successfully!',
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              SizedBox(
-                                height: 30.h,
-                              ),
-                              SizedBox(
-                                height: 50.h,
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Ok, Thanks!')),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                            );
+                          },
+                        );
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                   foregroundColor: Colors.black,

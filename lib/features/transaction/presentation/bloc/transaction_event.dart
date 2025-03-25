@@ -14,6 +14,12 @@ class GetTransactionEvent extends TransactionEvent {
   const GetTransactionEvent({required this.userId});
 }
 
+class GetRequestsEvent extends TransactionEvent {
+  final String userId;
+
+  const GetRequestsEvent({required this.userId});
+}
+
 class AddTransactionEvent extends TransactionEvent {
   final TransactionEntity transaction;
 

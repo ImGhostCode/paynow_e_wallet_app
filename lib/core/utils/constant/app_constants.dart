@@ -19,7 +19,7 @@ const String kCreatedAt = 'createdAt';
 // Transaction
 const String kAmount = 'amount';
 const String kStatus = 'status';
-const String kTransactionType = 'transactionType';
+const String kTransactionType = 'transaction_type';
 const String kDefaultCard = 'defaultCard';
 const String kOwnerId = 'ownerId';
 const String kBalance = 'balance';

@@ -3,5 +3,6 @@ import 'package:paynow_e_wallet_app/features/transaction/data/models/transaction
 
 abstract class TransactionRemoteDataSource {
   Future<List<TransactionModel>> getTransactions(String userId);
+  Future<List<TransactionModel>> getRequests(String userId);
   Future<TransactionModel> addTransaction(AddTransactionParams params);
 }
