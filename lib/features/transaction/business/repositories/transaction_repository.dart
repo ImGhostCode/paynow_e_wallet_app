@@ -9,4 +9,5 @@ abstract class TransactionRepository {
   Future<Either<Failure, List<TransactionEntity>>> getRequests(String userId);
   Future<Either<Failure, TransactionEntity>> addTransaction(
       AddTransactionParams params);
+  Future<Either<Failure, void>> acceptRequest(AcceptRequestParams params);
 }

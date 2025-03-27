@@ -52,4 +52,17 @@ class TransactionRepositoryImpl extends TransactionRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> acceptRequest(
+      AcceptRequestParams params) async {
+    try {
+      final result = await transactionRemoteDataSource.acceptRequest(params);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.code));
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }

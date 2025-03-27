@@ -15,6 +15,7 @@ import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.d
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_state.dart';
 
@@ -280,7 +281,7 @@ class HomePage extends StatelessWidget {
                     return BlocProvider(
                         create: (context) => AuthBloc(
                               getUserUsecase: sl<GetUserUsecase>(),
-                            )..add(GetUserEvent(id: element.senderId)),
+                            )..add(GetUserEvent(id: _getReceiverid(element))),
                         child: BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, state) {
                           if (state is IsLoadingUser) {
@@ -315,7 +316,7 @@ class HomePage extends StatelessWidget {
                                     ),
                               ),
                               trailing: Text(
-                                '+\$${element.amount.toString()}',
+                                _displayAmount(element),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -389,6 +390,36 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+  String _displayAmount(TransactionEntity element) {
+    if (element.transactionType == TransactionType.send.name &&
+        element.senderId == user.id) {
+      return '-\$${element.amount.toStringAsFixed(2)}';
+    } else if (element.transactionType == TransactionType.send.name &&
+        element.receiverId == user.id) {
+      return '+\$${element.amount.toStringAsFixed(2)}';
+    } else if (element.transactionType == TransactionType.request.name &&
+        element.senderId == user.id) {
+      return '+\$${element.amount.toStringAsFixed(2)}';
+    } else {
+      return '-\$${element.amount.toStringAsFixed(2)}';
+    }
+  }
+
+  String _getReceiverid(TransactionEntity element) {
+    if (element.transactionType == TransactionType.send.name &&
+        element.senderId == user.id) {
+      return element.receiverId;
+    } else if (element.transactionType == TransactionType.send.name &&
+        element.receiverId == user.id) {
+      return element.senderId;
+    } else if (element.transactionType == TransactionType.request.name &&
+        element.senderId == user.id) {
+      return element.receiverId;
+    } else {
+      return element.senderId;
+    }
+  }
 }
 
 class RightTriangleClipper extends CustomClipper<Path> {
@@ -404,7 +435,7 @@ class RightTriangleClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
     return false;
   }
 }

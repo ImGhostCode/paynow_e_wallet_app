@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paynow_e_wallet_app/core/utils/injections.dart';
@@ -395,25 +396,49 @@ class _TransactionPageState extends State<TransactionPage> {
     _groupedExpenses.clear();
 
     for (var element in transactions) {
-      if (element.senderId == widget.user.id) {
-        if (_groupedExpenses
-            .containsKey(element.timestamp.toString().substring(0, 10))) {
-          _groupedExpenses[element.timestamp.toString().substring(0, 10)]!
-              .add(element);
+      if (element.transactionType == TransactionType.request.name) {
+        if (element.receiverId == widget.user.id) {
+          if (_groupedExpenses
+              .containsKey(element.timestamp.toString().substring(0, 10))) {
+            _groupedExpenses[element.timestamp.toString().substring(0, 10)]!
+                .add(element);
+          } else {
+            _groupedExpenses[element.timestamp.toString().substring(0, 10)] = [
+              element
+            ];
+          }
         } else {
-          _groupedExpenses[element.timestamp.toString().substring(0, 10)] = [
-            element
-          ];
+          if (_groupedIncomes
+              .containsKey(element.timestamp.toString().substring(0, 10))) {
+            _groupedIncomes[element.timestamp.toString().substring(0, 10)]!
+                .add(element);
+          } else {
+            _groupedIncomes[element.timestamp.toString().substring(0, 10)] = [
+              element
+            ];
+          }
         }
       } else {
-        if (_groupedIncomes
-            .containsKey(element.timestamp.toString().substring(0, 10))) {
-          _groupedIncomes[element.timestamp.toString().substring(0, 10)]!
-              .add(element);
+        if (element.senderId == widget.user.id) {
+          if (_groupedExpenses
+              .containsKey(element.timestamp.toString().substring(0, 10))) {
+            _groupedExpenses[element.timestamp.toString().substring(0, 10)]!
+                .add(element);
+          } else {
+            _groupedExpenses[element.timestamp.toString().substring(0, 10)] = [
+              element
+            ];
+          }
         } else {
-          _groupedIncomes[element.timestamp.toString().substring(0, 10)] = [
-            element
-          ];
+          if (_groupedIncomes
+              .containsKey(element.timestamp.toString().substring(0, 10))) {
+            _groupedIncomes[element.timestamp.toString().substring(0, 10)]!
+                .add(element);
+          } else {
+            _groupedIncomes[element.timestamp.toString().substring(0, 10)] = [
+              element
+            ];
+          }
         }
       }
     }

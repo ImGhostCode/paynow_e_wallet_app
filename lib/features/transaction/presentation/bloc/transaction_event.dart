@@ -25,3 +25,9 @@ class AddTransactionEvent extends TransactionEvent {
 
   const AddTransactionEvent({required this.transaction});
 }
+
+class AcceptRequestEvent extends TransactionEvent {
+  final TransactionEntity transaction;
+
+  const AcceptRequestEvent({required this.transaction});
+}

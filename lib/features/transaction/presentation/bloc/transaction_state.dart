@@ -65,3 +65,16 @@ class RequestsLoadingError extends TransactionState {
   @override
   List<Object?> get props => [message];
 }
+
+class AcceptingRequest extends TransactionState {}
+
+class RequestAccepted extends TransactionState {}
+
+class RequestAcceptingError extends TransactionState {
+  final String message;
+
+  const RequestAcceptingError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

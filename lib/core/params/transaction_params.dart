@@ -5,3 +5,9 @@ final class AddTransactionParams {
 
   AddTransactionParams(this.transaction);
 }
+
+final class AcceptRequestParams {
+  final TransactionEntity transaction;
+
+  AcceptRequestParams(this.transaction);
+}

@@ -5,4 +5,5 @@ abstract class TransactionRemoteDataSource {
   Future<List<TransactionModel>> getTransactions(String userId);
   Future<List<TransactionModel>> getRequests(String userId);
   Future<TransactionModel> addTransaction(AddTransactionParams params);
+  Future<void> acceptRequest(AcceptRequestParams params);
 }

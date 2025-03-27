@@ -91,13 +91,13 @@ class TransactionRemoteDataSourceImpl extends TransactionRemoteDataSource {
             'senderId',
             isEqualTo: userId,
           )
-          .where('status', isNotEqualTo: TransactionStatus.failed.name)
+          .where('status', isEqualTo: TransactionStatus.completed.name)
           .get();
 
       final recievedTransactions = await _firestore
           .collection(Collection.transactions.name)
           .where('receiverId', isEqualTo: userId)
-          .where('status', isNotEqualTo: TransactionStatus.failed.name)
+          .where('status', isEqualTo: TransactionStatus.completed.name)
           .get();
       transactions.addAll(sendingTransactions.docs
           .map((e) => TransactionModel.fromFirestore(e))
@@ -125,6 +125,60 @@ class TransactionRemoteDataSourceImpl extends TransactionRemoteDataSource {
       return transactions.docs
           .map((e) => TransactionModel.fromFirestore(e))
           .toList();
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(e.message ?? '', e.code);
+    } catch (e) {
+      throw ServerException(e.toString(), null);
+    }
+  }
+
+  @override
+  Future<void> acceptRequest(AcceptRequestParams params) async {
+    try {
+      final senderCard = _firestore
+          .collection(Collection.cards.name)
+          .where(kDefaultCard, isEqualTo: true)
+          .where(kOwnerId, isEqualTo: params.transaction.receiverId);
+      final receiverCard = _firestore
+          .collection(Collection.cards.name)
+          .where(kDefaultCard, isEqualTo: true)
+          .where(kOwnerId, isEqualTo: params.transaction.senderId);
+
+      final sender = await senderCard.get();
+      final receiver = await receiverCard.get();
+
+      if (sender.docs.isEmpty) {
+        throw 'You has not added card';
+      }
+
+      if (receiver.docs.isEmpty) {
+        throw 'Your friend has not added card';
+      }
+
+      final senderBalance = sender.docs.first.data()[kBalance] as double;
+      final receiverBalance = receiver.docs.first.data()[kBalance] as double;
+
+      if (senderBalance < params.transaction.amount) {
+        throw 'Insufficient balance';
+      }
+
+      await _firestore.runTransaction((transaction) async {
+        transaction.update(
+          sender.docs.first.reference,
+          {kBalance: senderBalance - params.transaction.amount},
+        );
+        transaction.update(
+          receiver.docs.first.reference,
+          {kBalance: receiverBalance + params.transaction.amount},
+        );
+      });
+      final requestRef = _firestore
+          .collection(Collection.transactions.name)
+          .doc(params.transaction.id);
+
+      await requestRef.update({
+        kStatus: TransactionStatus.completed.name,
+      });
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? '', e.code);
     } catch (e) {
