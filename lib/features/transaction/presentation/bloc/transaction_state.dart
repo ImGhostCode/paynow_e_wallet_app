@@ -78,3 +78,16 @@ class RequestAcceptingError extends TransactionState {
   @override
   List<Object?> get props => [message];
 }
+
+class AcceptingAllRequests extends TransactionState {}
+
+class AllRequestsAccepted extends TransactionState {}
+
+class AllRequestsAcceptingError extends TransactionState {
+  final String message;
+
+  const AllRequestsAcceptingError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

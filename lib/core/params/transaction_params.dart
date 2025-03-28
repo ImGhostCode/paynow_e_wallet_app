@@ -11,3 +11,9 @@ final class AcceptRequestParams {
 
   AcceptRequestParams(this.transaction);
 }
+
+final class AcceptAllRequestParams {
+  final List<TransactionEntity> transactions;
+
+  AcceptAllRequestParams(this.transactions);
+}

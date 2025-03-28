@@ -176,6 +176,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                       addTransactionUsecase: sl(),
                       getRequestsUsecase: sl(),
                       acceptRequestUsecase: sl(),
+                      acceptAllRequestsUsecase: sl(),
                     ),
                   ),
                 ],

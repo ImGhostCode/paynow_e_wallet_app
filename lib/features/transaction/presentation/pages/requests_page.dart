@@ -70,6 +70,19 @@ class _RequestsPageState extends State<RequestsPage> {
           if (state is RequestAcceptingError) {
             Helper.showSnackBar(message: state.message);
           }
+
+          if (state is AllRequestsAccepted) {
+            Helper.showSnackBar(
+                message: 'All requests accepted', isSuccess: true);
+            context.read<TransactionBloc>().add(GetRequestsEvent(
+                userId: context.read<AuthBloc>().state.userEntity!.id!));
+            // Send notification to sender
+            // reload balance
+          }
+
+          if (state is AllRequestsAcceptingError) {
+            Helper.showSnackBar(message: state.message);
+          }
         }, builder: (context, state) {
           if (state is LoadingRequests) {
             return const Center(
@@ -227,8 +240,13 @@ class _RequestsPageState extends State<RequestsPage> {
                                           padding: EdgeInsets.all(4.w),
                                         ),
                                         onPressed: context
-                                                .watch<TransactionBloc>()
-                                                .state is AcceptingRequest
+                                                        .watch<TransactionBloc>()
+                                                        .state
+                                                    is AcceptingRequest ||
+                                                context
+                                                        .watch<TransactionBloc>()
+                                                        .state
+                                                    is AcceptingAllRequests
                                             ? null
                                             : () async {
                                                 final bool? isConfirm =
@@ -297,62 +315,32 @@ class _RequestsPageState extends State<RequestsPage> {
             child: SizedBox(
               height: 50.h,
               child: ElevatedButton(
-                onPressed: context.watch<TransactionBloc>().state
-                            is RequestsLoaded &&
-                        (context.watch<TransactionBloc>().state
-                                as RequestsLoaded)
-                            .requests
-                            .isNotEmpty &&
-                        context.watch<TransactionBloc>().state
-                            is! AcceptingRequest
-                    ? () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: Container(
-                                color: AppColors.white,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      ImageConstants.sentIllustration,
-                                      height: 180.w,
-                                      width: 240.w,
-                                    ),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    Text(
-                                      'The amount has been requested successfully!',
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                              fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(
-                                      height: 30.h,
-                                    ),
-                                    SizedBox(
-                                      height: 50.h,
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Ok, Thanks!')),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    : null,
+                onPressed:
+                    context.watch<TransactionBloc>().state is RequestsLoaded &&
+                            (context.watch<TransactionBloc>().state
+                                    as RequestsLoaded)
+                                .requests
+                                .isNotEmpty &&
+                            context.watch<TransactionBloc>().state
+                                is! AcceptingRequest &&
+                            context.watch<TransactionBloc>().state
+                                is! AcceptingAllRequests
+                        ? () async {
+                            final bool? isConfirm =
+                                await _showConfirmDialog(context, null);
+
+                            if (isConfirm == null || !isConfirm) {
+                              return;
+                            }
+
+                            context.read<TransactionBloc>().add(
+                                AcceptAllRequestsEvent(
+                                    transactions: (context
+                                            .read<TransactionBloc>()
+                                            .state as RequestsLoaded)
+                                        .requests));
+                          }
+                        : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                   foregroundColor: Colors.black,
@@ -373,24 +361,27 @@ class _RequestsPageState extends State<RequestsPage> {
             )));
   }
 
-  Future<bool?> _showConfirmDialog(BuildContext context, LoadedUser state) {
+  Future<bool?> _showConfirmDialog(BuildContext context, LoadedUser? state) {
     return showDialog(
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
             title: const Text('Please Confirm'),
             content: Text.rich(TextSpan(
-                text: 'Are you sure to send the payment to ',
+                text:
+                    'Are you sure to send ${state == null ? 'all ' : ''}the payment to ',
                 style: Theme.of(context).textTheme.bodyMedium,
                 children: [
-                  TextSpan(
-                      text: state.userEntity!.name.isNotEmpty
-                          ? state.userEntity!.name
-                          : state.userEntity!.id,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(fontWeight: FontWeight.bold)),
+                  state == null
+                      ? const TextSpan(text: 'your friends')
+                      : TextSpan(
+                          text: state.userEntity!.name.isNotEmpty
+                              ? state.userEntity!.name
+                              : state.userEntity!.id,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontWeight: FontWeight.bold)),
                   const TextSpan(text: '?')
                 ])),
             actions: [

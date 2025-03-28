@@ -31,3 +31,9 @@ class AcceptRequestEvent extends TransactionEvent {
 
   const AcceptRequestEvent({required this.transaction});
 }
+
+class AcceptAllRequestsEvent extends TransactionEvent {
+  final List<TransactionEntity> transactions;
+
+  const AcceptAllRequestsEvent({required this.transactions});
+}

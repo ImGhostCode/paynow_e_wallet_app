@@ -185,4 +185,11 @@ class TransactionRemoteDataSourceImpl extends TransactionRemoteDataSource {
       throw ServerException(e.toString(), null);
     }
   }
+
+  @override
+  Future<void> acceptAllRequests(AcceptAllRequestParams params) async {
+    for (final transaction in params.transactions) {
+      await acceptRequest(AcceptRequestParams(transaction));
+    }
+  }
 }

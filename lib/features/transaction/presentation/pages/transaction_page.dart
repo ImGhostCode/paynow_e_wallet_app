@@ -196,8 +196,8 @@ class _TransactionPageState extends State<TransactionPage> {
                                       BlocProvider(
                                         create: (context) => AuthBloc(
                                           getUserUsecase: sl<GetUserUsecase>(),
-                                        )..add(
-                                            GetUserEvent(id: element.senderId)),
+                                        )..add(GetUserEvent(
+                                            id: _getUserId(element))),
                                         child: BlocBuilder<AuthBloc, AuthState>(
                                             builder: (context, state) {
                                           if (state is IsLoadingUser) {
@@ -221,7 +221,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                                         state.userEntity!.name
                                                             .isNotEmpty
                                                     ? state.userEntity!.name
-                                                    : element.senderId,
+                                                    : state.userEntity!.id!,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium,
@@ -305,7 +305,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                         create: (context) => AuthBloc(
                                           getUserUsecase: sl<GetUserUsecase>(),
                                         )..add(GetUserEvent(
-                                            id: element.receiverId)),
+                                            id: _getUserId(element))),
                                         child: BlocBuilder<AuthBloc, AuthState>(
                                             builder: (context, state) {
                                           if (state is IsLoadingUser) {
@@ -390,8 +390,22 @@ class _TransactionPageState extends State<TransactionPage> {
         }));
   }
 
+  String _getUserId(TransactionEntity element) {
+    if (element.transactionType == TransactionType.send.name &&
+        element.senderId == widget.user.id) {
+      return element.receiverId;
+    } else if (element.transactionType == TransactionType.send.name &&
+        element.receiverId == widget.user.id) {
+      return element.senderId;
+    } else if (element.transactionType == TransactionType.request.name &&
+        element.senderId == widget.user.id) {
+      return element.receiverId;
+    } else {
+      return element.senderId;
+    }
+  }
+
   void _groupTransactions(List<TransactionEntity> transactions) {
-    // _groupedTransactions.clear();
     _groupedIncomes.clear();
     _groupedExpenses.clear();
 

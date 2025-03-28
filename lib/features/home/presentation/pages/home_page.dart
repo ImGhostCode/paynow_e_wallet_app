@@ -281,7 +281,7 @@ class HomePage extends StatelessWidget {
                     return BlocProvider(
                         create: (context) => AuthBloc(
                               getUserUsecase: sl<GetUserUsecase>(),
-                            )..add(GetUserEvent(id: _getReceiverid(element))),
+                            )..add(GetUserEvent(id: _getReceiverId(element))),
                         child: BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, state) {
                           if (state is IsLoadingUser) {
@@ -406,7 +406,7 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  String _getReceiverid(TransactionEntity element) {
+  String _getReceiverId(TransactionEntity element) {
     if (element.transactionType == TransactionType.send.name &&
         element.senderId == user.id) {
       return element.receiverId;
