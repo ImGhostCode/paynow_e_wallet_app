@@ -26,7 +26,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
             UserModel(
                     avatar: '',
                     email: params.email,
-                    name: result.user?.displayName ?? '',
+                    name: result.user?.displayName ?? params.name,
                     phone: '',
                     createdAt: DateTime.now())
                 .toFirestore(),

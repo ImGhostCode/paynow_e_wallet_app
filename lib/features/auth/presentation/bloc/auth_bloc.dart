@@ -18,7 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       this.signUpUsecase,
       this.loginUsecase,
       this.updateUserUsecase})
-      : super(AuthInitial()) {
+      : super(const AuthInitial()) {
     on<SignUpEvent>(_onSignUpEvent);
     on<LoginEvent>(_onLoginEvent);
     on<GetUserEvent>(_onGetUserEvent);
@@ -30,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final result = await signUpUsecase!.call(
       SignUpParams(
+        name: event.name,
         email: event.email,
         password: event.password,
       ),
@@ -78,6 +79,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   _onLogoutEvent(LogoutEvent event, Emitter<AuthState> emit) async {
-    emit(AuthInitial());
+    emit(const AuthInitial());
   }
 }

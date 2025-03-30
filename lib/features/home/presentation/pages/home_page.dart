@@ -15,8 +15,10 @@ import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.d
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_event.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_state.dart';
 
 class HomePage extends StatelessWidget {
@@ -136,255 +138,266 @@ class HomePage extends StatelessWidget {
                   ),
                 )),
           )),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 25.h,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    height: 50.h,
-                    width: 165.w,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          foregroundColor: Colors.black,
-                          padding: EdgeInsets.zero),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, AppRouteEnum.sendMoneyPage.name);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            ImageConstants.send,
-                            height: 24.w,
-                            width: 24.w,
-                            fit: BoxFit.cover,
-                          ),
-                          SizedBox(width: 5.w),
-                          Text(
-                            'Send Money',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50.h,
-                    width: 165.w,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, AppRouteEnum.requestMoneyPage.name);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            ImageConstants.request,
-                            height: 24.w,
-                            width: 24.w,
-                            fit: BoxFit.cover,
-                          ),
-                          SizedBox(width: 5.w),
-                          const Text('Request Money'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5.h,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Last Transactions',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  // const Spacer(),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.all(8.w),
-                      foregroundColor: Theme.of(context).colorScheme.primary,
-                      textStyle:
-                          Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
-                    ),
-                    onPressed: () {
-                      context.read<NavIndexCubit>().changeIndex(1);
-                    },
-                    child: const Text('View All'),
-                  ),
-                ],
-              ),
-              BlocBuilder<TransactionBloc, TransactionState>(
-                  buildWhen: (previous, current) {
-                if (current is TransactionLoading ||
-                    current is TransactionLoaded ||
-                    current is TransactionLoadingError) {
-                  return true;
-                }
-                return false;
-              }, builder: (context, state) {
-                if (state is TransactionLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (state is TransactionLoadingError) {
-                  return Center(
-                    child: Text(state.message),
-                  );
-                }
-                if (state is TransactionLoaded && state.transactions.isEmpty) {
-                  return Column(
-                    children: [
-                      SizedBox(height: 100.h),
-                      SvgPicture.asset(
-                        ImageConstants.emptyIllustration,
-                        height: 100.w,
-                        width: 100.w,
-                        fit: BoxFit.cover,
-                      ),
-                      Text(
-                        'There’s no transactions till now!',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: AppColors.textGrey,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<CardBloc>().add(GetCardEvent(userId: user.id ?? ""));
+          context
+              .read<TransactionBloc>()
+              .add(GetTransactionEvent(userId: user.id!));
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 25.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      height: 50.h,
+                      width: 165.w,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            foregroundColor: Colors.black,
+                            padding: EdgeInsets.zero),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, AppRouteEnum.sendMoneyPage.name);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              ImageConstants.send,
+                              height: 24.w,
+                              width: 24.w,
+                              fit: BoxFit.cover,
                             ),
+                            SizedBox(width: 5.w),
+                            Text(
+                              'Send Money',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  );
-                }
-
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, index) {
-                    final element = state.transactions[index];
-                    return BlocProvider(
-                        create: (context) => AuthBloc(
-                              getUserUsecase: sl<GetUserUsecase>(),
-                            )..add(GetUserEvent(id: _getReceiverId(element))),
-                        child: BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) {
-                          if (state is IsLoadingUser) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (state is ErrorLoadingUser) {
-                            return Center(
-                              child: Text(state.error),
-                            );
-                          }
-                          if (state is LoadedUser) {
-                            return ListTile(
-                              minTileHeight: 60.h,
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                state.userEntity?.name != null &&
-                                        state.userEntity!.name.isNotEmpty
-                                    ? state.userEntity!.name
-                                    : element.senderId,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              horizontalTitleGap: 5.w,
-                              subtitle: Text(
-                                '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(
-                                      color: AppColors.gray,
-                                    ),
-                              ),
-                              trailing: Text(
-                                _displayAmount(element),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(fontWeight: FontWeight.w600),
-                              ),
-                              leading: Stack(
-                                children: [
-                                  Container(
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: state.userEntity!.avatar.isNotEmpty
-                                        ? Image.network(
-                                            state.userEntity!.avatar,
-                                            fit: BoxFit.cover,
-                                            height: 40.w,
-                                            width: 40.w,
-                                          )
-                                        : Image.asset(
-                                            ImageConstants.defaultUser,
-                                            height: 40.w,
-                                            width: 40.w,
-                                          ),
+                    ),
+                    SizedBox(
+                      height: 50.h,
+                      width: 165.w,
+                      child: ElevatedButton(
+                        style:
+                            ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, AppRouteEnum.requestMoneyPage.name);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              ImageConstants.request,
+                              height: 24.w,
+                              width: 24.w,
+                              fit: BoxFit.cover,
+                            ),
+                            SizedBox(width: 5.w),
+                            const Text('Request Money'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Last Transactions',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    // const Spacer(),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.all(8.w),
+                        foregroundColor: Theme.of(context).colorScheme.primary,
+                        textStyle:
+                            Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                      ),
+                      onPressed: () {
+                        context.read<NavIndexCubit>().changeIndex(1);
+                      },
+                      child: const Text('View All'),
+                    ),
+                  ],
+                ),
+                BlocBuilder<TransactionBloc, TransactionState>(
+                    buildWhen: (previous, current) {
+                  if (current is TransactionLoading ||
+                      current is TransactionLoaded ||
+                      current is TransactionLoadingError) {
+                    return true;
+                  }
+                  return false;
+                }, builder: (context, state) {
+                  if (state is TransactionLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is TransactionLoadingError) {
+                    return Center(
+                      child: Text(state.message),
+                    );
+                  }
+                  if (state is TransactionLoaded &&
+                      state.transactions.isEmpty) {
+                    return Column(
+                      children: [
+                        SizedBox(height: 100.h),
+                        SvgPicture.asset(
+                          ImageConstants.emptyIllustration,
+                          height: 100.w,
+                          width: 100.w,
+                          fit: BoxFit.cover,
+                        ),
+                        Text(
+                          'There’s no transactions till now!',
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: AppColors.textGrey,
                                   ),
-                                  Positioned(
-                                    bottom: -3.h,
-                                    right: -3.w,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      constraints: BoxConstraints(
-                                        maxHeight: 24.h,
-                                        maxWidth: 24.h,
+                        ),
+                      ],
+                    );
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      final element = state.transactions[index];
+                      return BlocProvider(
+                          create: (context) => AuthBloc(
+                                getUserUsecase: sl<GetUserUsecase>(),
+                              )..add(GetUserEvent(id: _getReceiverId(element))),
+                          child: BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                            if (state is IsLoadingUser) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            if (state is ErrorLoadingUser) {
+                              return Center(
+                                child: Text(state.error),
+                              );
+                            }
+                            if (state is LoadedUser) {
+                              return ListTile(
+                                minTileHeight: 60.h,
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(
+                                  state.userEntity?.name != null &&
+                                          state.userEntity!.name.isNotEmpty
+                                      ? state.userEntity!.name
+                                      : element.senderId,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                horizontalTitleGap: 5.w,
+                                subtitle: Text(
+                                  '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        color: AppColors.gray,
                                       ),
+                                ),
+                                trailing: Text(
+                                  _displayAmount(element),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(fontWeight: FontWeight.w600),
+                                ),
+                                leading: Stack(
+                                  children: [
+                                    Container(
+                                      clipBehavior: Clip.antiAlias,
                                       decoration: const BoxDecoration(
-                                        color: Colors.white,
                                         shape: BoxShape.circle,
                                       ),
-                                      child: SvgPicture.asset(
-                                        element.transactionType ==
-                                                TransactionType.send.name
-                                            ? ImageConstants.send
-                                            : ImageConstants.request,
-                                        color: element.transactionType ==
-                                                TransactionType.send.name
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .secondary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                        height: 24.h,
-                                        width: 24.h,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: state.userEntity!.avatar.isNotEmpty
+                                          ? Image.network(
+                                              state.userEntity!.avatar,
+                                              fit: BoxFit.cover,
+                                              height: 40.w,
+                                              width: 40.w,
+                                            )
+                                          : Image.asset(
+                                              ImageConstants.defaultUser,
+                                              height: 40.w,
+                                              width: 40.w,
+                                            ),
                                     ),
-                                  )
-                                ],
-                              ),
-                            );
-                          }
-                          return const SizedBox();
-                        }));
-                  },
-                  itemCount: state.transactions.length,
-                );
-              })
-            ],
+                                    Positioned(
+                                      bottom: -3.h,
+                                      right: -3.w,
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        constraints: BoxConstraints(
+                                          maxHeight: 24.h,
+                                          maxWidth: 24.h,
+                                        ),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: SvgPicture.asset(
+                                          element.transactionType ==
+                                                  TransactionType.send.name
+                                              ? ImageConstants.send
+                                              : ImageConstants.request,
+                                          color: element.transactionType ==
+                                                  TransactionType.send.name
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                          height: 24.h,
+                                          width: 24.h,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                            return const SizedBox();
+                          }));
+                    },
+                    itemCount: state.transactions.length,
+                  );
+                })
+              ],
+            ),
           ),
         ),
       ),

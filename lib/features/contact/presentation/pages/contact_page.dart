@@ -152,6 +152,7 @@ class _ContactPageState extends State<ContactPage> {
                                             _filteredFriends[index].avatar,
                                             height: 40.w,
                                             width: 40.w,
+                                            fit: BoxFit.cover,
                                           )
                                         : Image.asset(
                                             ImageConstants.defaultUser,
