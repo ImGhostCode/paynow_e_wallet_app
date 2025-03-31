@@ -68,20 +68,22 @@ class AppRouter {
       // ==== Home pages ==== //
       case '/send_money_page':
         return CupertinoPageRoute(
-          settings: RouteSettings(name: settings.name),
-          builder: (_) => SendMoneyPage(),
+          settings:
+              RouteSettings(name: settings.name, arguments: settings.arguments),
+          builder: (_) => const SendMoneyPage(),
         );
 
       case '/request_money_page':
         return CupertinoPageRoute(
-          settings: RouteSettings(name: settings.name),
-          builder: (_) => RequestMoneyPage(),
+          settings:
+              RouteSettings(name: settings.name, arguments: settings.arguments),
+          builder: (_) => const RequestMoneyPage(),
         );
 
       case '/requests_page':
         return CupertinoPageRoute(
           settings: RouteSettings(name: settings.name),
-          builder: (_) => RequestsPage(),
+          builder: (_) => const RequestsPage(),
         );
 
       // ==== Profile pages ==== //

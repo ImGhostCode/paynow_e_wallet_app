@@ -26,12 +26,25 @@ class SendMoneyPage extends StatefulWidget {
 }
 
 class _SendMoneyPageState extends State<SendMoneyPage> {
+  late UserEntity? args;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
   UserEntity? _selectedContact;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      args = ModalRoute.of(context)!.settings.arguments as UserEntity?;
+      if (args != null) {
+        _selectedContact = args;
+        setState(() {});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

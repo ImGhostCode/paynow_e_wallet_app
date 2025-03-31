@@ -186,7 +186,14 @@ class _ContactPageState extends State<ContactPage> {
                                                   .colorScheme
                                                   .secondary,
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context,
+                                                  AppRouteEnum
+                                                      .sendMoneyPage.name,
+                                                  arguments:
+                                                      _filteredFriends[index]);
+                                            },
                                             child: SvgPicture.asset(
                                                 ImageConstants.send,
                                                 height: 20.w,
@@ -200,7 +207,14 @@ class _ContactPageState extends State<ContactPage> {
                                             style: ElevatedButton.styleFrom(
                                               padding: EdgeInsets.zero,
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context,
+                                                  AppRouteEnum
+                                                      .requestMoneyPage.name,
+                                                  arguments:
+                                                      _filteredFriends[index]);
+                                            },
                                             child: SvgPicture.asset(
                                                 ImageConstants.request,
                                                 height: 20.w,
