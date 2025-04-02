@@ -160,9 +160,13 @@ class NotificationService {
   Future<void> handleMessage(
     RemoteMessage message,
   ) async {
-    if (navigatorObserver.currentRouteName !=
-        AppRouteEnum.notificationPage.name) {
+    if (message.data['type'] == NotificationType.friendRequest.name &&
+        navigatorObserver.currentRouteName !=
+            AppRouteEnum.notificationPage.name) {
       navigatorKey.currentState!.pushNamed(AppRouteEnum.notificationPage.name);
+    } else if (message.data['type'] == NotificationType.requestMoney.name &&
+        navigatorObserver.currentRouteName != AppRouteEnum.requestsPage.name) {
+      navigatorKey.currentState!.pushNamed(AppRouteEnum.requestsPage.name);
     }
   }
 

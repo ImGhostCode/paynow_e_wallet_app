@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/core/params/transaction_params.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
+import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/usecases/accept_all_requests_usecase.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/usecases/accept_request_usecase.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/usecases/add_transactions_usecase.dart';
@@ -63,9 +66,31 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     );
     result.fold((l) {
       emit(TransactionAddingError(message: l.errorMessage));
-    }, (r) {
+    }, (r) async {
       emit(TransactionAdded(
           addedTransaction: r, currTransactions: state.transactions));
+      final token = await sl<NotificationService>()
+          .getDeviceToken(event.transaction.receiverId);
+      if (token != null && token.isNotEmpty) {
+        sl<NotificationService>().sendNotification(
+            deviceToken: token,
+            title: event.transaction.transactionType ==
+                    TransactionType.request.name
+                ? 'Money transfer request'
+                : 'Money transfer',
+            body: event.transaction.transactionType ==
+                    TransactionType.request.name
+                ? 'You have a new money transfer request for \$${event.transaction.amount}'
+                : 'You have received \$${event.transaction.amount} from ${event.transaction.senderId}',
+            data: {
+              'type': event.transaction.transactionType ==
+                      TransactionType.request.name
+                  ? NotificationType.requestMoney.name
+                  : NotificationType.receivedMoney.name,
+              'senderId': event.transaction.senderId,
+              'receiverId': event.transaction.receiverId,
+            });
+      }
     });
   }
 
@@ -79,8 +104,22 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(RequestAcceptingError(
         message: l.errorMessage,
       ));
-    }, (r) {
+    }, (r) async {
       emit(RequestAccepted());
+      final token = await sl<NotificationService>()
+          .getDeviceToken(event.transaction.senderId);
+      if (token != null && token.isNotEmpty) {
+        sl<NotificationService>().sendNotification(
+            deviceToken: token,
+            title: 'Money transfer request is accepted',
+            body:
+                '${event.transaction.receiverId} accepted your money transfer request for \$${event.transaction.amount}',
+            data: {
+              'type': NotificationType.acceptedMoneyRequest.name,
+              'senderId': event.transaction.senderId,
+              'receiverId': event.transaction.receiverId,
+            });
+      }
     });
   }
 
