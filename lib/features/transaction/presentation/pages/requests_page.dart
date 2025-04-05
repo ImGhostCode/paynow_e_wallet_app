@@ -12,6 +12,8 @@ import 'package:paynow_e_wallet_app/features/auth/business/usecases/get_user_use
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_event.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_event.dart';
@@ -60,10 +62,20 @@ class _RequestsPageState extends State<RequestsPage> {
           return false;
         }, listener: (context, state) {
           if (state is RequestAccepted) {
+            context.read<NotificationBloc>().add(UpdNotificationStateEvent(
+                  moneyRequestCount:
+                      context.read<NotificationBloc>().state.moneyRequestCount >
+                              0
+                          ? context
+                                  .read<NotificationBloc>()
+                                  .state
+                                  .moneyRequestCount -
+                              1
+                          : 0,
+                ));
             Helper.showSnackBar(message: 'Request accepted', isSuccess: true);
             context.read<TransactionBloc>().add(GetRequestsEvent(
                 userId: context.read<AuthBloc>().state.userEntity!.id!));
-            // Send notification to sender
             // reload balance
           }
 
@@ -72,6 +84,11 @@ class _RequestsPageState extends State<RequestsPage> {
           }
 
           if (state is AllRequestsAccepted) {
+            context
+                .read<NotificationBloc>()
+                .add(const UpdNotificationStateEvent(
+                  moneyRequestCount: 0,
+                ));
             Helper.showSnackBar(
                 message: 'All requests accepted', isSuccess: true);
             context.read<TransactionBloc>().add(GetRequestsEvent(

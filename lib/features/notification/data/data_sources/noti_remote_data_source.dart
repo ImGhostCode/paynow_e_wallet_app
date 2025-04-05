@@ -6,4 +6,5 @@ abstract class NotiRemoteDataSource {
   Future<List<NotificationModel>> getNotifications(
       GetNotificationsParams params);
   Future<void> delNotification(DelNotificationParams params);
+  Future<void> updNotification(UpdateNotificationParams params);
 }

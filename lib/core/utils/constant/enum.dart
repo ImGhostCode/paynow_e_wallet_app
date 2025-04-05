@@ -14,4 +14,9 @@ enum Collection {
 
 enum ContactStatus { none, sent, pending, accepted, rejected }
 
-enum NotificationType { friendRequest, transaction }
+enum NotificationType {
+  friendRequest,
+  receivedMoney,
+  requestMoney,
+  acceptedMoneyRequest
+}

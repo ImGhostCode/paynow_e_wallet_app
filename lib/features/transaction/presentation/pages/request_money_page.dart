@@ -10,6 +10,8 @@ import 'package:paynow_e_wallet_app/core/utils/constant/enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:paynow_e_wallet_app/features/auth/business/entities/user_entity.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_state.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_event.dart';
@@ -46,6 +48,8 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final transactionState =
+        context.select<TransactionBloc, TransactionState>((bloc) => bloc.state);
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 60.h,
@@ -64,10 +68,33 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                 onPressed: () {
                   Navigator.pushNamed(context, AppRouteEnum.requestsPage.name);
                 },
-                child: const Text(
-                  'My requests',
-                  style: TextStyle(color: AppColors.primaryColor),
-                ))
+                child: BlocBuilder<NotificationBloc, NotificationState>(
+                    buildWhen: (previous, current) {
+                  if (current is NotificationLoaded) {
+                    return true;
+                  }
+                  return false;
+                }, builder: (context, state) {
+                  return Badge(
+                    isLabelVisible: (transactionState is RequestsLoaded &&
+                            transactionState.requests.isNotEmpty) ||
+                        state.moneyRequestCount > 0,
+                    smallSize: 6.w,
+                    largeSize: 10.w,
+                    backgroundColor: const Color(0xFFF8BB18),
+                    offset: Offset(8.w, -8.h),
+                    label: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    child: const Text(
+                      'My requests',
+                      style: TextStyle(color: AppColors.primaryColor),
+                    ),
+                  );
+                }))
           ],
           bottom: PreferredSize(
               preferredSize: Size.fromHeight(2.h), child: const Divider()),

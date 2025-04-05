@@ -16,6 +16,8 @@ import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_state.d
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paynow_e_wallet_app/features/card/presentation/bloc/card_event.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_state.dart';
 import 'package:paynow_e_wallet_app/features/transaction/business/entities/transaction_entity.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_event.dart';
@@ -113,25 +115,29 @@ class HomePage extends StatelessWidget {
                               Navigator.pushNamed(
                                   context, AppRouteEnum.notificationPage.name);
                             },
-                            // icon: Badge(
-                            //   smallSize: 6.w,
-                            //   largeSize: 10.w,
-                            //   backgroundColor: const Color(0xFFF8BB18),
-                            //   label: Container(
-                            //     decoration: BoxDecoration(
-                            //       color:
-                            //           Theme.of(context).colorScheme.secondary,
-                            //       shape: BoxShape.circle,
-                            //     ),
-                            //   ),
-                            // child: SvgPicture.asset(
-                            //     ImageConstants.notifications,
-                            //     color: Colors.white,
-                            //     height: 24.w,
-                            //     width: 24.w),
-                            icon: SvgPicture.asset(ImageConstants.notifications,
-                                color: Colors.white, height: 24.w, width: 24.w),
-                          ),
+                            icon: BlocBuilder<NotificationBloc,
+                                NotificationState>(builder: (context, state) {
+                              return Badge(
+                                isLabelVisible:
+                                    state.unreadCount > 0 ? true : false,
+                                smallSize: 6.w,
+                                largeSize: 10.w,
+                                backgroundColor: const Color(0xFFF8BB18),
+                                label: Container(
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                child: SvgPicture.asset(
+                                    ImageConstants.notifications,
+                                    color: Colors.white,
+                                    height: 24.w,
+                                    width: 24.w),
+                              );
+                            }),
+                          )
                         ],
                       ),
                     ],

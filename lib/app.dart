@@ -14,7 +14,11 @@ import 'package:paynow_e_wallet_app/features/contact/presentation/pages/contact_
 import 'package:paynow_e_wallet_app/features/home/presentation/pages/home_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_event.dart';
 import 'package:paynow_e_wallet_app/features/profile/presentation/pages/profile_page.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/transaction_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -25,6 +29,8 @@ class MyApp extends StatelessWidget {
     return const SkeletonApp();
   }
 }
+
+final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 class SkeletonApp extends StatefulWidget {
   const SkeletonApp({super.key});
@@ -69,6 +75,10 @@ class _SkeletonAppState extends State<SkeletonApp> {
                 .add(GetUserEvent(id: user?.uid ?? ""));
             BlocProvider.of<CardBloc>(context)
                 .add(GetCardEvent(userId: user?.uid ?? ""));
+            BlocProvider.of<NotificationBloc>(context)
+                .add(GetNotificationEvent(userId: user?.uid ?? ""));
+            BlocProvider.of<TransactionBloc>(context)
+                .add(GetRequestsEvent(userId: user?.uid ?? ""));
           }
         });
         sl<NotificationService>().firebaseInit(context);
@@ -106,6 +116,7 @@ class _SkeletonAppState extends State<SkeletonApp> {
         );
       } else if (state is LoadedUser) {
         return Scaffold(
+          key: scaffoldKey,
           body: BlocBuilder<NavIndexCubit, int>(builder: (context, navState) {
             return IndexedStack(
               index: navState,

@@ -58,6 +58,19 @@ class _NotificationPageState extends State<NotificationPage> {
             return Center(child: Text(state.message));
           }
           if (state is NotificationLoaded && state.notifications.isNotEmpty) {
+            if (state.unreadCount > 0) {
+              context
+                  .read<NotificationBloc>()
+                  .add(const UpdNotificationStateEvent(unreadCount: 0));
+              for (var i = 0; i < state.notifications.length; i++) {
+                context.read<NotificationBloc>().add(UpdNotificationEvent(
+                    notificationId: state.notifications[i].id,
+                    notification: state.notifications[i].copyWith(
+                      isRead: true,
+                    )));
+              }
+            }
+
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.r),

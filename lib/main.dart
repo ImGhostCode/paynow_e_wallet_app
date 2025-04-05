@@ -168,6 +168,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
                       getNotificationUsecase: sl(),
                       saveNotificationUsecase: sl(),
                       deleteNotificationUsecase: sl(),
+                      updNotificationUsecase: sl(),
                     ),
                   ),
                   BlocProvider<TransactionBloc>(

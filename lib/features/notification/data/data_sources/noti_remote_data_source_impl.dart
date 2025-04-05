@@ -71,4 +71,18 @@ class NotiRemoteDataSourceImpl extends NotiRemoteDataSource {
       throw ServerException(e.toString(), null);
     }
   }
+
+  @override
+  Future<void> updNotification(UpdateNotificationParams params) async {
+    try {
+      await _firestore
+          .collection(Collection.notifications.name)
+          .doc(params.notificationId)
+          .update(params.notification.toFirestore());
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(e.message ?? '', e.code);
+    } catch (e) {
+      throw ServerException(e.toString(), null);
+    }
+  }
 }

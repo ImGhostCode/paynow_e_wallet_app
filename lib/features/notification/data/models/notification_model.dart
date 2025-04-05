@@ -8,7 +8,8 @@ part 'notification_model.g.dart';
 @JsonSerializable()
 class NotificationModel extends NotificationEntity {
   NotificationModel(
-      {required super.senderId,
+      {super.id,
+      required super.senderId,
       required super.receiverId,
       required super.type,
       required super.data,
@@ -26,12 +27,14 @@ class NotificationModel extends NotificationEntity {
     return NotificationModel.fromJson({...data, 'id': doc.id});
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return toJson()..remove('id');
   }
 
   NotificationEntity toEntity() {
     return NotificationEntity(
+        id: id,
         senderId: senderId,
         receiverId: receiverId,
         type: type,
@@ -42,6 +45,7 @@ class NotificationModel extends NotificationEntity {
 
   static NotificationModel fromEntity(NotificationEntity user) {
     return NotificationModel(
+        id: user.id,
         senderId: user.senderId,
         receiverId: user.receiverId,
         type: user.type,

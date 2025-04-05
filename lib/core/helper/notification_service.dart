@@ -6,12 +6,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:paynow_e_wallet_app/app.dart';
 import 'package:paynow_e_wallet_app/core/router/app_route_enum.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/constant.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:paynow_e_wallet_app/env.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_event.dart';
 import 'package:paynow_e_wallet_app/main.dart';
 
 class NotificationService {
@@ -62,11 +66,21 @@ class NotificationService {
     }
   }
 
+  String? lastMessageId;
   void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((message) {
+      debugPrint('Foreground message id: ${message.messageId}');
+      debugPrint('Foreground message received: ${message.notification!.title}');
+      if (lastMessageId == message.messageId) {
+        return;
+      } else {
+        lastMessageId = message.messageId;
+      }
       if (message.notification != null) {
-        debugPrint(
-            'Foreground message received: ${message.notification!.title}');
+        scaffoldKey.currentContext!
+            .read<NotificationBloc>()
+            .add(NewNotificationReceived(type: message.data['type']));
+
         if (Platform.isAndroid) {
           initLocalNotifications(message);
           showNotification(message);

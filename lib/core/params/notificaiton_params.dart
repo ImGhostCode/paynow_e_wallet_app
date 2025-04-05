@@ -29,3 +29,13 @@ class DelNotificationParams {
     this.type,
   });
 }
+
+class UpdateNotificationParams {
+  final String? notificationId;
+  final NotificationEntity notification;
+
+  UpdateNotificationParams({
+    this.notificationId,
+    required this.notification,
+  });
+}

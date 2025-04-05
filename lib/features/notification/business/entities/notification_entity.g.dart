@@ -8,6 +8,7 @@ part of 'notification_entity.dart';
 
 NotificationEntity _$NotificationEntityFromJson(Map<String, dynamic> json) =>
     NotificationEntity(
+      id: json['id'] as String?,
       senderId: json['senderId'] as String?,
       receiverId: json['receiverId'] as String?,
       type: json['type'] as String?,
@@ -18,6 +19,7 @@ NotificationEntity _$NotificationEntityFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$NotificationEntityToJson(NotificationEntity instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'senderId': instance.senderId,
       'receiverId': instance.receiverId,
       'type': instance.type,

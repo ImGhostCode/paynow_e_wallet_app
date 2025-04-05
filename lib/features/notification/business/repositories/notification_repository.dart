@@ -8,4 +8,6 @@ abstract class NotificationRepository {
   Future<Either<Failure, List<NotificationEntity>>> getNotifications(
       GetNotificationsParams params);
   Future<Either<Failure, void>> delNotification(DelNotificationParams params);
+  Future<Either<Failure, void>> updateNotification(
+      UpdateNotificationParams params);
 }

@@ -6,6 +6,8 @@ part 'notification_entity.g.dart';
 
 @JsonSerializable()
 class NotificationEntity {
+  @JsonKey(name: "id")
+  final String? id;
   @JsonKey(name: "senderId")
   final String? senderId;
   @JsonKey(name: "receiverId")
@@ -26,6 +28,7 @@ class NotificationEntity {
   final DateTime timestamp;
 
   NotificationEntity({
+    this.id,
     required this.senderId,
     required this.receiverId,
     required this.type,
@@ -36,6 +39,7 @@ class NotificationEntity {
   });
 
   NotificationEntity copyWith({
+    String? id,
     String? senderId,
     String? receiverId,
     String? type,
@@ -45,6 +49,7 @@ class NotificationEntity {
     DateTime? timestamp,
   }) =>
       NotificationEntity(
+        id: id ?? this.id,
         senderId: senderId ?? this.senderId,
         receiverId: receiverId ?? this.receiverId,
         type: type ?? this.type,

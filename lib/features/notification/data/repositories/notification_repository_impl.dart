@@ -51,4 +51,17 @@ class NotificationRepositoryImpl extends NotificationRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateNotification(
+      UpdateNotificationParams params) async {
+    try {
+      final result = await notiRemoteDataSource.updNotification(params);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.code));
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }

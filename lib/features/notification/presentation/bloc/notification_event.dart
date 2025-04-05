@@ -29,3 +29,25 @@ class DelNotificationEvent extends NotificationEvent {
   const DelNotificationEvent(
       {this.notificationId, this.senderId, this.receiverId, this.type});
 }
+
+class UpdNotificationEvent extends NotificationEvent {
+  final String? notificationId;
+  final NotificationEntity notification;
+
+  const UpdNotificationEvent({this.notificationId, required this.notification});
+}
+
+class NewNotificationReceived extends NotificationEvent {
+  final String? type;
+
+  const NewNotificationReceived({
+    required this.type,
+  });
+}
+
+class UpdNotificationStateEvent extends NotificationEvent {
+  final int? unreadCount;
+  final int? moneyRequestCount;
+
+  const UpdNotificationStateEvent({this.unreadCount, this.moneyRequestCount});
+}
