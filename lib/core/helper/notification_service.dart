@@ -17,6 +17,7 @@ import 'package:paynow_e_wallet_app/env.dart';
 import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:paynow_e_wallet_app/features/notification/presentation/bloc/notification_event.dart';
 import 'package:paynow_e_wallet_app/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -69,6 +70,9 @@ class NotificationService {
   String? lastMessageId;
   void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((message) {
+      if (message.notification == null) {
+        return;
+      }
       debugPrint('Foreground message id: ${message.messageId}');
       debugPrint('Foreground message received: ${message.notification!.title}');
       if (lastMessageId == message.messageId) {
@@ -112,6 +116,11 @@ class NotificationService {
       RemoteMessage message) async {
     await Firebase.initializeApp();
     debugPrint('Handling background message: ${message.notification?.title}');
+    final prefs = SharedPreferencesAsync();
+    await prefs.setStringList(cachedNotifications, [
+      ...(await prefs.getStringList(cachedNotifications) ?? []),
+      json.encode(message.toMap()),
+    ]);
   }
 
   void initLocalNotifications(RemoteMessage message) async {

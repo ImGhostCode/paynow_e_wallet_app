@@ -4,6 +4,7 @@ const String defaultStr = "-";
 const String errorEmpty = "Please enter some text";
 
 const String cachedIsFirstTime = "CACHED_IS_FIRST_TIME";
+const String cachedNotifications = "CACHED_NOTIFICATIONS";
 
 const String kFCMToken = 'fcmToken';
 

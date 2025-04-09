@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paynow_e_wallet_app/core/helper/notification_service.dart';
 import 'package:paynow_e_wallet_app/core/styles/app_colors.dart';
+import 'package:paynow_e_wallet_app/core/utils/constant/app_constants.dart';
 import 'package:paynow_e_wallet_app/core/utils/constant/image_constants.dart';
 import 'package:paynow_e_wallet_app/core/utils/injections.dart';
 import 'package:paynow_e_wallet_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -20,6 +24,7 @@ import 'package:paynow_e_wallet_app/features/profile/presentation/pages/profile_
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:paynow_e_wallet_app/features/transaction/presentation/pages/transaction_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -39,7 +44,7 @@ class SkeletonApp extends StatefulWidget {
   State<SkeletonApp> createState() => _SkeletonAppState();
 }
 
-class _SkeletonAppState extends State<SkeletonApp> {
+class _SkeletonAppState extends State<SkeletonApp> with WidgetsBindingObserver {
   final List<NavBarItem> navBarItem = [
     NavBarItem(
       title: 'Home',
@@ -63,9 +68,11 @@ class _SkeletonAppState extends State<SkeletonApp> {
     ),
   ];
   User? user;
+  // bool _isInForeground = true;
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       user = FirebaseAuth.instance.currentUser;
       if (user != null) {
@@ -86,6 +93,38 @@ class _SkeletonAppState extends State<SkeletonApp> {
       setState(() {});
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // _isInForeground = state == AppLifecycleState.resumed;
+    if (state == AppLifecycleState.resumed) {
+      await checkNewNotification();
+    }
+  }
+
+  Future<void> checkNewNotification() async {
+    final prefs = SharedPreferencesAsync();
+    final newNotifications = await prefs.getStringList(cachedNotifications);
+    if (newNotifications == null || newNotifications.isEmpty) {
+      return;
+    }
+    for (var notification in newNotifications) {
+      final RemoteMessage message =
+          RemoteMessage.fromMap(jsonDecode(notification));
+      if (message.notification != null) {
+        scaffoldKey.currentContext!
+            .read<NotificationBloc>()
+            .add(NewNotificationReceived(type: message.data['type']));
+      }
+    }
+    // await prefs.remove(cachedNotifications);
   }
 
   @override
