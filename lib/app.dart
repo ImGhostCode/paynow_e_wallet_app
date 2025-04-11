@@ -124,7 +124,7 @@ class _SkeletonAppState extends State<SkeletonApp> with WidgetsBindingObserver {
             .add(NewNotificationReceived(type: message.data['type']));
       }
     }
-    // await prefs.remove(cachedNotifications);
+    await prefs.remove(cachedNotifications);
   }
 
   @override
