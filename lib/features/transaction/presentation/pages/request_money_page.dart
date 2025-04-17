@@ -76,8 +76,7 @@ class _RequestMoneyPageState extends State<RequestMoneyPage> {
                   return false;
                 }, builder: (context, state) {
                   return Badge(
-                    isLabelVisible: (transactionState is RequestsLoaded &&
-                            transactionState.requests.isNotEmpty) ||
+                    isLabelVisible: transactionState.requests.isNotEmpty ||
                         state.moneyRequestCount > 0,
                     smallSize: 6.w,
                     largeSize: 10.w,

@@ -34,33 +34,36 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   _onGetTransactionEvent(
       GetTransactionEvent event, Emitter<TransactionState> emit) async {
-    emit(TransactionLoading());
+    emit(TransactionLoading(
+        requests: state.requests, transactions: state.transactions));
     final result = await getTransactionUsecase!.call(
       event.userId,
     );
     result.fold((l) {
       emit(TransactionLoadingError(message: l.errorMessage));
     }, (r) {
-      emit(TransactionLoaded(transactions: r));
+      emit(TransactionLoaded(transactions: r, requests: state.requests));
     });
   }
 
   _onGetRequestsEvent(
       GetRequestsEvent event, Emitter<TransactionState> emit) async {
-    emit(LoadingRequests());
+    emit(LoadingRequests(
+        requests: state.requests, transactions: state.transactions));
     final result = await getRequestsUsecase!.call(
       event.userId,
     );
     result.fold((l) {
       emit(RequestsLoadingError(message: l.errorMessage));
     }, (r) {
-      emit(RequestsLoaded(requests: r));
+      emit(RequestsLoaded(requests: r, transactions: state.transactions));
     });
   }
 
   _onAddTransactionEvent(
       AddTransactionEvent event, Emitter<TransactionState> emit) async {
-    emit(TransactionAdding());
+    emit(TransactionAdding(
+        requests: state.requests, transactions: state.transactions));
     final result = await addTransactionUsecase!.call(
       AddTransactionParams(event.transaction),
     );
@@ -68,7 +71,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(TransactionAddingError(message: l.errorMessage));
     }, (r) async {
       emit(TransactionAdded(
-          addedTransaction: r, currTransactions: state.transactions));
+          addedTransaction: r,
+          currTransactions: state.transactions,
+          requests: state.requests));
       final token = await sl<NotificationService>()
           .getDeviceToken(event.transaction.receiverId);
       if (token != null && token.isNotEmpty) {
@@ -96,7 +101,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   _onAcceptRequestEvent(
       AcceptRequestEvent event, Emitter<TransactionState> emit) async {
-    emit(AcceptingRequest());
+    emit(AcceptingRequest(
+        requests: state.requests, transactions: state.transactions));
     final result = await acceptRequestUsecase!.call(
       AcceptRequestParams(event.transaction),
     );
@@ -105,7 +111,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         message: l.errorMessage,
       ));
     }, (r) async {
-      emit(RequestAccepted());
+      emit(RequestAccepted(
+          requests: state.requests, transactions: state.transactions));
       final token = await sl<NotificationService>()
           .getDeviceToken(event.transaction.senderId);
       if (token != null && token.isNotEmpty) {
@@ -125,7 +132,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   _onAcceptAllRequestsEvent(
       AcceptAllRequestsEvent event, Emitter<TransactionState> emit) async {
-    emit(AcceptingAllRequests());
+    emit(AcceptingAllRequests(
+        requests: state.requests, transactions: state.transactions));
     final result = await acceptAllRequestsUsecase!.call(
       AcceptAllRequestParams(event.transactions),
     );
@@ -134,7 +142,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         message: l.errorMessage,
       ));
     }, (r) {
-      emit(AllRequestsAccepted());
+      emit(AllRequestsAccepted(
+          requests: state.requests, transactions: state.transactions));
     });
   }
 }

@@ -115,10 +115,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   _updateNumberOfUnreadNotifications(
       UpdNotificationStateEvent event, Emitter<NotificationState> emit) {
     if (state is! NotificationLoaded) {
-      emit(const NotificationLoaded(
-        notifications: [],
-        unreadCount: 0,
-        moneyRequestCount: 0,
+      emit(NotificationLoaded(
+        notifications: const [],
+        unreadCount: state.unreadCount,
+        moneyRequestCount: state.moneyRequestCount,
       ));
     }
     if (state is NotificationLoaded) {

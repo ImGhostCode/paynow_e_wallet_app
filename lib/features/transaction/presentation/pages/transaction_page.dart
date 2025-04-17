@@ -163,227 +163,237 @@ class _TransactionPageState extends State<TransactionPage> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 SizedBox(height: 15.h),
-                IndexedStack(
-                    index: transactionView == TransactionView.income ? 0 : 1,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      _groupedIncomes.isEmpty
-                          ? const Center(
-                              child: Text('No transactions yet'),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: _groupedIncomes.length,
-                              itemBuilder: (context, index) {
-                                final key =
-                                    _groupedIncomes.keys.elementAt(index);
-                                final value = _groupedIncomes[key];
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.h),
-                                      child: Text(
-                                        DateFormat.yMMMd('en_US')
-                                            .format(DateTime.parse(key)),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium,
+                Expanded(
+                  child: IndexedStack(
+                      index: transactionView == TransactionView.income ? 0 : 1,
+                      // physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        _groupedIncomes.isEmpty
+                            ? const Center(
+                                child: Text('No transactions yet'),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: _groupedIncomes.length,
+                                itemBuilder: (context, index) {
+                                  final key =
+                                      _groupedIncomes.keys.elementAt(index);
+                                  final value = _groupedIncomes[key];
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 8.h),
+                                        child: Text(
+                                          DateFormat.yMMMd('en_US')
+                                              .format(DateTime.parse(key)),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
                                       ),
-                                    ),
-                                    for (var element in value!)
-                                      BlocProvider(
-                                        create: (context) => AuthBloc(
-                                          getUserUsecase: sl<GetUserUsecase>(),
-                                        )..add(GetUserEvent(
-                                            id: _getUserId(element))),
-                                        child: BlocBuilder<AuthBloc, AuthState>(
-                                            builder: (context, state) {
-                                          if (state is IsLoadingUser) {
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          }
-                                          if (state is ErrorLoadingUser) {
-                                            return Center(
-                                              child: Text(state.error),
-                                            );
-                                          }
-                                          if (state is LoadedUser) {
-                                            return ListTile(
-                                              minTileHeight: 60.h,
-                                              contentPadding: EdgeInsets.zero,
-                                              title: Text(
-                                                state.userEntity?.name !=
-                                                            null &&
-                                                        state.userEntity!.name
-                                                            .isNotEmpty
-                                                    ? state.userEntity!.name
-                                                    : state.userEntity!.id!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                              ),
-                                              horizontalTitleGap: 5.w,
-                                              subtitle: Text(
-                                                '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall!
-                                                    .copyWith(
-                                                      color: AppColors.gray,
-                                                    ),
-                                              ),
-                                              trailing: Text(
-                                                '+\$${element.amount.toString()}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                              ),
-                                              leading: Container(
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: const BoxDecoration(
-                                                  shape: BoxShape.circle,
+                                      for (var element in value!)
+                                        BlocProvider(
+                                          create: (context) => AuthBloc(
+                                            getUserUsecase:
+                                                sl<GetUserUsecase>(),
+                                          )..add(GetUserEvent(
+                                              id: _getUserId(element))),
+                                          child:
+                                              BlocBuilder<AuthBloc, AuthState>(
+                                                  builder: (context, state) {
+                                            if (state is IsLoadingUser) {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                            if (state is ErrorLoadingUser) {
+                                              return Center(
+                                                child: Text(state.error),
+                                              );
+                                            }
+                                            if (state is LoadedUser) {
+                                              return ListTile(
+                                                minTileHeight: 60.h,
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Text(
+                                                  state.userEntity?.name !=
+                                                              null &&
+                                                          state.userEntity!.name
+                                                              .isNotEmpty
+                                                      ? state.userEntity!.name
+                                                      : state.userEntity!.id!,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
                                                 ),
-                                                child: state.userEntity!.avatar
-                                                        .isNotEmpty
-                                                    ? Image.network(
-                                                        state
-                                                            .userEntity!.avatar,
-                                                        fit: BoxFit.cover,
-                                                        height: 40.w,
-                                                        width: 40.w,
-                                                      )
-                                                    : Image.asset(
-                                                        ImageConstants
-                                                            .defaultUser,
-                                                        height: 40.w,
-                                                        width: 40.w,
+                                                horizontalTitleGap: 5.w,
+                                                subtitle: Text(
+                                                  '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                        color: AppColors.gray,
                                                       ),
-                                              ),
-                                            );
-                                          }
-                                          return const SizedBox();
-                                        }),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-                      _groupedExpenses.isEmpty
-                          ? const Center(
-                              child: Text('No transactions yet'),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: _groupedExpenses.length,
-                              itemBuilder: (context, index) {
-                                final key =
-                                    _groupedExpenses.keys.elementAt(index);
-                                final value = _groupedExpenses[key];
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.h),
-                                      child: Text(
-                                        DateFormat.yMMMd('en_US')
-                                            .format(DateTime.parse(key)),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium,
-                                      ),
-                                    ),
-                                    for (var element in value!)
-                                      BlocProvider(
-                                        create: (context) => AuthBloc(
-                                          getUserUsecase: sl<GetUserUsecase>(),
-                                        )..add(GetUserEvent(
-                                            id: _getUserId(element))),
-                                        child: BlocBuilder<AuthBloc, AuthState>(
-                                            builder: (context, state) {
-                                          if (state is IsLoadingUser) {
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          }
-                                          if (state is ErrorLoadingUser) {
-                                            return Center(
-                                              child: Text(state.error),
-                                            );
-                                          }
-                                          if (state is LoadedUser) {
-                                            return ListTile(
-                                              minTileHeight: 60.h,
-                                              contentPadding: EdgeInsets.zero,
-                                              title: Text(
-                                                state.userEntity?.name !=
-                                                            null &&
-                                                        state.userEntity!.name
-                                                            .isNotEmpty
-                                                    ? state.userEntity!.name
-                                                    : element.receiverId,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                              ),
-                                              horizontalTitleGap: 5.w,
-                                              subtitle: Text(
-                                                '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall!
-                                                    .copyWith(
-                                                      color: AppColors.gray,
-                                                    ),
-                                              ),
-                                              trailing: Text(
-                                                '-\$${element.amount.toString()}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                              ),
-                                              leading: Container(
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: const BoxDecoration(
-                                                  shape: BoxShape.circle,
                                                 ),
-                                                child: state.userEntity!.avatar
-                                                        .isNotEmpty
-                                                    ? Image.network(
-                                                        state
-                                                            .userEntity!.avatar,
-                                                        fit: BoxFit.cover,
-                                                        height: 40.w,
-                                                        width: 40.w,
-                                                      )
-                                                    : Image.asset(
-                                                        ImageConstants
-                                                            .defaultUser,
-                                                        height: 40.w,
-                                                        width: 40.w,
-                                                      ),
-                                              ),
-                                            );
-                                          }
-                                          return const SizedBox();
-                                        }),
+                                                trailing: Text(
+                                                  '+\$${element.amount.toString()}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                ),
+                                                leading: Container(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: state.userEntity!
+                                                          .avatar.isNotEmpty
+                                                      ? Image.network(
+                                                          state.userEntity!
+                                                              .avatar,
+                                                          fit: BoxFit.cover,
+                                                          height: 40.w,
+                                                          width: 40.w,
+                                                        )
+                                                      : Image.asset(
+                                                          ImageConstants
+                                                              .defaultUser,
+                                                          height: 40.w,
+                                                          width: 40.w,
+                                                        ),
+                                                ),
+                                              );
+                                            }
+                                            return const SizedBox();
+                                          }),
+                                        ),
+                                    ],
+                                  );
+                                },
+                              ),
+                        _groupedExpenses.isEmpty
+                            ? const Center(
+                                child: Text('No transactions yet'),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: _groupedExpenses.length,
+                                itemBuilder: (context, index) {
+                                  final key =
+                                      _groupedExpenses.keys.elementAt(index);
+                                  final value = _groupedExpenses[key];
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 8.h),
+                                        child: Text(
+                                          DateFormat.yMMMd('en_US')
+                                              .format(DateTime.parse(key)),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
                                       ),
-                                  ],
-                                );
-                              },
-                            ),
-                    ]),
+                                      for (var element in value!)
+                                        BlocProvider(
+                                          create: (context) => AuthBloc(
+                                            getUserUsecase:
+                                                sl<GetUserUsecase>(),
+                                          )..add(GetUserEvent(
+                                              id: _getUserId(element))),
+                                          child:
+                                              BlocBuilder<AuthBloc, AuthState>(
+                                                  builder: (context, state) {
+                                            if (state is IsLoadingUser) {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                            if (state is ErrorLoadingUser) {
+                                              return Center(
+                                                child: Text(state.error),
+                                              );
+                                            }
+                                            if (state is LoadedUser) {
+                                              return ListTile(
+                                                minTileHeight: 60.h,
+                                                contentPadding: EdgeInsets.zero,
+                                                title: Text(
+                                                  state.userEntity?.name !=
+                                                              null &&
+                                                          state.userEntity!.name
+                                                              .isNotEmpty
+                                                      ? state.userEntity!.name
+                                                      : element.receiverId,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
+                                                ),
+                                                horizontalTitleGap: 5.w,
+                                                subtitle: Text(
+                                                  '${state.userEntity!.email} at ${DateFormat.jm('en_US').format(DateTime.parse(element.timestamp.toString()))}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                        color: AppColors.gray,
+                                                      ),
+                                                ),
+                                                trailing: Text(
+                                                  '-\$${element.amount.toString()}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                ),
+                                                leading: Container(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: state.userEntity!
+                                                          .avatar.isNotEmpty
+                                                      ? Image.network(
+                                                          state.userEntity!
+                                                              .avatar,
+                                                          fit: BoxFit.cover,
+                                                          height: 40.w,
+                                                          width: 40.w,
+                                                        )
+                                                      : Image.asset(
+                                                          ImageConstants
+                                                              .defaultUser,
+                                                          height: 40.w,
+                                                          width: 40.w,
+                                                        ),
+                                                ),
+                                              );
+                                            }
+                                            return const SizedBox();
+                                          }),
+                                        ),
+                                    ],
+                                  );
+                                },
+                              ),
+                      ]),
+                ),
               ],
             ),
           );
